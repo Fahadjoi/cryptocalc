@@ -85,6 +85,7 @@
       if (sig !== chartSig) return;
       var A = r[0], B = r[1], base = A || B, ca = usd(a), cb = usd(b), n = Math.min(A ? A.length : 99, B ? B.length : 99);
       var series = base.slice(-n).map(function (x, i) { var va = A ? A[A.length - n + i][1] : ca, vb = B ? B[B.length - n + i][1] : cb; return { t: x[0], val: va / vb }; });
+      if (isFinite(ca / cb)) series[n - 1].val = ca / cb;   // end the line on the live rate shown above
       var hi = series[0], lo = series[0]; series.forEach(function (p) { if (p.val > hi.val) hi = p; if (p.val < lo.val) lo = p; });
       var ch = (series[n - 1].val - series[0].val) / series[0].val * 100;
       wrap.hidden = false;
