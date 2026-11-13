@@ -1,433 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Converter – Convert BTC, ETH, Crypto to USD Instantly</title>
-  <meta name="description" content="Convert Bitcoin, Ethereum, and 20+ cryptocurrencies to USD, EUR, GBP and other currencies instantly. Free real-time crypto converter." />
-  <meta name="keywords" content="crypto converter, bitcoin to usd, ethereum to usd, convert crypto, btc usd calculator, crypto currency converter" />
-  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/converter/" />
-  <meta property="og:title" content="Crypto Converter – Convert BTC, ETH, Crypto to USD" />
-  <meta property="og:description" content="Convert crypto to fiat and fiat to crypto instantly." />
-  <meta property="og:type" content="website" />
-
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Converter","url":"https://zesty-haupia-16a953.netlify.app/converter/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css" />
-
-  <style>
-    .conv-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 12px;
-      align-items: end;
-      margin-bottom: 20px;
-    }
-    @media (max-width: 540px) {
-      .conv-row { grid-template-columns: 1fr; }
-      .swap-btn { justify-self: center; transform: rotate(90deg); }
-    }
-
-    .conv-side { display: flex; flex-direction: column; gap: 8px; }
-    .conv-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-
-    .conv-input-wrap {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      transition: border-color .2s;
-    }
-    .conv-input-wrap:focus-within { border-color: var(--green); }
-
-    .conv-input-wrap input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 12px 14px;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-      font-family: inherit;
-      min-width: 0;
-    }
-    .conv-input-wrap input::placeholder { color: var(--muted); font-weight: 400; font-size: 15px; }
-    .conv-input-wrap input::-webkit-outer-spin-button,
-    .conv-input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-    .conv-select {
-      background: var(--bg2);
-      border: none;
-      border-left: 1px solid var(--border);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 0 12px;
-      height: 100%;
-      min-height: 48px;
-      cursor: pointer;
-      outline: none;
-      white-space: nowrap;
-    }
-    .conv-select:focus { background: var(--bg3); }
-
-    .swap-btn {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: color .2s, border-color .2s;
-      flex-shrink: 0;
-      margin-bottom: 1px;
-    }
-    .swap-btn:hover { color: var(--green); border-color: var(--green); }
-
-    /* result */
-    .conv-result {
-      display: none;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      margin-top: 4px;
-    }
-    .conv-result.show { display: block; }
-    .conv-result-main { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1.1; }
-    .conv-result-sub  { font-size: 13px; color: var(--muted); margin-top: 6px; }
-
-    /* quick amounts */
-    .quick-amounts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-    .qa-btn {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: color .2s, border-color .2s;
-    }
-    .qa-btn:hover, .qa-btn.active { color: var(--green); border-color: var(--green); }
-
-    /* price table */
-    .price-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .price-table th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
-    .price-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
-    .price-table tr:last-child td { border-bottom: none; }
-    .price-table .sym { font-weight: 700; color: var(--green); }
-
-    .stale-notice { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; }
-
-    /* disclaimer */
-    .price-disclaimer {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 16px;
-      line-height: 1.6;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Converter | Live rates for 20 coins and 15 currencies</title>
+<meta name="description" content="Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/converter/">
+<meta property="og:title" content="Crypto Converter | Live rates for 20 coins and 15 currencies">
+<meta property="og:description" content="Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/converter/">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css?v=4">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How often do the rates update?", "acceptedAnswer": {"@type": "Answer", "text": "Once a minute while the page is open. The time of the last update is shown at the top of the converter."}}, {"@type": "Question", "name": "Can I convert one coin directly into another?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other."}}, {"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed."}}, {"@type": "Question", "name": "Is this the rate I will get on my exchange?", "acceptedAnswer": {"@type": "Answer", "text": "It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent."}}, {"@type": "Question", "name": "Does the converter charge anything?", "acceptedAnswer": {"@type": "Answer", "text": "No. It only shows rates. It does not hold, send or trade any money."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Converter", "url": "https://zesty-haupia-16a953.netlify.app/converter/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute."}</script>
 </head>
 <body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position size</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/converter/">Converter</a></nav>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Crypto converter</h1>
+  <p class="rise" style="--d:1">Live rates between 20 coins and 15 currencies. Type in either box and the other follows.</p>
+</header>
 
-<nav>
-  <a href="/" class="logo">Crypto<span>Calc</span></a>
-  <div class="nav-links"><a href="/#tools">Calculators</a><a href="/about.html">About</a></div>
-</nav>
-
-<div class="ad-banner" aria-hidden="true">Advertisement</div>
-
-<div class="page-grid">
-  <main>
-    <div class="calc-header">
-      <h1>Crypto Converter</h1>
-      <p>Convert between crypto and fiat currencies using reference prices.</p>
+<section class="card strong rise" style="--d:1">
+  <div class="card-head"><h2>Convert</h2><span class="meta" data-updated></span></div>
+  <div class="card-body">
+    <div class="conv">
+      <div class="field"><label for="amount">You have</label><div class="inp"><input id="amount" type="number" inputmode="decimal" step="any" min="0" value="1"><select id="from" aria-label="Convert from"></select></div></div>
+      <button type="button" class="swap" id="swap" aria-label="Swap the two currencies"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-4-4M20 16H6l4 4"/></svg></button>
+      <div class="field"><label for="result">You get</label><div class="inp"><input id="result" type="number" inputmode="decimal" step="any" min="0"><select id="to" aria-label="Convert to"></select></div></div>
     </div>
-
-    <div class="calc-card">
-
-      <!-- quick amounts -->
-      <div style="margin-bottom:14px;">
-        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Quick amounts</div>
-        <div class="quick-amounts" id="quickAmounts">
-          <button class="qa-btn" onclick="setAmount(0.001)">0.001</button>
-          <button class="qa-btn" onclick="setAmount(0.01)">0.01</button>
-          <button class="qa-btn" onclick="setAmount(0.1)">0.1</button>
-          <button class="qa-btn" onclick="setAmount(1)">1</button>
-          <button class="qa-btn" onclick="setAmount(10)">10</button>
-          <button class="qa-btn" onclick="setAmount(100)">100</button>
-        </div>
-      </div>
-
-      <div class="conv-row">
-        <div class="conv-side">
-          <div class="conv-label">Amount</div>
-          <div class="conv-input-wrap">
-            <input type="number" id="fromAmount" placeholder="1" min="0" step="any" oninput="convertFrom()" />
-            <select class="conv-select" id="fromCurrency" onchange="convertFrom()"></select>
-          </div>
-        </div>
-
-        <button class="swap-btn" onclick="swapCurrencies()" title="Swap">⇄</button>
-
-        <div class="conv-side">
-          <div class="conv-label">Converted to</div>
-          <div class="conv-input-wrap">
-            <input type="number" id="toAmount" placeholder="—" min="0" step="any" oninput="convertTo()" />
-            <select class="conv-select" id="toCurrency" onchange="convertFrom()"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="conv-result" id="convResult">
-        <div class="conv-result-main" id="convMain"></div>
-        <div class="conv-result-sub"  id="convSub"></div>
-      </div>
-
-      <div class="price-disclaimer">
-        <strong>Note:</strong> This converter uses reference prices for illustration. For live trading rates, always check your exchange directly. Prices update when you reload the page.
+    <div class="chips" id="quick"></div>
+    <div aria-live="polite" style="margin-top:22px">
+      <p class="empty" id="state">Loading live rates…</p>
+      <div id="out" hidden>
+        <div class="verdict" id="lead"></div>
+        <div class="big" id="big"></div>
+        <div class="sub" id="sub"></div>
       </div>
     </div>
+    <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this conversion</button></div>
+  </div>
+</section>
 
-    <!-- price reference table -->
-    <div class="calc-card" style="margin-top:20px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Reference prices used</div>
-      <table class="price-table">
-        <thead>
-          <tr><th>Asset</th><th>Symbol</th><th>Price (USD)</th><th>1 USD =</th></tr>
-        </thead>
-        <tbody id="priceBody"></tbody>
-      </table>
-      <div class="stale-notice" id="priceNote"></div>
-    </div>
+<section class="section reveal" style="margin-top:48px">
+  <div class="section-head"><h2 id="refTitle">Quick reference</h2><p>At the current rate</p></div>
+  <div class="tool-grid">
+    <div class="card"><div class="table-wrap"><table class="t"><thead><tr><th id="refA1"></th><th class="r" id="refA2"></th></tr></thead><tbody id="refA"></tbody></table></div></div>
+    <div class="card"><div class="table-wrap"><table class="t"><thead><tr><th id="refB1"></th><th class="r" id="refB2"></th></tr></thead><tbody id="refB"></tbody></table></div></div>
+  </div>
+</section>
 
-    <div class="ad-square" aria-hidden="true">Advertisement</div>
+<section class="section reveal">
+  <div class="section-head"><h2>All prices<span id="inCode"></span></h2><p>Select a coin to convert it</p></div>
+  <div class="card"><div class="table-wrap">
+    <table class="t">
+      <thead><tr><th class="hide-s">#</th><th>Coin</th><th class="r">Price</th><th class="r">24h</th><th class="r hide-s">7 days</th><th class="r hide-m">Market cap</th><th class="r hide-s">Last 7 days</th></tr></thead>
+      <tbody id="market"><tr><td colspan="7" class="empty">Loading prices…</td></tr></tbody>
+    </table>
+  </div></div>
+</section>
 
-    <div class="content-section">
-      <h2>How to Convert Crypto to USD</h2>
-      <p>Converting crypto to USD is straightforward: multiply the number of coins you hold by the current price. For example, 0.5 BTC at $65,000/BTC = $32,500. This converter does that math for any supported coin and currency pair.</p>
+<div class="guide">
+<article class="prose reveal">
+  <h2>How the conversion is worked out</h2>
+  <p>Every coin and currency in the list has a live price in US dollars. To convert between any two, the converter turns your amount into dollars and then into the target.</p>
+  <div class="formula">Result = amount × (price of what you have in USD) ÷ (price of what you want in USD)</div>
+  <p>That is how one feed of dollar prices covers every pair, including coin to coin pairs like ETH to BTC and currency to coin pairs like PKR to USDT. Rates refresh once a minute while the page is open.</p>
 
-      <h3>What affects crypto prices?</h3>
-      <p>Crypto prices fluctuate based on supply and demand, macroeconomic news, regulatory changes, and market sentiment. Bitcoin's price is also influenced by its fixed supply of 21 million coins. Unlike stocks, crypto markets never close — prices can move 24/7.</p>
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You hold <b>0.5 ETH</b> and want to know its value in Bitcoin.</p>
+    <p>If ETH trades at <b>$2,000</b> and BTC at <b>$70,000</b>, then 0.5 ETH is worth $1,000.</p>
+    <p>$1,000 ÷ $70,000 = <b>0.014286 BTC</b>.</p>
+  </div>
 
-      <h3>Crypto vs fiat conversion tips</h3>
-      <p>When converting large amounts, be aware that the price you see on a converter may differ from the actual execution price on an exchange (this difference is called slippage). For amounts over $10,000, check the order book depth on your exchange before executing.</p>
-    </div>
-  </main>
+  <h2>Why your exchange shows a different number</h2>
+  <p>The rate here is a market average across many exchanges. The amount you actually receive when you trade will be a little lower, for four reasons.</p>
+  <ul>
+    <li><strong>Trading fees.</strong> Usually 0.1% to 0.8% per order. The <a href="/fee-calculator/">fee calculator</a> shows what ten exchanges charge.</li>
+    <li><strong>Spread.</strong> The price you can sell at is always slightly below the price you can buy at.</li>
+    <li><strong>Local currency premiums.</strong> In countries where banks limit crypto transfers, coins often change hands on peer-to-peer markets above or below the official exchange rate. Rupee, naira and lira prices on those markets can differ from the figure here by several percent.</li>
+    <li><strong>Timing.</strong> Prices move every second, and this page refreshes every minute.</li>
+  </ul>
 
-  <aside class="sidebar">
-    <div style="position:sticky;top:72px;">
-      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;height:600px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);">Advertisement</div>
-    </div>
-  </aside>
+  <h2>Stablecoins are close to a dollar, not exactly a dollar</h2>
+  <p>USDT and USDC are designed to hold a value of one US dollar, and most of the time they trade within a tenth of a cent of it. The converter uses their real market price, so 1,000 USDT may show as $999.20 or $1,000.40. On large amounts that difference is real money, which is why it is shown and not rounded away.</p>
+
+  <h2>Reading very small and very large numbers</h2>
+  <p>Coins priced below one cent need more decimal places than a normal currency, so the converter shows up to eight. Going the other way, one Bitcoin is worth tens of millions of rupees or naira, so large results are grouped with commas. If a result looks wrong by a factor of a thousand, check that you have not mixed up the two boxes, and use the swap button to flip them.</p>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How often do the rates update?</summary><p>Once a minute while the page is open. The time of the last update is shown at the top of the converter.</p></details><details><summary>Can I convert one coin directly into another?</summary><p>Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other.</p></details><details><summary>Where do the prices come from?</summary><p>From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed.</p></details><details><summary>Is this the rate I will get on my exchange?</summary><p>It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent.</p></details><details><summary>Does the converter charge anything?</summary><p>No. It only shows rates. It does not hold, send or trade any money.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same trade costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past year are worth today</span></a></li></ul></aside>
 </div>
-
-<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
-
-<footer>
-  <p>&copy; 2026 CryptoCalc. Reference prices are for estimation only. Not financial advice.</p>
-  <div style="margin-top:10px;"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a><a href="/terms.html">Terms</a></div>
-</footer>
-
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=4"></script>
 <script>
-  // Reference prices (USD) — illustrative, page-load static
-  // These are approximate mid-2026 reference values
-  const CRYPTO_PRICES = {
-    BTC:  65000,
-    ETH:  3400,
-    BNB:  580,
-    SOL:  165,
-    XRP:  0.58,
-    ADA:  0.44,
-    AVAX: 38,
-    DOT:  7.5,
-    LINK: 16,
-    MATIC:0.90,
-    LTC:  86,
-    DOGE: 0.14,
-    TRX:  0.12,
-    UNI:  9.5,
-    ATOM: 8.8,
-    NEAR: 7.2,
-    ARB:  1.2,
-    OP:   2.1,
-    INJ:  28,
-    SUI:  1.8,
-  };
+(function () {
+  var $ = CC.$, f = CC.fmt, F = CC.FIATS, ready = false, lastEdited = 'amount';
+  var q = new URLSearchParams(location.search);
 
-  const FIAT_RATES = {   // relative to 1 USD
-    USD: 1,
-    EUR: 0.918,
-    GBP: 0.786,
-    JPY: 149.5,
-    CAD: 1.345,
-    AUD: 1.512,
-    CHF: 0.895,
-    SGD: 1.325,
-    AED: 3.672,
-    PKR: 278,
-  };
-
-  const ALL_CURRENCIES = {
-    // cryptos first
-    ...Object.fromEntries(Object.entries(CRYPTO_PRICES).map(([k,v]) => [k, { usdPrice: v, type: 'crypto' }])),
-    // fiats
-    ...Object.fromEntries(Object.entries(FIAT_RATES).map(([k,v]) => [k, { usdPrice: 1/v, type: 'fiat' }])),
-  };
-
-  function getUsdValue(amount, currency) {
-    return amount * ALL_CURRENCIES[currency].usdPrice;
+  function localFiat() {
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    var m = { 'Asia/Karachi': 'PKR', 'Asia/Kolkata': 'INR', 'Asia/Calcutta': 'INR', 'Asia/Dubai': 'AED', 'Asia/Riyadh': 'SAR', 'Asia/Tokyo': 'JPY', 'Europe/London': 'GBP',
+      'Europe/Istanbul': 'TRY', 'Africa/Lagos': 'NGN', 'America/Sao_Paulo': 'BRL', 'Asia/Singapore': 'SGD', 'Europe/Zurich': 'CHF', 'America/Toronto': 'CAD', 'America/Vancouver': 'CAD' };
+    if (m[tz]) return m[tz];
+    if (tz.indexOf('Australia/') === 0) return 'AUD';
+    if (tz.indexOf('Europe/') === 0) return 'EUR';
+    return 'USD';
   }
-  function fromUsd(usdVal, currency) {
-    return usdVal / ALL_CURRENCIES[currency].usdPrice;
+  var want = { from: q.get('from') || 'bitcoin', to: q.get('to') || localFiat() };
+  if (q.get('amount') > 0) $('amount').value = q.get('amount');
+
+  function isFiat(k) { return !!F[k]; }
+  function code(k) { if (isFiat(k)) return k; var c = CC.coin(k); return c ? c.sym : k; }
+  function label(k) { if (isFiat(k)) return F[k]; var c = CC.coin(k); return c ? c.name : k; }
+  function usd(k) { if (isFiat(k)) { var r = CC.fx(k); return r ? 1 / r : NaN; } var c = CC.coin(k); return c && c.price != null ? c.price : NaN; }
+  function show(n, k) { return isFiat(k) ? f.fiat(n, k) : f.amt(n) + ' ' + code(k); }
+  function tidy(x) { return isFinite(x) ? Number(x.toPrecision(8)) : ''; }
+
+  function fill(sel, keep) {
+    var coins = CC.coins().map(function (c) { return '<option value="' + c.id + '">' + CC.esc(c.sym) + ' · ' + CC.esc(c.name) + '</option>'; }).join('');
+    var fiats = Object.keys(F).map(function (k) { return '<option value="' + k + '">' + k + ' · ' + F[k] + '</option>'; }).join('');
+    sel.innerHTML = '<optgroup label="Coins">' + coins + '</optgroup><optgroup label="Currencies">' + fiats + '</optgroup>';
+    sel.value = keep; if (!sel.value) sel.selectedIndex = 0;
   }
 
-  // ---- populate selects ----
-  function populateSelects() {
-    const fromSel = document.getElementById('fromCurrency');
-    const toSel   = document.getElementById('toCurrency');
-    const groups  = { Cryptocurrency: Object.keys(CRYPTO_PRICES), 'Fiat Currency': Object.keys(FIAT_RATES) };
+  function calc() {
+    var a = $('from').value, b = $('to').value, ra = usd(a), rb = usd(b);
+    if (!ready || !isFinite(ra) || !isFinite(rb)) return;
+    var rate = ra / rb;
+    if (lastEdited === 'result') { var r = parseFloat($('result').value); $('amount').value = r >= 0 ? tidy(r / rate) : ''; }
+    else { var am = parseFloat($('amount').value); $('result').value = am >= 0 ? tidy(am * rate) : ''; }
+    var amt = parseFloat($('amount').value);
+    $('state').hidden = true; $('out').hidden = false;
+    var has = amt > 0;
+    $('lead').textContent = has ? show(amt, a) + ' equals' : '1 ' + code(a) + ' equals';
+    CC.count($('big'), (has ? amt : 1) * rate, function (v) { return show(v, b); });
+    var c = CC.coin(a) || CC.coin(b), ch = c && c.ch24 != null ? ' ' + c.sym + ' is ' + (c.ch24 >= 0 ? 'up ' : 'down ') + Math.abs(c.ch24).toFixed(2) + '% in 24 hours.' : '';
+    $('sub').textContent = '1 ' + code(a) + ' = ' + show(rate, b) + '. 1 ' + code(b) + ' = ' + show(1 / rate, a) + '.' + ch;
 
-    [fromSel, toSel].forEach(sel => {
-      sel.innerHTML = '';
-      for (const [groupName, keys] of Object.entries(groups)) {
-        const og = document.createElement('optgroup');
-        og.label = groupName;
-        keys.forEach(k => {
-          const opt = document.createElement('option');
-          opt.value = k;
-          opt.textContent = k;
-          og.appendChild(opt);
-        });
-        sel.appendChild(og);
-      }
-    });
+    var la = isFiat(a) ? [10, 50, 100, 500, 1000, 5000, 10000] : ra > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : ra > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
+    var lb = isFiat(b) ? [10, 50, 100, 500, 1000, 5000, 10000] : rb > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : rb > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
+    $('refTitle').textContent = code(a) + ' and ' + code(b) + ' quick reference';
+    $('refA1').textContent = label(a); $('refA2').textContent = label(b); $('refB1').textContent = label(b); $('refB2').textContent = label(a);
+    $('refA').innerHTML = la.map(function (x) { return '<tr><td>' + show(x, a) + '</td><td class="r"><b>' + show(x * rate, b) + '</b></td></tr>'; }).join('');
+    $('refB').innerHTML = lb.map(function (x) { return '<tr><td>' + show(x, b) + '</td><td class="r"><b>' + show(x / rate, a) + '</b></td></tr>'; }).join('');
+    $('quick').innerHTML = la.slice(0, 6).map(function (x) { return '<button type="button" class="chip" data-q="' + x + '">' + f.num(x, 3) + ' ' + code(a) + '</button>'; }).join('');
 
-    fromSel.value = 'BTC';
-    toSel.value   = 'USD';
+    var fc = isFiat(b) ? b : isFiat(a) ? a : 'USD';
+    $('inCode').textContent = ' in ' + fc;
+    CC.marketRows($('market'), { stables: true, fiat: fc, onPick: function (id) { $('from').value = id; lastEdited = 'amount'; calc(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
   }
 
-  // ---- conversion ----
-  function convertFrom() {
-    const amt  = parseFloat(document.getElementById('fromAmount').value);
-    const from = document.getElementById('fromCurrency').value;
-    const to   = document.getElementById('toCurrency').value;
-    if (!amt || isNaN(amt)) { clearResult(); return; }
+  $('amount').addEventListener('input', function () { lastEdited = 'amount'; calc(); });
+  $('result').addEventListener('input', function () { lastEdited = 'result'; calc(); });
+  $('from').addEventListener('change', function () { lastEdited = 'amount'; calc(); });
+  $('to').addEventListener('change', function () { lastEdited = 'amount'; calc(); });
+  $('swap').addEventListener('click', function () { var a = $('from').value; $('from').value = $('to').value; $('to').value = a; lastEdited = 'amount'; calc(); });
+  $('quick').addEventListener('click', function (e) { var b = e.target.closest('[data-q]'); if (!b) return; $('amount').value = b.dataset.q; lastEdited = 'amount'; calc(); });
+  $('shareBtn').addEventListener('click', function () { CC.share(['amount', 'from', 'to']); });
 
-    const usdVal = getUsdValue(amt, from);
-    const result = fromUsd(usdVal, to);
-
-    document.getElementById('toAmount').value = formatOut(result, to);
-    showResult(amt, from, result, to, usdVal);
-  }
-
-  function convertTo() {
-    const amt  = parseFloat(document.getElementById('toAmount').value);
-    const from = document.getElementById('fromCurrency').value;
-    const to   = document.getElementById('toCurrency').value;
-    if (!amt || isNaN(amt)) { clearResult(); return; }
-
-    const usdVal = getUsdValue(amt, to);
-    const result = fromUsd(usdVal, from);
-
-    document.getElementById('fromAmount').value = formatOut(result, from);
-    showResult(result, from, amt, to, usdVal);
-  }
-
-  function formatOut(n, currency) {
-    const isCrypto = ALL_CURRENCIES[currency]?.type === 'crypto';
-    if (isCrypto) {
-      if (n < 0.0001) return n.toFixed(8);
-      if (n < 1)      return n.toFixed(6);
-      return n.toFixed(4);
-    }
-    if (currency === 'JPY' || currency === 'PKR') return n.toFixed(0);
-    return n.toFixed(2);
-  }
-
-  function showResult(fromAmt, fromCur, toAmt, toCur, usdVal) {
-    const el = document.getElementById('convResult');
-    document.getElementById('convMain').textContent =
-      formatOut(fromAmt, fromCur) + ' ' + fromCur + ' = ' + formatOut(toAmt, toCur) + ' ' + toCur;
-    document.getElementById('convSub').textContent =
-      '≈ $' + usdVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD · Reference price';
-    el.classList.add('show');
-  }
-
-  function clearResult() {
-    document.getElementById('convResult').classList.remove('show');
-  }
-
-  function swapCurrencies() {
-    const fromSel = document.getElementById('fromCurrency');
-    const toSel   = document.getElementById('toCurrency');
-    const fromAmt = document.getElementById('fromAmount');
-    const toAmt   = document.getElementById('toAmount');
-
-    const tmpCur = fromSel.value;
-    const tmpAmt = fromAmt.value;
-    fromSel.value = toSel.value;
-    toSel.value   = tmpCur;
-    fromAmt.value = toAmt.value;
-    toAmt.value   = tmpAmt;
-    convertFrom();
-  }
-
-  function setAmount(val) {
-    document.getElementById('fromAmount').value = val;
-    document.querySelectorAll('.qa-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    convertFrom();
-  }
-
-  // ---- price reference table ----
-  function buildPriceTable() {
-    const tbody = document.getElementById('priceBody');
-    Object.entries(CRYPTO_PRICES).forEach(([sym, price]) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${getCoinName(sym)}</td>
-        <td class="sym">${sym}</td>
-        <td>$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-        <td>${(1/price).toFixed(price > 100 ? 8 : 4)} ${sym}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById('priceNote').textContent =
-      'Prices are reference values for illustration. Last updated: page load.';
-  }
-
-  function getCoinName(sym) {
-    const names = { BTC:'Bitcoin', ETH:'Ethereum', BNB:'BNB', SOL:'Solana', XRP:'XRP', ADA:'Cardano',
-      AVAX:'Avalanche', DOT:'Polkadot', LINK:'Chainlink', MATIC:'Polygon', LTC:'Litecoin',
-      DOGE:'Dogecoin', TRX:'TRON', UNI:'Uniswap', ATOM:'Cosmos', NEAR:'NEAR Protocol',
-      ARB:'Arbitrum', OP:'Optimism', INJ:'Injective', SUI:'Sui' };
-    return names[sym] || sym;
-  }
-
-  // init
-  populateSelects();
-  buildPriceTable();
-  convertFrom();
+  fill($('from'), want.from); fill($('to'), want.to);
+  CC.on(function (s) {
+    if (!s.loaded) { $('state').textContent = s.error ? 'Live rates are unavailable right now. Please try again in a minute.' : 'Loading live rates…'; return; }
+    fill($('from'), $('from').value || want.from); fill($('to'), $('to').value || want.to);
+    ready = true; calc();
+  });
+})();
 </script>
-
 </body>
 </html>

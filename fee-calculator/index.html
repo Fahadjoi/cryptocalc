@@ -1,233 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Exchange Fee Comparator – Find the Cheapest Exchange</title>
-  <meta name="description" content="Compare crypto exchange fees side by side. See exactly how much Binance, Coinbase, Bybit, Kraken and others charge on your trade size." />
-  <meta name="keywords" content="crypto exchange fee comparison, binance fees, coinbase fees, bybit fees, cheapest crypto exchange, trading fees calculator" />
-  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/fee-calculator/" />
-  <meta property="og:title" content="Crypto Exchange Fee Comparator – Find the Cheapest Exchange" />
-  <meta property="og:description" content="Compare trading fees across top exchanges instantly." />
-  <meta property="og:type" content="website" />
-
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Exchange Fee Comparator","url":"https://zesty-haupia-16a953.netlify.app/fee-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css" />
-
-  <style>
-    .exchange-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 13px;
-    }
-    .exchange-table th {
-      text-align: left;
-      padding: 10px 12px;
-      color: var(--muted);
-      font-weight: 500;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      border-bottom: 1px solid var(--border);
-    }
-    .exchange-table td {
-      padding: 11px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
-    .exchange-table tr:last-child td { border-bottom: none; }
-    .exchange-table tr.cheapest td { background: var(--gain-tint); }
-    .exchange-table tr.cheapest td:first-child { border-left: 2px solid var(--green); }
-
-    .ex-name { font-weight: 600; }
-    .ex-fee-pct { color: var(--muted); font-size: 12px; }
-    .fee-amount { font-weight: 600; }
-    .fee-amount.best { color: var(--green); }
-    .fee-amount.worst { color: var(--red); }
-
-    .badge-best {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 20px;
-      background: var(--green);
-      color: #fff;
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-
-    .savings-box {
-      display: none;
-      margin-top: 16px;
-      background: var(--gain-tint);
-      border: 1px solid var(--gain-line);
-      border-radius: 10px;
-      padding: 14px 16px;
-      font-size: 13px;
-    }
-    .savings-box.show { display: block; }
-    .savings-title { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-    .savings-amt { font-size: 22px; font-weight: 700; color: var(--green); }
-    .savings-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
-
-    .bar-cell { width: 120px; }
-    .fee-bar-track { background: var(--bg3); border-radius: 3px; height: 6px; }
-    .fee-bar-fill { height: 100%; border-radius: 3px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Exchange Fee Calculator | Compare 10 exchanges</title>
+<meta name="description" content="Compare spot trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/fee-calculator/">
+<meta property="og:title" content="Crypto Exchange Fee Calculator | Compare 10 exchanges">
+<meta property="og:description" content="Compare spot trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/fee-calculator/">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css?v=4">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which crypto exchange has the lowest trading fees?", "acceptedAnswer": {"@type": "Answer", "text": "At base-tier spot rates, MEXC lists the lowest with 0% for limit orders and 0.05% for market orders, followed by OKX at 0.08% and 0.10%. Binance, Bybit, KuCoin, Bitget and Gate all charge 0.10% for both."}}, {"@type": "Question", "name": "What is the difference between a maker fee and a taker fee?", "acceptedAnswer": {"@type": "Answer", "text": "You pay the taker fee when your order fills immediately, as a market order does. You pay the maker fee when your limit order waits in the order book and someone else fills it."}}, {"@type": "Question", "name": "Are fees charged when I buy and when I sell?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each order is charged separately, so buying and later selling costs two fees. Set orders per month to count both sides."}}, {"@type": "Question", "name": "Why are Coinbase and Kraken more expensive?", "acceptedAnswer": {"@type": "Answer", "text": "Their entry tiers are priced higher than the large offshore exchanges, and both lower the rate as your 30-day volume grows. Many traders accept the higher cost for local regulation and bank transfers in their own currency."}}, {"@type": "Question", "name": "Do these rates apply to futures?", "acceptedAnswer": {"@type": "Answer", "text": "No. The table covers spot trading. Futures use separate and usually lower rates, commonly about 0.02% maker and 0.05% taker, charged on the full leveraged position."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Exchange Fee Calculator", "url": "https://zesty-haupia-16a953.netlify.app/fee-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Compare spot trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year."}</script>
 </head>
 <body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position size</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/converter/">Converter</a></nav>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Exchange fee calculator</h1>
+  <p class="rise" style="--d:1">Enter one order and see what ten exchanges charge for it, and what that adds up to over a year.</p>
+</header>
 
-<nav>
-  <a href="/" class="logo">Crypto<span>Calc</span></a>
-  <div class="nav-links"><a href="/#tools">Calculators</a><a href="/about.html">About</a></div>
-</nav>
-
-<div class="ad-banner" aria-hidden="true">Advertisement</div>
-
-<div class="page-grid">
-  <main>
-    <div class="calc-header">
-      <h1>Crypto Exchange Fee Comparator</h1>
-      <p>Enter your trade size and see exactly how much each exchange charges you.</p>
-    </div>
-
-    <div class="calc-card">
-      <div class="form-grid">
-        <div class="form-group" style="grid-column:1/-1">
-          <label for="tradeSize">Trade size (USD)</label>
-          <input type="number" id="tradeSize" placeholder="e.g. 1000" min="0" step="any" />
+<div class="tool-grid wide">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your order</h2></div>
+    <div class="card-body">
+      <div class="fields" style="grid-template-columns:1fr">
+        <div class="field"><div class="field"><label for="size">Order size</label><div class="inp"><input id="size" type="number" inputmode="decimal" step="any" value="1000" min="0"><span class="unit">USD</span></div></div>
+          <div class="chips"><button type="button" class="chip" data-set="size:100">$100</button><button type="button" class="chip" data-set="size:1000">$1,000</button><button type="button" class="chip" data-set="size:10000">$10,000</button><button type="button" class="chip" data-set="size:50000">$50,000</button></div>
         </div>
-      </div>
-
-      <button class="calc-btn" onclick="calculate()">Compare Fees</button>
-
-      <div id="resultsWrap" style="display:none;">
-        <div class="savings-box" id="savingsBox">
-          <div class="savings-title">You could save</div>
-          <div class="savings-amt" id="savingsAmt"></div>
-          <div class="savings-sub" id="savingsSub"></div>
+        <div class="field"><span class="lbl">Order type</span>
+          <div class="seg" role="radiogroup" aria-label="Order type">
+            <label><input type="radio" name="type" value="taker" checked><span>Market (taker)</span></label>
+            <label><input type="radio" name="type" value="maker"><span>Limit (maker)</span></label>
+          </div>
+          <p class="hint">Market orders fill at once and pay the taker rate. Limit orders that wait in the order book pay the maker rate.</p>
         </div>
+        <div class="field"><label for="orders">Orders per month</label><div class="inp"><input id="orders" type="number" inputmode="decimal" step="any" value="20" min="0"></div></div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
 
-        <table class="exchange-table" id="feeTable">
-          <thead>
-            <tr>
-              <th>Exchange</th>
-              <th>Spot fee</th>
-              <th class="bar-cell">Relative cost</th>
-              <th>Fee on trade</th>
-              <th>Round trip</th>
-            </tr>
-          </thead>
-          <tbody id="feeBody"></tbody>
-        </table>
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Cost on each exchange</h2><span class="meta">Rates checked 13 Nov 2026</span></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an order size above zero.</p>
+      <div id="out">
+        <div class="verdict up" id="verdict"></div>
+        <div class="big" id="best"></div>
+        <div class="sub" id="sub"></div>
+        <div class="table-wrap" style="margin-top:18px">
+          <table class="t">
+            <thead><tr><th>Exchange</th><th class="r">Rate</th><th class="r">Per order</th><th class="hide-s"></th><th class="r">Per month</th><th class="r hide-s">Per year</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="note plain">Base-tier spot rates for a new account with no token discount or volume tier. Exchanges change fees without notice and some rates differ by country, so confirm on the exchange before you trade.</div>
       </div>
     </div>
-
-    <div class="ad-square" aria-hidden="true">Advertisement</div>
-
-    <div class="content-section">
-      <h2>Crypto Exchange Fee Comparison (2026)</h2>
-      <p>Exchange fees vary significantly — Coinbase charges up to 0.6% while Binance charges just 0.1%. On a $10,000 trade, that's the difference between paying $60 and $10. Over a year of active trading, fees can easily cost you hundreds or thousands of dollars.</p>
-
-      <h3>Maker vs taker fees</h3>
-      <p>Most exchanges have two fee tiers: <strong>maker fees</strong> (you add liquidity by placing limit orders) and <strong>taker fees</strong> (you remove liquidity with market orders). Taker fees are usually higher. This calculator uses taker fees, which is what most traders pay when buying or selling at market price.</p>
-
-      <h3>How to reduce exchange fees</h3>
-      <p>Most exchanges offer fee discounts if you hold their native token (BNB on Binance, KCS on KuCoin). Higher trading volume also unlocks lower fee tiers. Using limit orders (maker orders) instead of market orders can halve your fees on some exchanges.</p>
-    </div>
-  </main>
-
-  <aside class="sidebar">
-    <div style="position:sticky;top:72px;">
-      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;height:600px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);">Advertisement</div>
-    </div>
-  </aside>
+  </section>
 </div>
 
-<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+<div class="guide">
+<article class="prose reveal">
+  <h2>Maker and taker fees</h2>
+  <p>Exchanges charge two different rates depending on how your order meets the market. A <strong>taker</strong> order fills immediately against orders already waiting, which is what a market order does. A <strong>maker</strong> order is a limit order that sits in the order book until someone else trades against it. Makers add liquidity, so exchanges usually charge them less.</p>
+  <p>On Binance, Bybit, KuCoin, Bitget and Gate the two rates are the same at the entry level, so order type makes no difference to the fee. On OKX, MEXC, Kraken Pro and Coinbase Advanced a limit order is cheaper, and on Kraken Pro it costs half as much.</p>
 
-<footer>
-  <p>&copy; 2026 CryptoCalc. Fee data is approximate and may change. Verify on each exchange before trading.</p>
-  <div style="margin-top:10px;"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a><a href="/terms.html">Terms</a></div>
-</footer>
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You buy <b>$1,000</b> of Bitcoin with a market order and later sell it the same way. That is two taker orders.</p>
+    <p>At <b>0.10%</b> each order costs $1.00, so the round trip costs <b>$2.00</b>.</p>
+    <p>At <b>0.80%</b> each order costs $8.00, so the round trip costs <b>$16.00</b>. The trade has to gain 1.6% before it makes anything.</p>
+  </div>
 
+  <h2>Why the table uses base-tier rates</h2>
+  <p>Every exchange lowers its fees as your 30-day volume grows, but the starting tier is what a new or occasional trader pays, and the tiers are where exchanges differ most. Kraken Pro starts at 0.40% maker and 0.80% taker and drops to 0.30% and 0.60% once you pass $2,500 in 30-day volume. Coinbase Advanced lists 0.50% maker and 0.90% taker as its United States entry rate, 0.25% and 0.50% in the EU and UK, and 0.09% and 0.10% in several other markets. The big offshore exchanges sit close to 0.10% from the first trade.</p>
+
+  <h2>Four ways to pay less</h2>
+  <ul>
+    <li><strong>Use limit orders</strong> where maker rates are lower. You give up the guarantee of an instant fill in return.</li>
+    <li><strong>Pay fees in the exchange token.</strong> Binance takes 25% off spot fees paid in BNB and KuCoin takes 20% off when paid in KCS. You have to hold a token whose own price moves.</li>
+    <li><strong>Trade less often.</strong> Fees scale with the number of orders. Twenty $1,000 orders a month at 0.10% cost $240 a year, and at 0.80% they cost $1,920.</li>
+    <li><strong>Check your tier.</strong> If you are close to the next volume tier, the lower rate applies to every order after you cross it.</li>
+  </ul>
+
+  <h2>Costs the fee table does not show</h2>
+  <p>The trading fee is only the visible part of the cost. A low fee on a thin market can still be the expensive choice.</p>
+  <ul>
+    <li><strong>Spread:</strong> the gap between the best buy and sell price. On small coins and quiet exchanges it can be larger than the fee.</li>
+    <li><strong>Slippage:</strong> large market orders eat through several price levels and fill at a worse average.</li>
+    <li><strong>Withdrawal fees:</strong> a fixed amount per withdrawal that varies by coin and network.</li>
+    <li><strong>Instant-buy markups:</strong> the simple "buy" buttons in exchange apps often charge far more than the trading screen of the same company.</li>
+  </ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>Which crypto exchange has the lowest trading fees?</summary><p>At base-tier spot rates, MEXC lists the lowest with 0% for limit orders and 0.05% for market orders, followed by OKX at 0.08% and 0.10%. Binance, Bybit, KuCoin, Bitget and Gate all charge 0.10% for both.</p></details><details><summary>What is the difference between a maker fee and a taker fee?</summary><p>You pay the taker fee when your order fills immediately, as a market order does. You pay the maker fee when your limit order waits in the order book and someone else fills it.</p></details><details><summary>Are fees charged when I buy and when I sell?</summary><p>Yes. Each order is charged separately, so buying and later selling costs two fees. Set orders per month to count both sides.</p></details><details><summary>Why are Coinbase and Kraken more expensive?</summary><p>Their entry tiers are priced higher than the large offshore exchanges, and both lower the rate as your 30-day volume grows. Many traders accept the higher cost for local regulation and bank transfers in their own currency.</p></details><details><summary>Do these rates apply to futures?</summary><p>No. The table covers spot trading. Futures use separate and usually lower rates, commonly about 0.02% maker and 0.05% taker, charged on the full leveraged position.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past year are worth today</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=4"></script>
 <script>
-  // Taker fee rates (spot, standard tier, as of 2026)
-  const EXCHANGES = [
-    { name: 'Binance',   fee: 0.100, note: 'Standard taker' },
-    { name: 'Bybit',     fee: 0.100, note: 'Standard taker' },
-    { name: 'OKX',       fee: 0.100, note: 'Standard taker' },
-    { name: 'KuCoin',    fee: 0.100, note: 'Standard taker' },
-    { name: 'Kraken',    fee: 0.260, note: 'Standard taker' },
-    { name: 'Coinbase',  fee: 0.600, note: 'Coinbase Advanced' },
-    { name: 'Gate.io',   fee: 0.200, note: 'Standard taker' },
-    { name: 'HTX',       fee: 0.200, note: 'Standard taker' },
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  // [name, maker %, taker %, note]  Base-tier spot rates, checked 13 Nov 2026
+  var EX = [
+    ['MEXC', 0, 0.05, 'Can differ by country'],
+    ['OKX', 0.08, 0.10, ''],
+    ['Binance', 0.10, 0.10, '25% off when paid in BNB'],
+    ['Bybit', 0.10, 0.10, ''],
+    ['KuCoin', 0.10, 0.10, '20% off when paid in KCS'],
+    ['Bitget', 0.10, 0.10, ''],
+    ['Gate', 0.10, 0.10, ''],
+    ['HTX', 0.20, 0.20, ''],
+    ['Coinbase Advanced', 0.50, 0.90, 'US rate. 0.25% / 0.50% in the EU and UK'],
+    ['Kraken Pro', 0.40, 0.80, '0.30% / 0.60% after $2,500 of volume']
   ];
-
-  function usd(n) {
-    if (n < 0.01) return '$' + n.toFixed(4);
-    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function calculate() {
-    const trade = parseFloat(document.getElementById('tradeSize').value);
-    if (!trade || trade <= 0) { alert('Enter a trade size greater than zero.'); return; }
-
-    const rows = EXCHANGES.map(ex => ({
-      ...ex,
-      oneFee:   trade * (ex.fee / 100),
-      roundTrip: trade * (ex.fee / 100) * 2,
-    })).sort((a, b) => a.fee - b.fee);
-
-    const minFee = rows[0].oneFee;
-    const maxFee = rows[rows.length - 1].oneFee;
-    const saving = rows[rows.length - 1].roundTrip - rows[0].roundTrip;
-
-    // savings box
-    const sb = document.getElementById('savingsBox');
-    document.getElementById('savingsAmt').textContent = usd(saving);
-    document.getElementById('savingsSub').textContent =
-      `vs using ${rows[rows.length-1].name} on a $${trade.toLocaleString()} round-trip trade`;
-    sb.classList.add('show');
-
-    // table
-    const tbody = document.getElementById('feeBody');
-    tbody.innerHTML = '';
-    rows.forEach((r, i) => {
-      const isBest  = i === 0;
-      const isWorst = i === rows.length - 1;
-      const barPct  = maxFee > 0 ? Math.max(4, (r.oneFee / maxFee) * 100) : 4;
-      const barColor = isBest ? 'var(--green)' : isWorst ? 'var(--red)' : 'var(--bar-neutral)';
-
-      const tr = document.createElement('tr');
-      if (isBest) tr.className = 'cheapest';
-      tr.innerHTML = `
-        <td>
-          <span class="ex-name">${r.name}</span>${isBest ? '<span class="badge-best">CHEAPEST</span>' : ''}
-          <div class="ex-fee-pct">${r.fee}% taker · ${r.note}</div>
-        </td>
-        <td>${r.fee}%</td>
-        <td class="bar-cell">
-          <div class="fee-bar-track">
-            <div class="fee-bar-fill" style="width:${barPct}%;background:${barColor};"></div>
-          </div>
-        </td>
-        <td class="fee-amount ${isBest?'best':isWorst?'worst':''}">${usd(r.oneFee)}</td>
-        <td class="fee-amount ${isBest?'best':isWorst?'worst':''}">${usd(r.roundTrip)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    document.getElementById('resultsWrap').style.display = 'block';
-  }
-
-  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  var first = true;
+  CC.page({
+    ids: ['size', 'type', 'orders'],
+    calc: function () {
+      var size = CC.n('size'), orders = Math.max(0, CC.n('orders') || 0), maker = CC.radio('type') === 'maker';
+      var ok = size > 0;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var list = EX.map(function (e, i) { var rate = maker ? e[1] : e[2]; return { name: e[0], rate: rate, cost: size * rate / 100, note: e[3], i: i }; })
+        .sort(function (a, b) { return a.rate - b.rate || a.i - b.i; });
+      var lo = list[0], hi = list[list.length - 1], max = hi.cost || 1;
+      var lows = list.filter(function (x) { return x.rate === lo.rate; }).map(function (x) { return x.name; });
+      $('verdict').textContent = 'Cheapest for this order: ' + (lows.length > 2 ? lows.slice(0, 2).join(', ') + ' and ' + (lows.length - 2) + ' more' : lows.join(' and '));
+      CC.count($('best'), lo.cost, function (v) { return f.money(v); });
+      var gap = (hi.cost - lo.cost) * orders * 12;
+      $('sub').textContent = hi.name + ' charges ' + f.money(hi.cost) + ' for the same order.' + (orders > 0 ? ' At ' + f.num(orders) + ' orders a month the gap is ' + f.money(gap) + ' a year.' : '');
+      $('rows').innerHTML = list.map(function (x) {
+        var cls = x.rate === lo.rate ? ' best' : x.rate === hi.rate ? ' worst' : '';
+        return '<tr><td><b>' + x.name + '</b>' + (x.rate === lo.rate ? '<span class="tag-best">Lowest</span>' : '') + (x.note ? '<span class="tnote">' + x.note + '</span>' : '') + '</td>' +
+          '<td class="r">' + x.rate.toFixed(2) + '%</td><td class="r"><b>' + f.money(x.cost) + '</b></td>' +
+          '<td class="barcell hide-s"><div class="hbar' + cls + '" data-w="' + Math.max(1.5, x.cost / max * 100) + '"' + (first ? '' : ' style="width:' + Math.max(1.5, x.cost / max * 100) + '%;transition:none"') + '></div></td>' +
+          '<td class="r">' + f.money(x.cost * orders) + '</td><td class="r hide-s">' + f.money(x.cost * orders * 12) + '</td></tr>';
+      }).join('');
+      if (first) { first = false; requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll('#rows .hbar').forEach(function (b, i) { b.style.transitionDelay = (i * 50) + 'ms'; b.style.width = b.dataset.w + '%'; }); }); }); }
+    }
+  });
+})();
 </script>
-
 </body>
 </html>

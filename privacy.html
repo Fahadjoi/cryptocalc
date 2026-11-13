@@ -1,40 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy – CryptoCalc</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy | CryptoCalc</title>
+<meta name="description" content="What CryptoCalc stores, which outside services it contacts and what happens to messages you send.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/privacy.html">
+<meta property="og:title" content="Privacy | CryptoCalc">
+<meta property="og:description" content="What CryptoCalc stores, which outside services it contacts and what happens to messages you send.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/privacy.html">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css?v=4">
 </head>
 <body>
-<nav>
-  <a href="/" class="logo">Crypto<span>Calc</span></a>
-  <div class="nav-links"><a href="/#tools">Calculators</a></div>
-</nav>
-<div class="container" style="padding-top:32px;padding-bottom:48px;max-width:700px">
-  <h1 style="font-size:28px;font-weight:700;margin-bottom:16px">Privacy Policy</h1>
-  <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Last updated: November 2026</p>
-  <div class="content-section">
-    <h3>Data We Collect</h3>
-    <p>CryptoCalc does not collect personal data. All calculations run locally in your browser. We do not store, transmit, or share any values you enter into our calculators.</p>
-    <h3>Cookies & Analytics</h3>
-    <p>We use Google Analytics to understand how visitors use the site (page views, country, device type). This data is anonymized and does not identify individual users. We also display Google AdSense advertisements, which may use cookies to show relevant ads.</p>
-    <h3>Third-Party Services</h3>
-    <p>Google AdSense: displays ads. Google Analytics: measures site traffic. CoinGecko API: provides live crypto prices. None of these services receive your calculator inputs.</p>
-    <h3>Contact</h3>
-    <p>Questions about privacy? <a href="/contact.html">Contact us</a>.</p>
-  </div>
-</div>
-<footer>
-  <p>&copy; 2026 CryptoCalc.</p>
-  <div style="margin-top:10px;">
-    <a href="/about.html">About</a>
-    <a href="/privacy.html">Privacy</a>
-    <a href="/contact.html">Contact</a>
-    <a href="/terms.html">Terms</a>
-  </div>
-</footer>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position size</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/converter/">Converter</a></nav>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><h1 class="rise">Privacy</h1><p class="rise" style="--d:1">Last updated 13 November 2026</p></header>
+<article class="prose rise" style="--d:2">
+  <h2>The short version</h2>
+  <p>There are no accounts. The numbers you type into a calculator stay in your browser and are not sent to this site or anyone else.</p>
+
+  <h2>What is stored on your device</h2>
+  <ul>
+    <li><strong>Your theme choice</strong> (light or dark), so the site looks the same next time.</li>
+    <li><strong>The most recent prices</strong>, kept for a few minutes so pages load quickly and the price feed is not asked more than needed.</li>
+  </ul>
+  <p>Both are saved in your browser's local storage. Clearing site data removes them. No tracking or advertising cookies are set.</p>
+
+  <h2>Outside services the site contacts</h2>
+  <ul>
+    <li><strong>CoinGecko</strong> supplies prices. Your browser requests them directly, so CoinGecko sees your IP address and which coins were requested, but none of the amounts you enter.</li>
+    <li><strong>Google Fonts</strong> supplies the typeface, and sees your IP address when the font is loaded.</li>
+    <li><strong>Netlify</strong> hosts the site and keeps standard server logs.</li>
+  </ul>
+
+  <h2>Shared links</h2>
+  <p>The "Copy link" buttons put the numbers from that calculation into the link itself. Anyone you send the link to can see those numbers, and so can any service the link passes through.</p>
+
+  <h2>Messages you send</h2>
+  <p>The contact form sends your name, message and optional email address to the site owner through Netlify's form service. They are used only to reply to you and to fix the problem you reported.</p>
+
+  <h2>Advertising and analytics</h2>
+  <p>The site does not currently run adverts or visitor analytics. If that changes, this page will be updated before they are switched on, and any consent required in your country will be asked for.</p>
+
+  <h2>Questions</h2>
+  <p>Use the <a href="/contact.html">contact form</a>.</p>
+</article>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=4"></script>
 </body>
 </html>

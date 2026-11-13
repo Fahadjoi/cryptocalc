@@ -1,0 +1,144 @@
+title: Crypto Exchange Fee Calculator | Compare 10 exchanges
+desc: Compare spot trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year.
+path: /fee-calculator/
+kind: tool
+---
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Exchange fee calculator</h1>
+  <p class="rise" style="--d:1">Enter one order and see what ten exchanges charge for it, and what that adds up to over a year.</p>
+</header>
+
+<div class="tool-grid wide">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your order</h2></div>
+    <div class="card-body">
+      <div class="fields" style="grid-template-columns:1fr">
+        <div class="field">{{f size|Order size|1000|USD}}
+          <div class="chips"><button type="button" class="chip" data-set="size:100">$100</button><button type="button" class="chip" data-set="size:1000">$1,000</button><button type="button" class="chip" data-set="size:10000">$10,000</button><button type="button" class="chip" data-set="size:50000">$50,000</button></div>
+        </div>
+        <div class="field"><span class="lbl">Order type</span>
+          <div class="seg" role="radiogroup" aria-label="Order type">
+            <label><input type="radio" name="type" value="taker" checked><span>Market (taker)</span></label>
+            <label><input type="radio" name="type" value="maker"><span>Limit (maker)</span></label>
+          </div>
+          <p class="hint">Market orders fill at once and pay the taker rate. Limit orders that wait in the order book pay the maker rate.</p>
+        </div>
+        {{f orders|Orders per month|20||}}
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Cost on each exchange</h2><span class="meta">Rates checked 13 Nov 2026</span></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an order size above zero.</p>
+      <div id="out">
+        <div class="verdict up" id="verdict"></div>
+        <div class="big" id="best"></div>
+        <div class="sub" id="sub"></div>
+        <div class="table-wrap" style="margin-top:18px">
+          <table class="t">
+            <thead><tr><th>Exchange</th><th class="r">Rate</th><th class="r">Per order</th><th class="hide-s"></th><th class="r">Per month</th><th class="r hide-s">Per year</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="note plain">Base-tier spot rates for a new account with no token discount or volume tier. Exchanges change fees without notice and some rates differ by country, so confirm on the exchange before you trade.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>Maker and taker fees</h2>
+  <p>Exchanges charge two different rates depending on how your order meets the market. A <strong>taker</strong> order fills immediately against orders already waiting, which is what a market order does. A <strong>maker</strong> order is a limit order that sits in the order book until someone else trades against it. Makers add liquidity, so exchanges usually charge them less.</p>
+  <p>On Binance, Bybit, KuCoin, Bitget and Gate the two rates are the same at the entry level, so order type makes no difference to the fee. On OKX, MEXC, Kraken Pro and Coinbase Advanced a limit order is cheaper, and on Kraken Pro it costs half as much.</p>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You buy <b>$1,000</b> of Bitcoin with a market order and later sell it the same way. That is two taker orders.</p>
+    <p>At <b>0.10%</b> each order costs $1.00, so the round trip costs <b>$2.00</b>.</p>
+    <p>At <b>0.80%</b> each order costs $8.00, so the round trip costs <b>$16.00</b>. The trade has to gain 1.6% before it makes anything.</p>
+  </div>
+
+  <h2>Why the table uses base-tier rates</h2>
+  <p>Every exchange lowers its fees as your 30-day volume grows, but the starting tier is what a new or occasional trader pays, and the tiers are where exchanges differ most. Kraken Pro starts at 0.40% maker and 0.80% taker and drops to 0.30% and 0.60% once you pass $2,500 in 30-day volume. Coinbase Advanced lists 0.50% maker and 0.90% taker as its United States entry rate, 0.25% and 0.50% in the EU and UK, and 0.09% and 0.10% in several other markets. The big offshore exchanges sit close to 0.10% from the first trade.</p>
+
+  <h2>Four ways to pay less</h2>
+  <ul>
+    <li><strong>Use limit orders</strong> where maker rates are lower. You give up the guarantee of an instant fill in return.</li>
+    <li><strong>Pay fees in the exchange token.</strong> Binance takes 25% off spot fees paid in BNB and KuCoin takes 20% off when paid in KCS. You have to hold a token whose own price moves.</li>
+    <li><strong>Trade less often.</strong> Fees scale with the number of orders. Twenty $1,000 orders a month at 0.10% cost $240 a year, and at 0.80% they cost $1,920.</li>
+    <li><strong>Check your tier.</strong> If you are close to the next volume tier, the lower rate applies to every order after you cross it.</li>
+  </ul>
+
+  <h2>Costs the fee table does not show</h2>
+  <p>The trading fee is only the visible part of the cost. A low fee on a thin market can still be the expensive choice.</p>
+  <ul>
+    <li><strong>Spread:</strong> the gap between the best buy and sell price. On small coins and quiet exchanges it can be larger than the fee.</li>
+    <li><strong>Slippage:</strong> large market orders eat through several price levels and fill at a worse average.</li>
+    <li><strong>Withdrawal fees:</strong> a fixed amount per withdrawal that varies by coin and network.</li>
+    <li><strong>Instant-buy markups:</strong> the simple "buy" buttons in exchange apps often charge far more than the trading screen of the same company.</li>
+  </ul>
+
+@faq
+Q: Which crypto exchange has the lowest trading fees?
+A: At base-tier spot rates, MEXC lists the lowest with 0% for limit orders and 0.05% for market orders, followed by OKX at 0.08% and 0.10%. Binance, Bybit, KuCoin, Bitget and Gate all charge 0.10% for both.
+Q: What is the difference between a maker fee and a taker fee?
+A: You pay the taker fee when your order fills immediately, as a market order does. You pay the maker fee when your limit order waits in the order book and someone else fills it.
+Q: Are fees charged when I buy and when I sell?
+A: Yes. Each order is charged separately, so buying and later selling costs two fees. Set orders per month to count both sides.
+Q: Why are Coinbase and Kraken more expensive?
+A: Their entry tiers are priced higher than the large offshore exchanges, and both lower the rate as your 30-day volume grows. Many traders accept the higher cost for local regulation and bank transfers in their own currency.
+Q: Do these rates apply to futures?
+A: No. The table covers spot trading. Futures use separate and usually lower rates, commonly about 0.02% maker and 0.05% taker, charged on the full leveraged position.
+@end
+</article>
+{{aside}}
+</div>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  // [name, maker %, taker %, note]  Base-tier spot rates, checked 13 Nov 2026
+  var EX = [
+    ['MEXC', 0, 0.05, 'Can differ by country'],
+    ['OKX', 0.08, 0.10, ''],
+    ['Binance', 0.10, 0.10, '25% off when paid in BNB'],
+    ['Bybit', 0.10, 0.10, ''],
+    ['KuCoin', 0.10, 0.10, '20% off when paid in KCS'],
+    ['Bitget', 0.10, 0.10, ''],
+    ['Gate', 0.10, 0.10, ''],
+    ['HTX', 0.20, 0.20, ''],
+    ['Coinbase Advanced', 0.50, 0.90, 'US rate. 0.25% / 0.50% in the EU and UK'],
+    ['Kraken Pro', 0.40, 0.80, '0.30% / 0.60% after $2,500 of volume']
+  ];
+  var first = true;
+  CC.page({
+    ids: ['size', 'type', 'orders'],
+    calc: function () {
+      var size = CC.n('size'), orders = Math.max(0, CC.n('orders') || 0), maker = CC.radio('type') === 'maker';
+      var ok = size > 0;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var list = EX.map(function (e, i) { var rate = maker ? e[1] : e[2]; return { name: e[0], rate: rate, cost: size * rate / 100, note: e[3], i: i }; })
+        .sort(function (a, b) { return a.rate - b.rate || a.i - b.i; });
+      var lo = list[0], hi = list[list.length - 1], max = hi.cost || 1;
+      var lows = list.filter(function (x) { return x.rate === lo.rate; }).map(function (x) { return x.name; });
+      $('verdict').textContent = 'Cheapest for this order: ' + (lows.length > 2 ? lows.slice(0, 2).join(', ') + ' and ' + (lows.length - 2) + ' more' : lows.join(' and '));
+      CC.count($('best'), lo.cost, function (v) { return f.money(v); });
+      var gap = (hi.cost - lo.cost) * orders * 12;
+      $('sub').textContent = hi.name + ' charges ' + f.money(hi.cost) + ' for the same order.' + (orders > 0 ? ' At ' + f.num(orders) + ' orders a month the gap is ' + f.money(gap) + ' a year.' : '');
+      $('rows').innerHTML = list.map(function (x) {
+        var cls = x.rate === lo.rate ? ' best' : x.rate === hi.rate ? ' worst' : '';
+        return '<tr><td><b>' + x.name + '</b>' + (x.rate === lo.rate ? '<span class="tag-best">Lowest</span>' : '') + (x.note ? '<span class="tnote">' + x.note + '</span>' : '') + '</td>' +
+          '<td class="r">' + x.rate.toFixed(2) + '%</td><td class="r"><b>' + f.money(x.cost) + '</b></td>' +
+          '<td class="barcell hide-s"><div class="hbar' + cls + '" data-w="' + Math.max(1.5, x.cost / max * 100) + '"' + (first ? '' : ' style="width:' + Math.max(1.5, x.cost / max * 100) + '%;transition:none"') + '></div></td>' +
+          '<td class="r">' + f.money(x.cost * orders) + '</td><td class="r hide-s">' + f.money(x.cost * orders * 12) + '</td></tr>';
+      }).join('');
+      if (first) { first = false; requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll('#rows .hbar').forEach(function (b, i) { b.style.transitionDelay = (i * 50) + 'ms'; b.style.width = b.dataset.w + '%'; }); }); }); }
+    }
+  });
+})();

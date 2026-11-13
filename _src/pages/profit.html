@@ -1,0 +1,183 @@
+title: Crypto Profit Calculator | Long, short, leverage and fees
+desc: Free crypto profit calculator with live prices. Work out profit or loss on a long or short trade after entry and exit fees, with leverage, break-even price, liquidation estimate and price targets.
+path: /profit-calculator/
+kind: tool
+---
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Crypto profit calculator</h1>
+  <p class="rise" style="--d:1">See what a trade makes or loses after fees. Works for spot, longs and shorts, with or without leverage.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your trade</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field full"><span class="lbl">Direction</span>
+          <div class="seg long-short" role="radiogroup" aria-label="Direction">
+            <label><input type="radio" name="dir" value="long" checked><span>Long (buy)</span></label>
+            <label><input type="radio" name="dir" value="short"><span>Short (sell)</span></label>
+          </div>
+        </div>
+        {{f entry|Entry price|60000|USD|live auto=1}}
+        {{f exit|Exit price|66000|USD|live auto=1.1}}
+        {{f margin|Your money in|1000|USD}}
+        <div class="field"><label for="lev">Leverage</label><div class="inp"><input id="lev" type="number" inputmode="decimal" step="any" min="1" max="125" value="1"><span class="unit">×</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="lev:1">Spot</button><button type="button" class="chip" data-set="lev:3">3×</button><button type="button" class="chip" data-set="lev:5">5×</button><button type="button" class="chip" data-set="lev:10">10×</button><button type="button" class="chip" data-set="lev:20">20×</button></div>
+        </div>
+        {{f feeIn|Entry fee|0.1|%|max=10}}
+        {{f feeOut|Exit fee|0.1|%|max=10}}
+      </div>
+      <p class="field hint" style="margin-top:14px">Not sure of your fee? <a href="/fee-calculator/">Compare ten exchanges</a>. Most charge about 0.1% per spot trade.</p>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this trade</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Result</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an entry price, an exit price and the amount you are putting in.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="net"></div>
+        <div class="sub" id="roi"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Position size</dt><dd id="pos"></dd></div>
+          <div><dt>Price move</dt><dd id="move"></dd></div>
+          <div><dt>Profit before fees</dt><dd id="gross"></dd></div>
+          <div><dt>Fees, entry and exit</dt><dd id="fees"></dd></div>
+          <div id="liveRow" hidden><dt id="liveLbl">If you closed at the live price</dt><dd id="liveNet"></dd></div>
+        </dl>
+        <h3 class="subhead">Price levels for this trade</h3>
+        <div class="ladder" id="ladder"></div>
+        <h3 class="subhead">Exit price needed for a target return</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Return on your money</th><th class="r">Exit price</th><th class="r">Price move</th><th></th></tr></thead><tbody id="targets"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>How the profit calculation works</h2>
+  <p>A trade has three money flows: what the position is worth when you open it, what it is worth when you close it, and the fees the exchange takes at both ends. Profit is the difference between the first two, minus the third.</p>
+  <div class="formula">Net profit (long) = coins × exit price − position size − entry fee − exit fee<small>Coins = position size ÷ entry price. Position size = your money × leverage. For a short, the first two terms swap places.</small></div>
+  <p>The entry fee is charged on the position size and the exit fee on the value at exit, so a winning trade pays a slightly larger exit fee than a losing one. Many calculators charge both fees on the entry value, which understates the cost of a profitable trade.</p>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You put <b>$1,000</b> into Bitcoin at <b>$60,000</b> and sell at <b>$66,000</b>, paying <b>0.1%</b> each way.</p>
+    <p>Coins bought: 1,000 ÷ 60,000 = 0.016667 BTC. Value at exit: 0.016667 × 66,000 = $1,100.</p>
+    <p>Fees: $1.00 going in and $1.10 coming out. Net profit: 1,100 − 1,000 − 2.10 = <b>$97.90</b>, a 9.79% return on a 10% price move.</p>
+  </div>
+
+  <h2>Break-even price</h2>
+  <p>Because of fees, selling at your entry price loses money. The break-even price is the exit at which the two fees are exactly covered.</p>
+  <div class="formula">Break-even (long) = entry × (1 + entry fee) ÷ (1 − exit fee)</div>
+  <p>At 0.1% each way that is about 0.2% above entry. It sounds small, but a scalper aiming for 0.5% moves gives up two fifths of every win to it. On a short the break-even sits the same distance below entry.</p>
+
+  <h2>Leverage, margin and liquidation</h2>
+  <p>Leverage lets a small deposit control a larger position. With $1,000 at 10× you hold a $10,000 position, so a 1% price move changes your balance by about 10%. Fees are charged on the full $10,000 as well, which is why leveraged trades pay ten times the fees of the same deposit on spot.</p>
+  <p>The exchange closes the position when losses use up your margin. This calculator estimates that level as:</p>
+  <div class="formula">Liquidation (long) ≈ entry × (1 − 1 ÷ leverage)<small>For a short: entry × (1 + 1 ÷ leverage). This assumes isolated margin and ignores maintenance margin and funding.</small></div>
+  <p>Treat it as the best case. Real exchanges keep back a maintenance margin, often around 0.5% of the position, so the actual liquidation price is a little closer to entry than the estimate. If the exit you typed lies beyond liquidation, the result shows the loss of your full margin, because the trade would never reach that price.</p>
+
+  <h2>Long and short</h2>
+  <p>A <strong>long</strong> buys first and sells later, so it profits when the price rises. A <strong>short</strong> sells borrowed coins first and buys them back later, so it profits when the price falls. Short profit is capped, because a price cannot fall below zero, while a short's loss is not capped if the price keeps rising. Spot accounts can only go long. Shorts need a margin or futures account.</p>
+
+  <h2>What this calculator leaves out</h2>
+  <ul>
+    <li><strong>Funding payments</strong> on perpetual futures, charged every few hours and able to add up on trades held for days.</li>
+    <li><strong>Slippage</strong>, the gap between the price you see and the price your order fills at, which grows with order size and thin order books.</li>
+    <li><strong>Withdrawal and network fees</strong> for moving coins off the exchange.</li>
+    <li><strong>Tax</strong> on the gain, which depends on where you live.</li>
+  </ul>
+
+@faq
+Q: How do I calculate crypto profit?
+A: Divide the money you put in by the buy price to get the number of coins, multiply the coins by the sell price, then subtract what you put in and the fees for both trades. With $1,000 bought at $60,000 and sold at $66,000 at 0.1% fees, the profit is $97.90.
+Q: Why is my profit lower than the price change suggests?
+A: Fees are taken when you buy and again when you sell. A 10% price rise with 0.1% fees on each side gives about 9.79%, and with 0.6% fees about 8.74%.
+Q: Does leverage increase the fees I pay?
+A: Yes. Fees are charged on the whole position, not on your deposit. A $1,000 deposit at 10× leverage pays fees on $10,000, so the same percentage fee costs ten times as much.
+Q: How accurate is the liquidation price?
+A: It is an estimate for isolated margin that ignores maintenance margin, funding and fees. Your exchange will liquidate slightly earlier than the figure shown, so always check the liquidation price on the order screen before opening a position.
+Q: Can I use this for coins that are not in the list?
+A: Yes. Pick any coin and type your own entry and exit prices. The coin choice only controls which live price the Live buttons fill in.
+@end
+</article>
+{{aside}}
+</div>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  var TARGETS = [10, 25, 50, 100];
+  CC.page({
+    ids: ['coin', 'dir', 'entry', 'exit', 'margin', 'lev', 'feeIn', 'feeOut'],
+    coinOpt: { stables: false },
+    calc: function () {
+      var L = CC.radio('dir') !== 'short';
+      var entry = CC.n('entry'), exit = CC.n('exit'), margin = CC.n('margin');
+      var lev = Math.min(125, Math.max(1, CC.n('lev') || 1));
+      var fi = Math.max(0, CC.n('feeIn') || 0) / 100, fo = Math.max(0, CC.n('feeOut') || 0) / 100;
+      var ok = entry > 0 && exit > 0 && margin > 0 && fo < 1;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+
+      var pos = margin * lev, qty = pos / entry, c = CC.coin($('coin').value) || { sym: '' };
+      function pnl(x) { var val = qty * x, gross = L ? val - pos : pos - val, fees = pos * fi + val * fo; return { gross: gross, fees: fees, net: gross - fees }; }
+      var r = pnl(exit);
+      var be = L ? entry * (1 + fi) / (1 - fo) : entry * (1 - fi) / (1 + fo);
+      var liq = lev > 1 ? (L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev)) : null;
+      var dead = liq != null && (L ? exit <= liq : exit >= liq);
+      var net = dead ? -margin : r.net, gain = net >= 0;
+
+      $('verdict').textContent = dead ? 'Liquidated' : gain ? 'Net profit' : 'Net loss';
+      $('verdict').className = 'verdict ' + (gain ? 'up' : 'down');
+      CC.count($('net'), net, function (v) { return f.money(v, true); });
+      $('roi').textContent = f.pct(net / margin * 100, true) + ' on your ' + f.money(margin);
+      $('pos').textContent = f.money(pos) + ' (' + f.amt(qty) + ' ' + c.sym + ')';
+      var mv = (exit - entry) / entry * 100;
+      $('move').textContent = f.pct(mv, true);
+      $('gross').textContent = f.money(r.gross, true);
+      $('fees').textContent = f.money(r.fees);
+
+      var notes = '';
+      if (dead) notes += '<div class="note bad">At ' + f.num(lev) + '× leverage this position is liquidated near $' + f.price(liq) + ', before the price reaches your exit. You would lose your whole ' + f.money(margin) + '.</div>';
+      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but fees of ' + f.money(r.fees) + ' turn the trade into a loss. Your exit needs to pass $' + f.price(be) + '.</div>';
+      else if (r.gross > 0 && r.fees / r.gross > 0.2) notes += '<div class="note">Fees take ' + Math.round(r.fees / r.gross * 100) + '% of this trade\'s profit. A wider target or a cheaper exchange would keep more of it.</div>';
+      if (lev >= 20 && !dead) notes += '<div class="note">At ' + f.num(lev) + '× a move of only ' + (100 / lev).toFixed(1) + '% against you wipes out the position.</div>';
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+
+      var live = c.price;
+      $('liveRow').hidden = live == null;
+      if (live != null) {
+        var ln = pnl(live).net, ld = liq != null && (L ? live <= liq : live >= liq);
+        $('liveLbl').textContent = 'If you closed now at $' + f.price(live);
+        $('liveNet').textContent = ld ? 'Liquidated' : f.money(ln, true);
+        $('liveNet').className = (ld ? -1 : ln) >= 0 ? 'up' : 'down';
+      }
+
+      var rows = [{ label: 'Your exit', price: exit, kind: gain ? 'good' : 'bad' }, { label: 'Entry', price: entry, kind: 'entry' }, { label: 'Break-even', price: be, kind: 'warn' }];
+      if (liq != null) rows.push({ label: 'Liquidation (estimate)', price: liq, kind: 'bad' });
+      if (live != null) rows.push({ label: c.sym + ' live price', price: live, kind: 'live' });
+      CC.ladder($('ladder'), rows, entry);
+
+      $('targets').innerHTML = TARGETS.map(function (t) {
+        var T = t / 100;
+        var x = L ? (T * margin + pos * (1 + fi)) / (qty * (1 - fo)) : (pos * (1 - fi) - T * margin) / (qty * (1 + fo));
+        if (!(x > 0)) return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r" colspan="3">Not reachable on a short at this leverage</td></tr>';
+        return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r"><b>$' + f.price(x) + '</b></td><td class="r">' + f.pct((x - entry) / entry * 100, true) + '</td><td class="r"><button type="button" class="chip" data-x="' + CC.round(x) + '">Use</button></td></tr>';
+      }).join('');
+    }
+  });
+  $('targets').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-x]'); if (!b) return;
+    $('exit').value = b.dataset.x; $('exit').dataset.touched = 1;
+    $('exit').dispatchEvent(new Event('input', { bubbles: true }));
+  });
+})();

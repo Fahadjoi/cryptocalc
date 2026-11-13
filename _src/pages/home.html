@@ -1,0 +1,84 @@
+title: CryptoCalc | Free crypto calculators with live prices
+desc: Free crypto calculators with live prices: profit and loss after fees, position size, exchange fee comparison, DCA backtest and a coin converter. No signup.
+path: /
+---
+<main class="wrap">
+<div class="home">
+  <div class="intro">
+    <h1 class="rise">Work out the trade before you place it.</h1>
+    <p class="lede rise" style="--d:1">Five free calculators that use live prices and count the fees on both sides. Nothing to sign up for.</p>
+    <ul class="linklist rise" style="--d:3" id="tools">{{toollist}}</ul>
+  </div>
+
+  <section class="card strong ticket rise" style="--d:2" aria-labelledby="ticketTitle">
+    <div class="card-head"><h2 id="ticketTitle">Profit / loss</h2><span class="meta" data-updated></span></div>
+    <div class="card-body inputs">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        {{f buy|Buy price|60000|USD|live auto=1}}
+        {{f sell|Sell price|66000|USD|auto=1.1}}
+        {{f inv|Amount invested|1000|USD}}
+        {{f fee|Fee per trade|0.1|%|max=10}}
+      </div>
+    </div>
+    <div class="card-body" style="border-top:1px dashed var(--edge)" aria-live="polite">
+      <p class="empty" id="tEmpty" hidden>Enter a buy price, a sell price and an amount to see the result.</p>
+      <div id="tOut">
+        <div class="verdict" id="tVerdict"></div>
+        <div class="big" id="tNet"></div>
+        <div class="sub" id="tPct"></div>
+        <dl class="rows">
+          <div><dt>Coins bought</dt><dd id="tCoins"></dd></div>
+          <div><dt>Fees paid, both trades</dt><dd id="tFees"></dd></div>
+          <div><dt>Break-even sell price</dt><dd id="tBreak"></dd></div>
+        </dl>
+        <div class="actions"><a class="btn solid" id="tFull" href="/profit-calculator/">Add leverage, shorts and targets</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="section reveal">
+  <div class="section-head"><h2>Live market</h2><p data-updated></p></div>
+  <div class="card"><div class="table-wrap">
+    <table class="t">
+      <thead><tr><th class="hide-s">#</th><th>Coin</th><th class="r">Price</th><th class="r">24h</th><th class="r hide-s">7 days</th><th class="r hide-m">Market cap</th><th class="r hide-s">Last 7 days</th></tr></thead>
+      <tbody id="market"><tr><td colspan="7" class="empty">Loading prices…</td></tr></tbody>
+    </table>
+  </div></div>
+  <p class="sub" style="font-size:14px">Select a coin to open it in the converter.</p>
+</section>
+
+<section class="section reveal">
+  <div class="facts">
+    <div><h3>Fees counted on both sides</h3><p>A trade pays a fee going in and another coming out. Every result here includes both, and shows the sell price you need just to break even.</p></div>
+    <div><h3>Real prices, refreshed every minute</h3><p>Entry prices fill in from the live market and the DCA backtest replays actual daily prices from the past year.</p></div>
+    <div><h3>Your numbers stay with you</h3><p>The maths runs in your browser. Balances and trade sizes you type are never uploaded or stored on a server.</p></div>
+  </div>
+</section>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  CC.page({
+    ids: ['coin', 'buy', 'sell', 'inv', 'fee'],
+    coinOpt: { stables: false },
+    calc: function () {
+      var buy = CC.n('buy'), sell = CC.n('sell'), inv = CC.n('inv'), fee = (CC.n('fee') || 0) / 100;
+      var ok = buy > 0 && sell > 0 && inv > 0 && fee >= 0 && fee < 1;
+      $('tEmpty').hidden = ok; $('tOut').hidden = !ok;
+      if (!ok) return;
+      var c = CC.coin($('coin').value) || { sym: '' };
+      var coins = inv / buy, sellValue = coins * sell, fees = inv * fee + sellValue * fee, net = sellValue - inv - fees, gain = net >= 0;
+      $('tVerdict').textContent = gain ? 'Net profit' : 'Net loss';
+      $('tVerdict').className = 'verdict ' + (gain ? 'up' : 'down');
+      CC.count($('tNet'), net, function (v) { return f.money(v, true); });
+      $('tPct').textContent = f.pct(net / inv * 100, true) + ' on ' + f.money(inv);
+      $('tCoins').textContent = f.amt(coins) + ' ' + c.sym;
+      $('tFees').textContent = f.money(fees);
+      $('tBreak').textContent = f.usd(buy * (1 + fee) / (1 - fee));
+      $('tFull').href = '/profit-calculator/?coin=' + $('coin').value + '&entry=' + buy + '&exit=' + sell + '&margin=' + inv + '&feeIn=' + CC.n('fee') + '&feeOut=' + CC.n('fee');
+    }
+  });
+  CC.on(function () { CC.marketRows($('market'), { limit: 12 }); });
+})();

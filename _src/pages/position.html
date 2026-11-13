@@ -1,0 +1,173 @@
+title: Crypto Position Size Calculator | Risk, stop-loss and leverage
+desc: Free crypto position size calculator with live prices. Enter your balance, risk per trade and stop-loss to get the position size, margin needed, risk-to-reward ratio and a liquidation check.
+path: /position-size-calculator/
+kind: tool
+---
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Position size calculator</h1>
+  <p class="rise" style="--d:1">Decide how much you can afford to lose, set your stop, and get the exact size to buy or short.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your plan</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        {{f bal|Account balance|10000|USD}}
+        <div class="field"><label for="risk">Risk per trade</label><div class="inp"><input id="risk" type="number" inputmode="decimal" step="any" min="0" max="100" value="1"><span class="unit">%</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="risk:0.5">0.5%</button><button type="button" class="chip" data-set="risk:1">1%</button><button type="button" class="chip" data-set="risk:2">2%</button><button type="button" class="chip" data-set="risk:3">3%</button></div>
+        </div>
+        {{f entry|Entry price|60000|USD|live auto=1}}
+        {{f stop|Stop-loss price|58200|USD|auto=0.97}}
+        {{f tp|Take-profit price (optional)|63600|USD|auto=1.06}}
+        <div class="field"><label for="lev">Leverage</label><div class="inp"><input id="lev" type="number" inputmode="decimal" step="any" min="1" max="125" value="1"><span class="unit">×</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="lev:1">Spot</button><button type="button" class="chip" data-set="lev:3">3×</button><button type="button" class="chip" data-set="lev:5">5×</button><button type="button" class="chip" data-set="lev:10">10×</button></div>
+        </div>
+      </div>
+      <p class="field hint" style="margin-top:14px">Put the stop below entry for a long, above entry for a short. The calculator works out the direction from that.</p>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this plan</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Position to open</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter your balance, risk, an entry price and a stop-loss that differs from the entry.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="size"></div>
+        <div class="sub" id="sub"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Amount at risk</dt><dd id="riskUsd" class="down"></dd></div>
+          <div><dt>Stop distance</dt><dd id="dist"></dd></div>
+          <div><dt>Margin needed</dt><dd id="margin"></dd></div>
+          <div id="tpRow"><dt>Profit at take-profit</dt><dd id="reward" class="up"></dd></div>
+          <div id="rrRow"><dt>Risk to reward</dt><dd id="rr"></dd></div>
+          <div id="wrRow"><dt>Win rate needed to break even</dt><dd id="wr"></dd></div>
+        </dl>
+        <h3 class="subhead">Risk per trade</h3>
+        <div class="meter"><i id="needle" style="left:20%"></i></div>
+        <div class="meter-scale"><span>0%</span><span>1%</span><span>2%</span><span>3%</span><span>4%</span><span>5%+</span></div>
+        <h3 class="subhead">Price levels for this trade</h3>
+        <div class="ladder" id="ladder"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>What position sizing does</h2>
+  <p>Most traders pick a size first and find out what they lost afterwards. Position sizing reverses that. You choose the loss you can accept, and the size follows from how far away your stop is. A wide stop gives a small position, a tight stop gives a larger one, and the money at risk stays the same either way.</p>
+  <div class="formula">Position size = (balance × risk %) ÷ (stop distance ÷ entry price)<small>Coins to buy = (balance × risk %) ÷ |entry − stop|</small></div>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>Your account holds <b>$10,000</b> and you risk <b>1%</b>, so the most you will lose is <b>$100</b>.</p>
+    <p>You plan to buy at <b>$60,000</b> with a stop at <b>$58,200</b>. The stop is $1,800 away, which is 3% of the entry.</p>
+    <p>Coins: 100 ÷ 1,800 = 0.05556 BTC. Position size: 0.05556 × 60,000 = <b>$3,333</b>. If the stop is hit you lose $100, exactly 1% of the account.</p>
+  </div>
+
+  <h2>Choosing a risk percentage</h2>
+  <p>Risking 1% per trade means ten losses in a row cost a little under 10% of the account. At 5% the same streak costs about 40%, and winning that back needs a 67% gain. Small risk keeps a losing run survivable, which is why 1% to 2% is the range most trading books settle on.</p>
+  <ul>
+    <li><strong>0.5% to 1%:</strong> a bad month is an inconvenience. Suits new traders and anyone trading often.</li>
+    <li><strong>2%:</strong> the usual upper limit. Five straight losses cost about 10%.</li>
+    <li><strong>Above 3%:</strong> drawdowns get deep quickly and it becomes hard to trade calmly.</li>
+  </ul>
+
+  <h2>Leverage does not change your risk, but it can break your stop</h2>
+  <p>With a fixed stop and a fixed risk amount, leverage only changes how much margin the position ties up. A $3,333 position needs $3,333 on spot and $667 at 5×. The loss at the stop is $100 in both cases.</p>
+  <p>The danger is liquidation. At high leverage the exchange closes your position before the price reaches your stop, and you lose the whole margin. As a rule of thumb, leverage must stay below 100 divided by your stop distance in percent. With a 3% stop, anything near 33× is liquidated first. The calculator checks this for you and warns when the stop will not protect you.</p>
+
+  <h2>Risk to reward and win rate</h2>
+  <p>If you add a take-profit, the calculator compares the distance to your target with the distance to your stop. A ratio of 1 to 2 means you make $2 for every $1 risked.</p>
+  <div class="formula">Break-even win rate = 1 ÷ (1 + reward ÷ risk)</div>
+  <p>At 1 to 2 you only need to win 33.3% of trades to break even before fees. At 1 to 1 you need 50%, and at 1 to 0.5 you need 66.7%. A strategy that wins often can live with a low ratio, and one that wins rarely needs a high one.</p>
+
+  <h2>Where the stop should go</h2>
+  <p>Pick the stop from the chart first and let the size adjust, never the other way round. A stop belongs at the price where your reason for the trade is wrong: under the low that defined the setup for a long, above the high for a short. Moving a stop closer just to afford a bigger position is the most common way to turn a good plan into a quick loss.</p>
+
+  <h2>What this calculator leaves out</h2>
+  <ul>
+    <li><strong>Fees:</strong> a stopped trade also pays entry and exit fees, so the real loss is slightly above the figure shown. Use the <a href="/profit-calculator/">profit calculator</a> to see it.</li>
+    <li><strong>Slippage:</strong> in a fast market a stop can fill below its price.</li>
+    <li><strong>Maintenance margin:</strong> real liquidation happens a little before the estimate used here.</li>
+  </ul>
+
+@faq
+Q: How do I calculate position size in crypto?
+A: Multiply your account balance by the percentage you are willing to risk, then divide by the distance between your entry and stop-loss prices. That gives the number of coins. Multiply by the entry price for the position size in dollars.
+Q: What is the 1% rule?
+A: It means never risking more than 1% of your account on a single trade. With $10,000 that is $100 per trade. It refers to the loss if your stop is hit, not to the size of the position, which can be much larger.
+Q: Does higher leverage mean a bigger position?
+A: Not when you size by risk. The position size comes from your risk amount and stop distance. Leverage only lowers the margin you need to hold it, and brings the liquidation price closer.
+Q: What is a good risk to reward ratio?
+A: Many traders look for at least 1 to 2, which breaks even with a 33.3% win rate. The right ratio depends on how often your setups win, so track your own results before fixing a rule.
+Q: Why does the calculator say my position was sized down?
+A: A very tight stop can call for a position larger than your balance and leverage can open. In that case the calculator shows the largest position you can afford and the smaller amount you would really be risking.
+@end
+</article>
+{{aside}}
+</div>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  CC.page({
+    ids: ['coin', 'bal', 'risk', 'entry', 'stop', 'tp', 'lev'],
+    coinOpt: { stables: false },
+    calc: function () {
+      var bal = CC.n('bal'), risk = CC.n('risk'), entry = CC.n('entry'), stop = CC.n('stop'), tp = CC.n('tp');
+      var lev = Math.min(125, Math.max(1, CC.n('lev') || 1));
+      var ok = bal > 0 && risk > 0 && risk <= 100 && entry > 0 && stop > 0 && stop !== entry;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+
+      var L = stop < entry, c = CC.coin($('coin').value) || { sym: '' };
+      var dist = Math.abs(entry - stop), distPct = dist / entry * 100;
+      var riskUsd = bal * risk / 100, qty = riskUsd / dist, notional = qty * entry;
+      var maxNotional = bal * lev, capped = notional > maxNotional * 1.0000001, notes = '';
+      if (capped) {
+        var want = notional; qty = maxNotional / entry; notional = maxNotional; riskUsd = qty * dist;
+        notes += '<div class="note">Your stop is tight enough that risking ' + f.pct(risk) + ' would need a ' + f.money(want) + ' position, more than your account can open at ' + f.num(lev) + '×. This is the largest you can afford, and it risks ' + f.money(riskUsd) + ' (' + f.pct(riskUsd / bal * 100) + ').</div>';
+      }
+      var marginNeed = notional / lev;
+      var liq = lev > 1 ? (L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev)) : null;
+      if (liq != null && (L ? liq >= stop : liq <= stop)) {
+        notes += '<div class="note bad">At ' + f.num(lev) + '× you would be liquidated near $' + f.price(liq) + ', before your stop at $' + f.price(stop) + '. Keep leverage under ' + Math.max(1, Math.floor(entry / dist * 0.9)) + '× for this stop to work.</div>';
+      }
+      if (risk > 3) notes += '<div class="note bad">Risking ' + f.pct(risk) + ' per trade means ten losses in a row would cost about ' + Math.round((1 - Math.pow(1 - risk / 100, 10)) * 100) + '% of your account.</div>';
+
+      $('verdict').textContent = (L ? 'Long' : 'Short') + ' position, sized for a ' + f.money(riskUsd) + ' loss at the stop';
+      $('verdict').className = 'verdict ' + (L ? 'up' : 'down');
+      CC.count($('size'), notional, function (v) { return f.money(v); });
+      $('sub').textContent = (L ? 'Buy ' : 'Short ') + f.amt(qty) + ' ' + c.sym;
+      $('riskUsd').textContent = f.money(riskUsd) + ' (' + f.pct(riskUsd / bal * 100) + ')';
+      $('dist').textContent = '$' + f.price(dist) + ' (' + f.pct(distPct) + ')';
+      $('margin').textContent = f.money(marginNeed) + ' (' + f.pct(marginNeed / bal * 100) + ' of balance)';
+
+      var hasTp = tp > 0, tpOk = hasTp && (L ? tp > entry : tp < entry);
+      $('tpRow').hidden = $('rrRow').hidden = $('wrRow').hidden = !tpOk;
+      if (hasTp && !tpOk) notes += '<div class="note">The take-profit is on the wrong side of the entry for a ' + (L ? 'long' : 'short') + ', so it was ignored.</div>';
+      if (tpOk) {
+        var rr = Math.abs(tp - entry) / dist;
+        $('reward').textContent = f.money(qty * Math.abs(tp - entry), true);
+        $('rr').textContent = '1 to ' + rr.toFixed(2);
+        $('wr').textContent = f.pct(100 / (1 + rr));
+        if (rr < 1) notes += '<div class="note">You are risking more than you stand to make. This setup has to win more than ' + f.pct(100 / (1 + rr)) + ' of the time just to break even.</div>';
+      }
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+      $('needle').style.left = Math.min(100, riskUsd / bal * 100 / 5 * 100) + '%';
+
+      var rows = [{ label: 'Entry', price: entry, kind: 'entry' }, { label: 'Stop-loss', price: stop, kind: 'bad' }];
+      if (tpOk) rows.push({ label: 'Take-profit', price: tp, kind: 'good' });
+      if (liq != null) rows.push({ label: 'Liquidation (estimate)', price: liq, kind: 'warn' });
+      if (c.price != null) rows.push({ label: c.sym + ' live price', price: c.price, kind: 'live' });
+      CC.ladder($('ladder'), rows, entry);
+    }
+  });
+})();

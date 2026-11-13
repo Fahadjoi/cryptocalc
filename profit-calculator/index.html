@@ -1,473 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Profit Calculator – Calculate Exact P&amp;L on Any Trade</title>
-  <meta name="description" content="Free crypto profit and loss calculator. Enter your buy price, sell price, investment amount and fees to calculate your exact profit or loss instantly." />
-  <meta name="keywords" content="crypto profit calculator, bitcoin profit calculator, crypto P&L calculator, cryptocurrency profit loss" />
-  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/profit-calculator/" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Crypto Profit Calculator – Calculate Exact P&L" />
-  <meta property="og:description" content="Free crypto profit and loss calculator. Instant results, no signup." />
-  <meta property="og:type" content="website" />
-
-  <!-- Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Crypto Profit Calculator",
-    "description": "Calculate profit or loss on any cryptocurrency trade including exchange fees.",
-    "url": "https://zesty-haupia-16a953.netlify.app/profit-calculator/",
-    "applicationCategory": "FinanceApplication",
-    "operatingSystem": "Web",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-  }
-  </script>
-
-  <!-- FAQPage Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I calculate crypto profit?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "To calculate crypto profit: subtract your buy price from your sell price, multiply by the number of coins, then subtract exchange fees. Formula: Profit = (Sell Price - Buy Price) × Coins - Fees."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How are exchange fees calculated?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Exchange fees are usually a percentage of your trade value. Most exchanges charge between 0.1% and 0.2% per trade. You pay fees both when you buy and when you sell."
-        }
-      }
-    ]
-  }
-  </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css" />
-
-  <style>
-    /* ── Result panel ── */
-    .result-panel {
-      display: none;
-      margin-top: 20px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      animation: fadeUp .3s ease;
-    }
-    .result-panel.show { display: block; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* header strip */
-    .rp-header {
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .rp-header.profit-mode { background: var(--gain-tint); border-bottom-color: var(--gain-line); }
-    .rp-header.loss-mode   { background: var(--loss-tint); border-bottom-color: var(--loss-line); }
-
-    .rp-title {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .04em;
-    }
-    .profit-mode .rp-title { color: var(--green); }
-    .loss-mode   .rp-title { color: var(--red); }
-
-    .rp-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-    .profit-mode .rp-badge { background: var(--green); color: #fff; }
-    .loss-mode   .rp-badge { background: var(--red);   color: #fff; }
-
-    /* big number */
-    .rp-hero {
-      padding: 16px 16px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .rp-hero-label {
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .rp-hero-amount {
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .profit-mode .rp-hero-amount { color: var(--green); }
-    .loss-mode   .rp-hero-amount { color: var(--red); }
-    .rp-hero-pct {
-      font-size: 13px;
-      margin-top: 4px;
-    }
-    .profit-mode .rp-hero-pct { color: var(--green); }
-    .loss-mode   .rp-hero-pct { color: var(--red); }
-
-    /* breakdown rows */
-    .rp-rows { padding: 4px 16px 8px; }
-    .rp-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .rp-row:last-child { border-bottom: none; }
-    .rp-row-label { color: var(--muted); }
-    .rp-row-val   { color: var(--text); font-weight: 500; }
-    .rp-row-val.green { color: var(--green); }
-    .rp-row-val.red   { color: var(--red); }
-    .rp-row-val.muted { color: var(--muted); font-weight: 400; }
-
-    /* mini bar chart */
-    .rp-chart {
-      padding: 12px 16px 16px;
-      border-top: 1px solid var(--border);
-    }
-    .rp-chart-title {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      margin-bottom: 10px;
-    }
-    .rp-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 7px;
-    }
-    .rp-bar-row:last-child { margin-bottom: 0; }
-    .rp-bar-label {
-      font-size: 11px;
-      color: var(--muted);
-      width: 52px;
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .rp-bar-track {
-      flex: 1;
-      height: 14px;
-      background: var(--bg3);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .rp-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width .5s ease;
-    }
-    .rp-bar-fill.green { background: var(--green); }
-    .rp-bar-fill.gray  { background: var(--bar-neutral); }
-    .rp-bar-fill.red   { background: var(--red); }
-    .rp-bar-amt {
-      font-size: 11px;
-      color: var(--text);
-      width: 60px;
-      flex-shrink: 0;
-      font-weight: 500;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Profit Calculator | Long, short, leverage and fees</title>
+<meta name="description" content="Free crypto profit calculator with live prices. Work out profit or loss on a long or short trade after entry and exit fees, with leverage, break-even price, liquidation estimate and price targets.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/profit-calculator/">
+<meta property="og:title" content="Crypto Profit Calculator | Long, short, leverage and fees">
+<meta property="og:description" content="Free crypto profit calculator with live prices. Work out profit or loss on a long or short trade after entry and exit fees, with leverage, break-even price, liquidation estimate and price targets.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/profit-calculator/">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css?v=4">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate crypto profit?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the money you put in by the buy price to get the number of coins, multiply the coins by the sell price, then subtract what you put in and the fees for both trades. With $1,000 bought at $60,000 and sold at $66,000 at 0.1% fees, the profit is $97.90."}}, {"@type": "Question", "name": "Why is my profit lower than the price change suggests?", "acceptedAnswer": {"@type": "Answer", "text": "Fees are taken when you buy and again when you sell. A 10% price rise with 0.1% fees on each side gives about 9.79%, and with 0.6% fees about 8.74%."}}, {"@type": "Question", "name": "Does leverage increase the fees I pay?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Fees are charged on the whole position, not on your deposit. A $1,000 deposit at 10× leverage pays fees on $10,000, so the same percentage fee costs ten times as much."}}, {"@type": "Question", "name": "How accurate is the liquidation price?", "acceptedAnswer": {"@type": "Answer", "text": "It is an estimate for isolated margin that ignores maintenance margin, funding and fees. Your exchange will liquidate slightly earlier than the figure shown, so always check the liquidation price on the order screen before opening a position."}}, {"@type": "Question", "name": "Can I use this for coins that are not in the list?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick any coin and type your own entry and exit prices. The coin choice only controls which live price the Live buttons fill in."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Profit Calculator", "url": "https://zesty-haupia-16a953.netlify.app/profit-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free crypto profit calculator with live prices. Work out profit or loss on a long or short trade after entry and exit fees, with leverage, break-even price, liquidation estimate and price targets."}</script>
 </head>
 <body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position size</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/converter/">Converter</a></nav>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Crypto profit calculator</h1>
+  <p class="rise" style="--d:1">See what a trade makes or loses after fees. Works for spot, longs and shorts, with or without leverage.</p>
+</header>
 
-<nav>
-  <a href="/" class="logo">Crypto<span>Calc</span></a>
-  <div class="nav-links">
-    <a href="/#tools">Calculators</a>
-    <a href="/about.html">About</a>
-  </div>
-</nav>
-
-<!-- AdSense Leaderboard 728x90 -->
-<div class="ad-banner" aria-hidden="true">Advertisement</div>
-
-<div class="page-grid">
-
-  <!-- Main Content -->
-  <main>
-    <div class="calc-header">
-      <h1>Crypto Profit / Loss Calculator</h1>
-      <p>Calculate your exact profit or loss on any cryptocurrency trade, including exchange fees.</p>
-    </div>
-
-    <div class="calc-card">
-
-      <!-- Coin Selector -->
-      <div class="coin-tabs" id="coinTabs">
-        <button class="coin-tab active" data-coin="BTC">BTC</button>
-        <button class="coin-tab" data-coin="ETH">ETH</button>
-        <button class="coin-tab" data-coin="BNB">BNB</button>
-        <button class="coin-tab" data-coin="SOL">SOL</button>
-        <button class="coin-tab" data-coin="XRP">XRP</button>
-        <button class="coin-tab" data-coin="OTHER">Other</button>
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your trade</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field full"><span class="lbl">Direction</span>
+          <div class="seg long-short" role="radiogroup" aria-label="Direction">
+            <label><input type="radio" name="dir" value="long" checked><span>Long (buy)</span></label>
+            <label><input type="radio" name="dir" value="short"><span>Short (sell)</span></label>
+          </div>
+        </div>
+        <div class="field"><label for="entry">Entry price</label><div class="inp"><input id="entry" type="number" inputmode="decimal" step="any" value="60000" data-autolive="1" min="0"><span class="unit">USD</span><button type="button" class="live-btn" data-live="entry" disabled title="Use the live price">Live</button></div></div>
+        <div class="field"><label for="exit">Exit price</label><div class="inp"><input id="exit" type="number" inputmode="decimal" step="any" value="66000" data-autolive="1.1" min="0"><span class="unit">USD</span><button type="button" class="live-btn" data-live="exit" disabled title="Use the live price">Live</button></div></div>
+        <div class="field"><label for="margin">Your money in</label><div class="inp"><input id="margin" type="number" inputmode="decimal" step="any" value="1000" min="0"><span class="unit">USD</span></div></div>
+        <div class="field"><label for="lev">Leverage</label><div class="inp"><input id="lev" type="number" inputmode="decimal" step="any" min="1" max="125" value="1"><span class="unit">×</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="lev:1">Spot</button><button type="button" class="chip" data-set="lev:3">3×</button><button type="button" class="chip" data-set="lev:5">5×</button><button type="button" class="chip" data-set="lev:10">10×</button><button type="button" class="chip" data-set="lev:20">20×</button></div>
+        </div>
+        <div class="field"><label for="feeIn">Entry fee</label><div class="inp"><input id="feeIn" type="number" inputmode="decimal" step="any" value="0.1" max="10" min="0"><span class="unit">%</span></div></div>
+        <div class="field"><label for="feeOut">Exit fee</label><div class="inp"><input id="feeOut" type="number" inputmode="decimal" step="any" value="0.1" max="10" min="0"><span class="unit">%</span></div></div>
       </div>
+      <p class="field hint" style="margin-top:14px">Not sure of your fee? <a href="/fee-calculator/">Compare ten exchanges</a>. Most charge about 0.1% per spot trade.</p>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this trade</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
 
-      <!-- Inputs -->
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="buyPrice">Buy Price (USD)</label>
-          <input type="number" id="buyPrice" placeholder="e.g. 30000" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="sellPrice">Sell Price (USD)</label>
-          <input type="number" id="sellPrice" placeholder="e.g. 60000" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="investment">Investment (USD)</label>
-          <input type="number" id="investment" placeholder="e.g. 500" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="fee">Exchange Fee (%)</label>
-          <input type="number" id="fee" placeholder="e.g. 0.1" min="0" max="10" step="any" value="0.1" />
-        </div>
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Result</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an entry price, an exit price and the amount you are putting in.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="net"></div>
+        <div class="sub" id="roi"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Position size</dt><dd id="pos"></dd></div>
+          <div><dt>Price move</dt><dd id="move"></dd></div>
+          <div><dt>Profit before fees</dt><dd id="gross"></dd></div>
+          <div><dt>Fees, entry and exit</dt><dd id="fees"></dd></div>
+          <div id="liveRow" hidden><dt id="liveLbl">If you closed at the live price</dt><dd id="liveNet"></dd></div>
+        </dl>
+        <h3 class="subhead">Price levels for this trade</h3>
+        <div class="ladder" id="ladder"></div>
+        <h3 class="subhead">Exit price needed for a target return</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Return on your money</th><th class="r">Exit price</th><th class="r">Price move</th><th></th></tr></thead><tbody id="targets"></tbody></table></div>
       </div>
-
-      <button class="calc-btn" onclick="calculate()">Calculate Profit / Loss</button>
-
-      <!-- New Result Panel -->
-      <div class="result-panel" id="resultPanel">
-
-        <!-- Header strip -->
-        <div class="rp-header" id="rpHeader">
-          <span class="rp-title" id="rpTitle">Your result</span>
-          <span class="rp-badge" id="rpBadge">PROFIT ↑</span>
-        </div>
-
-        <!-- Big number -->
-        <div class="rp-hero">
-          <div class="rp-hero-label">Net profit / loss</div>
-          <div class="rp-hero-amount" id="rpAmount">—</div>
-          <div class="rp-hero-pct" id="rpPct"></div>
-        </div>
-
-        <!-- Breakdown rows -->
-        <div class="rp-rows">
-          <div class="rp-row">
-            <span class="rp-row-label">Initial investment</span>
-            <span class="rp-row-val" id="rpInvestment">—</span>
-          </div>
-          <div class="rp-row">
-            <span class="rp-row-label">Coins bought</span>
-            <span class="rp-row-val" id="rpCoins">—</span>
-          </div>
-          <div class="rp-row">
-            <span class="rp-row-label">Sell value</span>
-            <span class="rp-row-val" id="rpSellValue">—</span>
-          </div>
-          <div class="rp-row">
-            <span class="rp-row-label">Fees paid</span>
-            <span class="rp-row-val red" id="rpFees">—</span>
-          </div>
-          <div class="rp-row">
-            <span class="rp-row-label">Net profit / loss</span>
-            <span class="rp-row-val" id="rpNet">—</span>
-          </div>
-          <div class="rp-row">
-            <span class="rp-row-label">Break-even price</span>
-            <span class="rp-row-val muted" id="rpBreakeven">—</span>
-          </div>
-        </div>
-
-        <!-- Mini bar chart -->
-        <div class="rp-chart">
-          <div class="rp-chart-title">Where your money went</div>
-          <div class="rp-bar-row" id="barProfit">
-            <span class="rp-bar-label">Profit</span>
-            <div class="rp-bar-track"><div class="rp-bar-fill green" id="barProfitFill" style="width:0%"></div></div>
-            <span class="rp-bar-amt" id="barProfitAmt"></span>
-          </div>
-          <div class="rp-bar-row">
-            <span class="rp-bar-label">Capital</span>
-            <div class="rp-bar-track"><div class="rp-bar-fill gray" id="barCapFill" style="width:80%"></div></div>
-            <span class="rp-bar-amt" id="barCapAmt"></span>
-          </div>
-          <div class="rp-bar-row">
-            <span class="rp-bar-label">Fees</span>
-            <div class="rp-bar-track"><div class="rp-bar-fill red" id="barFeesFill" style="width:0%"></div></div>
-            <span class="rp-bar-amt" id="barFeesAmt" style="color: var(--red);"></span>
-          </div>
-        </div>
-
-      </div>
-      <!-- end result-panel -->
-
     </div>
-
-    <!-- AdSense 300x250 below results -->
-    <div class="ad-square" aria-hidden="true">Advertisement</div>
-
-    <!-- SEO Content -->
-    <div class="content-section">
-      <h2>How to Use This Calculator</h2>
-      <p>Enter the price you bought your crypto at, the price you sold (or plan to sell) at, how much USD you invested, and your exchange's fee percentage. Hit calculate and you'll instantly see your profit or loss.</p>
-
-      <h3>What is a good crypto profit?</h3>
-      <p>Any positive return is a profit. Most serious traders aim for a minimum 2:1 risk-reward ratio, meaning they target at least 2% gain for every 1% they risk. For long-term holders, annual returns of 20–50% are considered strong.</p>
-
-      <h3>How exchange fees affect your profit</h3>
-      <p>Exchange fees are charged twice — once when you buy and once when you sell. On a $1,000 trade at 0.1% fee each way, you pay $2 total. On a $10,000 trade, that's $20. These add up fast, especially for active traders. Binance charges 0.1%, Bybit 0.1%, Coinbase up to 0.6%.</p>
-
-      <h3>Frequently Asked Questions</h3>
-
-      <h3>How do I calculate crypto profit?</h3>
-      <p>Formula: Profit = (Sell Price − Buy Price) × Coins − Total Fees. This calculator does all of this automatically.</p>
-
-      <h3>How are exchange fees calculated?</h3>
-      <p>Exchange fees are usually a percentage of your trade value. Most exchanges charge 0.1%–0.2% per trade. You pay fees both when you buy and when you sell, so total fees = buy fee + sell fee.</p>
-    </div>
-  </main>
-
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div style="position: sticky; top: 72px;">
-      <div style="background: var(--bg2); border: 1px dashed var(--border); border-radius: 8px; height: 600px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted);">Advertisement</div>
-    </div>
-  </aside>
-
+  </section>
 </div>
 
-<!-- Mobile Sticky Ad -->
-<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+<div class="guide">
+<article class="prose reveal">
+  <h2>How the profit calculation works</h2>
+  <p>A trade has three money flows: what the position is worth when you open it, what it is worth when you close it, and the fees the exchange takes at both ends. Profit is the difference between the first two, minus the third.</p>
+  <div class="formula">Net profit (long) = coins × exit price − position size − entry fee − exit fee<small>Coins = position size ÷ entry price. Position size = your money × leverage. For a short, the first two terms swap places.</small></div>
+  <p>The entry fee is charged on the position size and the exit fee on the value at exit, so a winning trade pays a slightly larger exit fee than a losing one. Many calculators charge both fees on the entry value, which understates the cost of a profitable trade.</p>
 
-<footer>
-  <p>&copy; 2026 CryptoCalc. For informational purposes only. Not financial advice.</p>
-  <div style="margin-top:10px;">
-    <a href="/about.html">About</a>
-    <a href="/privacy.html">Privacy</a>
-    <a href="/contact.html">Contact</a>
-    <a href="/terms.html">Terms</a>
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You put <b>$1,000</b> into Bitcoin at <b>$60,000</b> and sell at <b>$66,000</b>, paying <b>0.1%</b> each way.</p>
+    <p>Coins bought: 1,000 ÷ 60,000 = 0.016667 BTC. Value at exit: 0.016667 × 66,000 = $1,100.</p>
+    <p>Fees: $1.00 going in and $1.10 coming out. Net profit: 1,100 − 1,000 − 2.10 = <b>$97.90</b>, a 9.79% return on a 10% price move.</p>
   </div>
-</footer>
 
+  <h2>Break-even price</h2>
+  <p>Because of fees, selling at your entry price loses money. The break-even price is the exit at which the two fees are exactly covered.</p>
+  <div class="formula">Break-even (long) = entry × (1 + entry fee) ÷ (1 − exit fee)</div>
+  <p>At 0.1% each way that is about 0.2% above entry. It sounds small, but a scalper aiming for 0.5% moves gives up two fifths of every win to it. On a short the break-even sits the same distance below entry.</p>
+
+  <h2>Leverage, margin and liquidation</h2>
+  <p>Leverage lets a small deposit control a larger position. With $1,000 at 10× you hold a $10,000 position, so a 1% price move changes your balance by about 10%. Fees are charged on the full $10,000 as well, which is why leveraged trades pay ten times the fees of the same deposit on spot.</p>
+  <p>The exchange closes the position when losses use up your margin. This calculator estimates that level as:</p>
+  <div class="formula">Liquidation (long) ≈ entry × (1 − 1 ÷ leverage)<small>For a short: entry × (1 + 1 ÷ leverage). This assumes isolated margin and ignores maintenance margin and funding.</small></div>
+  <p>Treat it as the best case. Real exchanges keep back a maintenance margin, often around 0.5% of the position, so the actual liquidation price is a little closer to entry than the estimate. If the exit you typed lies beyond liquidation, the result shows the loss of your full margin, because the trade would never reach that price.</p>
+
+  <h2>Long and short</h2>
+  <p>A <strong>long</strong> buys first and sells later, so it profits when the price rises. A <strong>short</strong> sells borrowed coins first and buys them back later, so it profits when the price falls. Short profit is capped, because a price cannot fall below zero, while a short's loss is not capped if the price keeps rising. Spot accounts can only go long. Shorts need a margin or futures account.</p>
+
+  <h2>What this calculator leaves out</h2>
+  <ul>
+    <li><strong>Funding payments</strong> on perpetual futures, charged every few hours and able to add up on trades held for days.</li>
+    <li><strong>Slippage</strong>, the gap between the price you see and the price your order fills at, which grows with order size and thin order books.</li>
+    <li><strong>Withdrawal and network fees</strong> for moving coins off the exchange.</li>
+    <li><strong>Tax</strong> on the gain, which depends on where you live.</li>
+  </ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How do I calculate crypto profit?</summary><p>Divide the money you put in by the buy price to get the number of coins, multiply the coins by the sell price, then subtract what you put in and the fees for both trades. With $1,000 bought at $60,000 and sold at $66,000 at 0.1% fees, the profit is $97.90.</p></details><details><summary>Why is my profit lower than the price change suggests?</summary><p>Fees are taken when you buy and again when you sell. A 10% price rise with 0.1% fees on each side gives about 9.79%, and with 0.6% fees about 8.74%.</p></details><details><summary>Does leverage increase the fees I pay?</summary><p>Yes. Fees are charged on the whole position, not on your deposit. A $1,000 deposit at 10× leverage pays fees on $10,000, so the same percentage fee costs ten times as much.</p></details><details><summary>How accurate is the liquidation price?</summary><p>It is an estimate for isolated margin that ignores maintenance margin, funding and fees. Your exchange will liquidate slightly earlier than the figure shown, so always check the liquidation price on the order screen before opening a position.</p></details><details><summary>Can I use this for coins that are not in the list?</summary><p>Yes. Pick any coin and type your own entry and exit prices. The coin choice only controls which live price the Live buttons fill in.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same trade costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past year are worth today</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=4"></script>
 <script>
-  // Coin selector
-  let selectedCoin = 'BTC';
-  document.querySelectorAll('.coin-tab').forEach(tab => {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.coin-tab').forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      selectedCoin = this.dataset.coin;
-    });
-  });
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  var TARGETS = [10, 25, 50, 100];
+  CC.page({
+    ids: ['coin', 'dir', 'entry', 'exit', 'margin', 'lev', 'feeIn', 'feeOut'],
+    coinOpt: { stables: false },
+    calc: function () {
+      var L = CC.radio('dir') !== 'short';
+      var entry = CC.n('entry'), exit = CC.n('exit'), margin = CC.n('margin');
+      var lev = Math.min(125, Math.max(1, CC.n('lev') || 1));
+      var fi = Math.max(0, CC.n('feeIn') || 0) / 100, fo = Math.max(0, CC.n('feeOut') || 0) / 100;
+      var ok = entry > 0 && exit > 0 && margin > 0 && fo < 1;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
 
-  // Format number as USD
-  function usd(n) {
-    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
+      var pos = margin * lev, qty = pos / entry, c = CC.coin($('coin').value) || { sym: '' };
+      function pnl(x) { var val = qty * x, gross = L ? val - pos : pos - val, fees = pos * fi + val * fo; return { gross: gross, fees: fees, net: gross - fees }; }
+      var r = pnl(exit);
+      var be = L ? entry * (1 + fi) / (1 - fo) : entry * (1 - fi) / (1 + fo);
+      var liq = lev > 1 ? (L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev)) : null;
+      var dead = liq != null && (L ? exit <= liq : exit >= liq);
+      var net = dead ? -margin : r.net, gain = net >= 0;
 
-  // Set bar width capped at 95% for visual clarity
-  function barW(val, total) {
-    if (total === 0) return '0%';
-    return Math.min(95, Math.max(2, Math.abs(val) / Math.abs(total) * 95)) + '%';
-  }
+      $('verdict').textContent = dead ? 'Liquidated' : gain ? 'Net profit' : 'Net loss';
+      $('verdict').className = 'verdict ' + (gain ? 'up' : 'down');
+      CC.count($('net'), net, function (v) { return f.money(v, true); });
+      $('roi').textContent = f.pct(net / margin * 100, true) + ' on your ' + f.money(margin);
+      $('pos').textContent = f.money(pos) + ' (' + f.amt(qty) + ' ' + c.sym + ')';
+      var mv = (exit - entry) / entry * 100;
+      $('move').textContent = f.pct(mv, true);
+      $('gross').textContent = f.money(r.gross, true);
+      $('fees').textContent = f.money(r.fees);
 
-  // Calculate
-  function calculate() {
-    const buyPrice   = parseFloat(document.getElementById('buyPrice').value);
-    const sellPrice  = parseFloat(document.getElementById('sellPrice').value);
-    const investment = parseFloat(document.getElementById('investment').value);
-    const feePercent = parseFloat(document.getElementById('fee').value) || 0;
+      var notes = '';
+      if (dead) notes += '<div class="note bad">At ' + f.num(lev) + '× leverage this position is liquidated near $' + f.price(liq) + ', before the price reaches your exit. You would lose your whole ' + f.money(margin) + '.</div>';
+      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but fees of ' + f.money(r.fees) + ' turn the trade into a loss. Your exit needs to pass $' + f.price(be) + '.</div>';
+      else if (r.gross > 0 && r.fees / r.gross > 0.2) notes += '<div class="note">Fees take ' + Math.round(r.fees / r.gross * 100) + '% of this trade\'s profit. A wider target or a cheaper exchange would keep more of it.</div>';
+      if (lev >= 20 && !dead) notes += '<div class="note">At ' + f.num(lev) + '× a move of only ' + (100 / lev).toFixed(1) + '% against you wipes out the position.</div>';
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
 
-    if (!buyPrice || !sellPrice || !investment) {
-      alert('Please fill in buy price, sell price and investment amount.');
-      return;
+      var live = c.price;
+      $('liveRow').hidden = live == null;
+      if (live != null) {
+        var ln = pnl(live).net, ld = liq != null && (L ? live <= liq : live >= liq);
+        $('liveLbl').textContent = 'If you closed now at $' + f.price(live);
+        $('liveNet').textContent = ld ? 'Liquidated' : f.money(ln, true);
+        $('liveNet').className = (ld ? -1 : ln) >= 0 ? 'up' : 'down';
+      }
+
+      var rows = [{ label: 'Your exit', price: exit, kind: gain ? 'good' : 'bad' }, { label: 'Entry', price: entry, kind: 'entry' }, { label: 'Break-even', price: be, kind: 'warn' }];
+      if (liq != null) rows.push({ label: 'Liquidation (estimate)', price: liq, kind: 'bad' });
+      if (live != null) rows.push({ label: c.sym + ' live price', price: live, kind: 'live' });
+      CC.ladder($('ladder'), rows, entry);
+
+      $('targets').innerHTML = TARGETS.map(function (t) {
+        var T = t / 100;
+        var x = L ? (T * margin + pos * (1 + fi)) / (qty * (1 - fo)) : (pos * (1 - fi) - T * margin) / (qty * (1 + fo));
+        if (!(x > 0)) return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r" colspan="3">Not reachable on a short at this leverage</td></tr>';
+        return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r"><b>$' + f.price(x) + '</b></td><td class="r">' + f.pct((x - entry) / entry * 100, true) + '</td><td class="r"><button type="button" class="chip" data-x="' + CC.round(x) + '">Use</button></td></tr>';
+      }).join('');
     }
-    if (buyPrice <= 0 || sellPrice <= 0 || investment <= 0) {
-      alert('All values must be greater than zero.');
-      return;
-    }
-
-    const coins      = investment / buyPrice;
-    const sellValue  = coins * sellPrice;
-    const buyFee     = investment * (feePercent / 100);
-    const sellFee    = sellValue  * (feePercent / 100);
-    const totalFees  = buyFee + sellFee;
-    const netProfit  = sellValue - investment - totalFees;
-    const pct        = ((netProfit / investment) * 100).toFixed(2);
-    const isProfit   = netProfit >= 0;
-
-    // Break-even: investment / coins + small fee adjustment
-    const breakeven  = buyPrice * (1 + feePercent / 100) / (1 - feePercent / 100);
-
-    // ── header ──
-    const header = document.getElementById('rpHeader');
-    header.className = 'rp-header ' + (isProfit ? 'profit-mode' : 'loss-mode');
-    document.getElementById('rpTitle').textContent = selectedCoin + ' trade result';
-    document.getElementById('rpBadge').textContent = isProfit ? 'PROFIT ↑' : 'LOSS ↓';
-
-    // ── hero ──
-    const sign = isProfit ? '+' : '−';
-    document.getElementById('rpAmount').textContent = sign + usd(netProfit);
-    document.getElementById('rpPct').textContent =
-      (isProfit ? '▲ +' : '▼ ') + pct + '% return on investment';
-
-    // ── rows ──
-    document.getElementById('rpInvestment').textContent = usd(investment);
-    document.getElementById('rpCoins').textContent      = coins.toFixed(6) + ' ' + selectedCoin;
-    document.getElementById('rpSellValue').textContent  = usd(sellValue);
-    document.getElementById('rpFees').textContent       = '−' + usd(totalFees);
-    const netEl = document.getElementById('rpNet');
-    netEl.textContent  = sign + usd(netProfit);
-    netEl.className    = 'rp-row-val ' + (isProfit ? 'green' : 'red');
-    document.getElementById('rpBreakeven').textContent  = '$' + breakeven.toLocaleString('en-US', { maximumFractionDigits: 2 });
-
-    // ── bar chart ──
-    const total = investment + Math.abs(netProfit);
-    // profit bar: only show if profit; show as loss bar (red) if negative
-    const barProfitFill = document.getElementById('barProfitFill');
-    const barProfit     = document.getElementById('barProfit');
-    barProfitFill.className = 'rp-bar-fill ' + (isProfit ? 'green' : 'red');
-    barProfitFill.style.width = barW(netProfit, total);
-    document.querySelector('#barProfit .rp-bar-label').textContent = isProfit ? 'Profit' : 'Loss';
-    document.getElementById('barProfitAmt').textContent = sign + usd(netProfit);
-    document.getElementById('barProfitAmt').style.color = isProfit ? 'var(--green)' : 'var(--red)';
-
-    document.getElementById('barCapFill').style.width  = barW(investment, total);
-    document.getElementById('barCapAmt').textContent   = usd(investment);
-
-    document.getElementById('barFeesFill').style.width = barW(totalFees, total);
-    document.getElementById('barFeesAmt').textContent  = '−' + usd(totalFees);
-
-    // ── show panel ──
-    const panel = document.getElementById('resultPanel');
-    panel.classList.remove('show');
-    void panel.offsetWidth; // force reflow for animation replay
-    panel.classList.add('show');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  // Enter key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') calculate();
   });
+  $('targets').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-x]'); if (!b) return;
+    $('exit').value = b.dataset.x; $('exit').dataset.touched = 1;
+    $('exit').dispatchEvent(new Event('input', { bubbles: true }));
+  });
+})();
 </script>
-
 </body>
 </html>
