@@ -6,15 +6,15 @@
   <title>Crypto Position Size Calculator – Risk-Based Trade Sizing</title>
   <meta name="description" content="Calculate the right position size for any crypto trade based on your account size and risk tolerance. Never risk more than you can afford to lose." />
   <meta name="keywords" content="crypto position size calculator, bitcoin position size, risk management crypto, how much to invest crypto, trade size calculator" />
-  <link rel="canonical" href="https://yourcryptocalc.com/position-size-calculator/" />
+  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/position-size-calculator/" />
   <meta property="og:title" content="Crypto Position Size Calculator – Risk-Based Trade Sizing" />
   <meta property="og:description" content="Calculate the ideal position size based on your risk tolerance and stop-loss." />
   <meta property="og:type" content="website" />
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Position Size Calculator","url":"https://yourcryptocalc.com/position-size-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Position Size Calculator","url":"https://zesty-haupia-16a953.netlify.app/position-size-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 
   <style>
@@ -23,8 +23,8 @@
     .result-panel.show { display:block; }
 
     .rp-header { padding:10px 16px; font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
-    .rp-header.safe-mode  { background:rgba(29,158,117,.15); color:#5ccfa0; }
-    .rp-header.risky-mode { background:rgba(226,75,74,.15);  color:#f08080; }
+    .rp-header.safe-mode  { background:var(--gain-tint); color:var(--green); }
+    .rp-header.risky-mode { background:var(--loss-tint);  color:var(--red); }
 
     .rp-hero { background:var(--bg2); padding:20px 20px 16px; border-bottom:1px solid var(--border); }
     .rp-hero-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
@@ -48,7 +48,7 @@
     .risk-tick  { font-size:10px; color:var(--muted); }
 
     /* leverage warning */
-    .lev-warning { display:none; margin-top:12px; background:rgba(226,75,74,.1); border:1px solid rgba(226,75,74,.3); border-radius:8px; padding:10px 14px; font-size:12px; color:#f08080; line-height:1.5; }
+    .lev-warning { display:none; margin-top:12px; background:var(--loss-tint); border:1px solid rgba(226,75,74,.3); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--red); line-height:1.5; }
     .lev-warning.show { display:block; }
   </style>
 </head>
@@ -123,7 +123,7 @@
           <div class="risk-ticks"><span class="risk-tick">0%</span><span class="risk-tick">1%</span><span class="risk-tick">2%</span><span class="risk-tick">3%</span><span class="risk-tick">5%+</span></div>
         </div>
         <div class="lev-warning" id="levWarning">
-          ⚠️ You are using leverage. Your loss can exceed the calculated stop-loss if the exchange liquidates your position early due to funding rates or slippage.
+          You are using leverage. Your loss can exceed the calculated stop-loss if the exchange liquidates your position early due to funding rates or slippage.
         </div>
       </div>
     </div>
@@ -164,7 +164,7 @@
     const v = document.getElementById('leverage').value;
     const el = document.getElementById('leverageDisplay');
     el.textContent = v + '×';
-    el.style.color = v > 5 ? 'var(--red)' : v > 2 ? '#f4a84a' : 'var(--green)';
+    el.style.color = v > 5 ? 'var(--red)' : v > 2 ? 'var(--amber)' : 'var(--green)';
   }
 
   function usd(n) { return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -203,7 +203,7 @@
     const header = document.getElementById('rpHeader');
 
     const isRisky = risk > 2;
-    header.textContent = isRisky ? '⚠️ HIGH RISK — consider reducing' : '✅ WITHIN SAFE RISK LIMITS';
+    header.textContent = isRisky ? 'High risk: consider a smaller position' : 'Within safe risk limits';
     header.className   = 'rp-header ' + (isRisky ? 'risky-mode' : 'safe-mode');
 
     document.getElementById('heroVal').textContent = usd(capitalRequired);
@@ -221,7 +221,7 @@
     const fillPct = Math.min(100, (risk / 5) * 100);
     const fillEl  = document.getElementById('riskFill');
     fillEl.style.width      = fillPct + '%';
-    fillEl.style.background = risk <= 1 ? 'var(--green)' : risk <= 2 ? '#f4a84a' : 'var(--red)';
+    fillEl.style.background = risk <= 1 ? 'var(--green)' : risk <= 2 ? 'var(--amber)' : 'var(--red)';
 
     // leverage warning
     document.getElementById('levWarning').className = 'lev-warning' + (leverage > 1 ? ' show' : '');

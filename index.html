@@ -3,337 +3,255 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CryptoCalc – Free Crypto Calculator Tools</title>
-  <meta name="description" content="Free cryptocurrency calculator tools. Calculate crypto profit/loss, DCA returns, exchange fees, position size and more. No signup required." />
-  <meta name="keywords" content="crypto calculator, bitcoin calculator, crypto profit calculator, DCA calculator, crypto tools" />
+  <title>CryptoCalc – Free Crypto Calculators</title>
+  <meta name="description" content="Free crypto calculators: profit and loss after fees, DCA, exchange fee comparison, position size and a coin converter. No signup." />
   <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/" />
-  <meta property="og:title" content="CryptoCalc – Free Crypto Calculator Tools" />
-  <meta property="og:description" content="Free crypto calculators. Profit/loss, DCA, fees, position size. Instant results, no signup." />
+  <meta property="og:title" content="CryptoCalc – Free Crypto Calculators" />
+  <meta property="og:description" content="Work out a trade before you place it. Profit and loss, DCA, fees, position size and conversion." />
   <meta property="og:type" content="website" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"CryptoCalc","description":"Free cryptocurrency calculator tools","url":"https://zesty-haupia-16a953.netlify.app/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"CryptoCalc","description":"Free cryptocurrency calculators","url":"https://zesty-haupia-16a953.netlify.app/"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
   <style>
-    /* ---- HOMEPAGE OVERRIDES ---- */
-    .hero {
-      position: relative;
-      padding: 72px 20px 56px;
-      text-align: center;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(29,158,117,0.18) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--green);
-      background: rgba(29,158,117,0.1);
-      border: 1px solid rgba(29,158,117,0.25);
-      padding: 5px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-    }
-    .hero-eyebrow span { width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; }
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      margin-bottom: 16px;
-    }
-    .hero h1 em {
-      font-style: normal;
-      background: linear-gradient(135deg, #1D9E75 0%, #2DD4A0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto 32px;
-      line-height: 1.6;
-    }
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-    .hero-stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .hero-stat strong {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .hero-stat span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ---- TOOLS SECTION ---- */
-    .tools-section {
-      padding: 20px 20px 64px;
+    .home {
       max-width: 1100px;
       margin: 0 auto;
+      padding: 56px 20px 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+      gap: 56px;
+      align-items: start;
     }
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
+    .home-intro h1 {
+      font-size: clamp(38px, 5vw, 58px);
+      text-wrap: balance;
+      font-weight: 800;
+      font-stretch: 120%;
+      letter-spacing: -0.035em;
+      line-height: 1.02;
       margin-bottom: 20px;
     }
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 14px;
-    }
-
-    .tool-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-      display: block;
-      text-decoration: none;
-      position: relative;
-      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
-      overflow: hidden;
-    }
-    .tool-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.2s;
-      background: radial-gradient(ellipse 60% 50% at 20% 20%, rgba(29,158,117,0.08), transparent);
-    }
-    .tool-card:hover {
-      border-color: rgba(29,158,117,0.5);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      text-decoration: none;
-    }
-    .tool-card:hover::before { opacity: 1; }
-
-    .tool-card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .tool-icon-wrap {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: rgba(29,158,117,0.12);
-      border: 1px solid rgba(29,158,117,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .tool-icon-wrap svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--green);
-      fill: none;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .tool-arrow {
-      color: var(--border);
+    .home-intro > p {
       font-size: 18px;
-      transition: color 0.2s, transform 0.2s;
-      line-height: 1;
-    }
-    .tool-card:hover .tool-arrow {
-      color: var(--green);
-      transform: translate(2px, -2px);
-    }
-    .tool-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .tool-desc {
-      font-size: 13px;
       color: var(--muted);
-      line-height: 1.5;
-    }
-    .tool-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 3px 8px;
-      background: rgba(29,158,117,0.15);
-      color: var(--green);
-      border: 1px solid rgba(29,158,117,0.3);
-      border-radius: 20px;
-      margin-top: 12px;
+      max-width: 44ch;
     }
 
-    /* ---- DIVIDER ---- */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0 20px;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* ---- FOOTER ---- */
-    footer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-    .footer-links {
-      display: flex;
-      gap: 4px;
-    }
-    .footer-links a {
-      color: var(--muted);
-      font-size: 13px;
-      padding: 4px 10px;
-      border-radius: 6px;
+    /* Calculator list */
+    .calc-list { margin-top: 44px; list-style: none; border-top: 2px solid var(--text); }
+    .calc-list a {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 16px;
+      align-items: baseline;
+      padding: 15px 8px 15px 0;
+      border-bottom: 1px solid var(--border);
       text-decoration: none;
-      transition: color 0.2s, background 0.2s;
+      color: var(--text);
     }
-    .footer-links a:hover {
+    .calc-list strong { font-size: 18px; font-weight: 700; font-stretch: 108%; }
+    .calc-list span { color: var(--muted); font-size: 16px; }
+    .calc-list a:hover { background: var(--bg2); padding-left: 10px; }
+    .calc-list a:hover strong { background: linear-gradient(transparent 58%, var(--mark) 58%); }
+
+    /* Live ticket */
+    .ticket {
+      background: var(--bg2);
+      border: 2px solid var(--text);
+      border-radius: 4px;
+      box-shadow: 6px 6px 0 var(--text);
+    }
+    .ticket-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--text);
+    }
+    .ticket-head h2 { font-size: 20px; font-weight: 750; }
+    .ticket-head a { font-size: 15px; white-space: nowrap; }
+    .ticket-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 20px;
+    }
+    .ticket-fields label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+    .ticket-fields input {
+      width: 100%;
+      padding: 11px 12px;
+      font-size: 18px;
+      font-weight: 600;
       color: var(--text);
       background: var(--bg3);
-      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
     }
+    .ticket-fields input:focus { outline: none; border-color: var(--text); box-shadow: 0 0 0 3px var(--mark); }
 
-    @media (max-width: 600px) {
-      .hero-stats { gap: 20px; }
-      .tools-grid { grid-template-columns: 1fr; }
+    .ticket-result { padding: 20px; border-top: 1px dashed var(--text); }
+    .ticket-verdict { font-size: 15px; font-weight: 700; }
+    .ticket-verdict.gain { color: var(--green); }
+    .ticket-verdict.loss { color: var(--red); }
+    .ticket-net {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 0 6px;
+      margin-left: -6px;
+      font-size: clamp(36px, 9vw, 48px);
+      font-weight: 800;
+      font-stretch: 112%;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      background: linear-gradient(transparent 52%, var(--mark) 52%);
+    }
+    .ticket-pct { font-size: 16px; color: var(--muted); margin-top: 6px; }
+    .ticket-empty { color: var(--muted); font-size: 16px; }
+
+    .ticket-rows { margin-top: 16px; }
+    .ticket-rows div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-top: 1px solid var(--border);
+      font-size: 15px;
+    }
+    .ticket-rows dt { color: var(--muted); }
+    .ticket-rows dd { font-weight: 600; }
+
+    footer { margin-top: 0; }
+
+    @media (max-width: 860px) {
+      .home { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; }
+      .ticket { order: 2; }
+      .home-intro { display: contents; }
+      .home-intro h1 { order: 0; margin-bottom: 0; }
+      .home-intro > p { order: 1; margin-top: -20px; }
+      .calc-list { order: 3; margin-top: 8px; }
+    }
+    @media (max-width: 480px) {
+      .calc-list a { grid-template-columns: 1fr; gap: 2px; }
+      .ticket { box-shadow: 4px 4px 0 var(--text); }
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="logo">Crypto<span>Calc</span></a>
+  <a href="/" class="logo">CryptoCalc</a>
   <div class="nav-links">
-    <a href="#tools">Tools</a>
+    <a href="#tools">Calculators</a>
     <a href="/about.html">About</a>
   </div>
 </nav>
 
-<div class="ad-banner" aria-hidden="true">Advertisement</div>
+<main class="home">
 
-<section class="hero">
-  <div class="hero-eyebrow"><span></span>Free • No signup required</div>
-  <h1>Crypto tools that<br><em>traders actually use</em></h1>
-  <p>Calculate profits, compare fees, size positions — everything in one place, instantly.</p>
-  <div class="hero-stats">
-    <div class="hero-stat"><strong>5</strong><span>Free tools</span></div>
-    <div class="hero-stat"><strong>8+</strong><span>Exchanges</span></div>
-    <div class="hero-stat"><strong>100+</strong><span>Currencies</span></div>
+  <div class="home-intro">
+    <h1>Work out the trade before you place it.</h1>
+    <p>Five free calculators for profit, fees, position size, DCA and conversion. Nothing to sign up for.</p>
+
+    <ul class="calc-list" id="tools">
+      <li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li>
+      <li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li>
+      <li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same trade costs on eight exchanges</span></a></li>
+      <li><a href="/dca-calculator/"><strong>DCA</strong><span>What buying a fixed amount on a schedule adds up to</span></a></li>
+      <li><a href="/converter/"><strong>Converter</strong><span>Convert between 20 coins and 10 currencies</span></a></li>
+    </ul>
   </div>
-</section>
 
-<div class="divider"></div>
+  <section class="ticket" aria-labelledby="ticketTitle">
+    <div class="ticket-head">
+      <h2 id="ticketTitle">Profit / loss</h2>
+      <a href="/profit-calculator/">Full calculator</a>
+    </div>
 
-<section class="tools-section" id="tools">
-  <p class="section-label">All Calculators</p>
-  <div class="tools-grid">
-
-    <a href="/profit-calculator/" class="tool-card">
-      <div class="tool-card-top">
-        <div class="tool-icon-wrap">
-          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-        </div>
-        <span class="tool-arrow">↗</span>
+    <div class="ticket-fields">
+      <div>
+        <label for="tBuy">Buy price, USD</label>
+        <input id="tBuy" type="number" inputmode="decimal" min="0" step="any" value="60000" />
       </div>
-      <div class="tool-name">Profit / Loss Calculator</div>
-      <div class="tool-desc">Calculate exact P&L on any trade including entry, exit, fees and leverage.</div>
-      <span class="tool-badge">Most Popular</span>
-    </a>
-
-    <a href="/dca-calculator/" class="tool-card">
-      <div class="tool-card-top">
-        <div class="tool-icon-wrap">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="8 14 10.5 17 16 13"/></svg>
-        </div>
-        <span class="tool-arrow">↗</span>
+      <div>
+        <label for="tSell">Sell price, USD</label>
+        <input id="tSell" type="number" inputmode="decimal" min="0" step="any" value="66000" />
       </div>
-      <div class="tool-name">DCA Calculator</div>
-      <div class="tool-desc">See how dollar-cost averaging into Bitcoin or any coin would have performed over time.</div>
-    </a>
-
-    <a href="/fee-calculator/" class="tool-card">
-      <div class="tool-card-top">
-        <div class="tool-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <span class="tool-arrow">↗</span>
+      <div>
+        <label for="tInv">Amount invested, USD</label>
+        <input id="tInv" type="number" inputmode="decimal" min="0" step="any" value="1000" />
       </div>
-      <div class="tool-name">Exchange Fee Comparator</div>
-      <div class="tool-desc">Compare trading fees across Binance, Bybit, OKX and 5 more exchanges side by side.</div>
-    </a>
-
-    <a href="/position-size-calculator/" class="tool-card">
-      <div class="tool-card-top">
-        <div class="tool-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-        </div>
-        <span class="tool-arrow">↗</span>
+      <div>
+        <label for="tFee">Fee per trade, %</label>
+        <input id="tFee" type="number" inputmode="decimal" min="0" max="10" step="any" value="0.1" />
       </div>
-      <div class="tool-name">Position Size Calculator</div>
-      <div class="tool-desc">Get the right position size based on account balance, risk % and stop-loss distance.</div>
-    </a>
+    </div>
 
-    <a href="/converter/" class="tool-card">
-      <div class="tool-card-top">
-        <div class="tool-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
-        </div>
-        <span class="tool-arrow">↗</span>
+    <div class="ticket-result" aria-live="polite">
+      <p class="ticket-empty" id="tEmpty" hidden>Enter a buy price, a sell price and an amount to see the result.</p>
+      <div id="tOut">
+        <div class="ticket-verdict" id="tVerdict"></div>
+        <div class="ticket-net" id="tNet"></div>
+        <div class="ticket-pct" id="tPct"></div>
+        <dl class="ticket-rows">
+          <div><dt>Coins bought</dt><dd id="tCoins"></dd></div>
+          <div><dt>Fees paid, both trades</dt><dd id="tFees"></dd></div>
+          <div><dt>Break-even sell price</dt><dd id="tBreak"></dd></div>
+        </dl>
       </div>
-      <div class="tool-name">Crypto Converter</div>
-      <div class="tool-desc">Convert between BTC, ETH, USDT and 20+ coins across 10 fiat currencies instantly.</div>
-    </a>
+    </div>
+  </section>
 
-  </div>
-</section>
+</main>
 
 <footer>
-  <p style="font-size:13px;color:var(--muted);">© 2026 CryptoCalc — Tools for informational purposes only.</p>
-  <div class="footer-links">
+  <p>© 2026 CryptoCalc. These calculators are for information, not financial advice.</p>
+  <div style="margin-top:10px;">
     <a href="/about.html">About</a>
     <a href="/privacy.html">Privacy</a>
     <a href="/contact.html">Contact</a>
     <a href="/terms.html">Terms</a>
   </div>
 </footer>
+
+<script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var usd = function (n) {
+      return (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    function update() {
+      var buy = parseFloat($('tBuy').value);
+      var sell = parseFloat($('tSell').value);
+      var inv = parseFloat($('tInv').value);
+      var fee = (parseFloat($('tFee').value) || 0) / 100;
+      var ok = buy > 0 && sell > 0 && inv > 0 && fee >= 0 && fee < 1;
+
+      $('tEmpty').hidden = ok;
+      $('tOut').hidden = !ok;
+      if (!ok) return;
+
+      var coins = inv / buy;
+      var sellValue = coins * sell;
+      var fees = inv * fee + sellValue * fee;
+      var net = sellValue - inv - fees;
+      var gain = net >= 0;
+
+      $('tVerdict').textContent = gain ? 'Net profit' : 'Net loss';
+      $('tVerdict').className = 'ticket-verdict ' + (gain ? 'gain' : 'loss');
+      $('tNet').textContent = (gain ? '+' : '') + usd(net);
+      $('tPct').textContent = (gain ? '+' : '') + (net / inv * 100).toFixed(2) + '% on ' + usd(inv);
+      $('tCoins').textContent = coins.toLocaleString('en-US', { maximumFractionDigits: 6 });
+      $('tFees').textContent = usd(fees);
+      $('tBreak').textContent = usd(buy * (1 + fee) / (1 - fee));
+    }
+
+    ['tBuy', 'tSell', 'tInv', 'tFee'].forEach(function (id) { $(id).addEventListener('input', update); });
+    update();
+  })();
+</script>
 
 </body>
 </html>

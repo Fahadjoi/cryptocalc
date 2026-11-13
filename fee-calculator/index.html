@@ -6,15 +6,15 @@
   <title>Crypto Exchange Fee Comparator – Find the Cheapest Exchange</title>
   <meta name="description" content="Compare crypto exchange fees side by side. See exactly how much Binance, Coinbase, Bybit, Kraken and others charge on your trade size." />
   <meta name="keywords" content="crypto exchange fee comparison, binance fees, coinbase fees, bybit fees, cheapest crypto exchange, trading fees calculator" />
-  <link rel="canonical" href="https://yourcryptocalc.com/fee-calculator/" />
+  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/fee-calculator/" />
   <meta property="og:title" content="Crypto Exchange Fee Comparator – Find the Cheapest Exchange" />
   <meta property="og:description" content="Compare trading fees across top exchanges instantly." />
   <meta property="og:type" content="website" />
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Exchange Fee Comparator","url":"https://yourcryptocalc.com/fee-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Exchange Fee Comparator","url":"https://zesty-haupia-16a953.netlify.app/fee-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 
   <style>
@@ -40,7 +40,7 @@
       color: var(--text);
     }
     .exchange-table tr:last-child td { border-bottom: none; }
-    .exchange-table tr.cheapest td { background: rgba(29,158,117,.08); }
+    .exchange-table tr.cheapest td { background: var(--gain-tint); }
     .exchange-table tr.cheapest td:first-child { border-left: 2px solid var(--green); }
 
     .ex-name { font-weight: 600; }
@@ -64,14 +64,14 @@
     .savings-box {
       display: none;
       margin-top: 16px;
-      background: #12271f;
-      border: 1px solid #1a3d2d;
+      background: var(--gain-tint);
+      border: 1px solid var(--gain-line);
       border-radius: 10px;
       padding: 14px 16px;
       font-size: 13px;
     }
     .savings-box.show { display: block; }
-    .savings-title { font-size: 10px; color: #5ccfa0; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .savings-title { font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
     .savings-amt { font-size: 22px; font-weight: 700; color: var(--green); }
     .savings-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
 
@@ -108,7 +108,7 @@
 
       <div id="resultsWrap" style="display:none;">
         <div class="savings-box" id="savingsBox">
-          <div class="savings-title">💰 You could save</div>
+          <div class="savings-title">You could save</div>
           <div class="savings-amt" id="savingsAmt"></div>
           <div class="savings-sub" id="savingsSub"></div>
         </div>
@@ -202,7 +202,7 @@
       const isBest  = i === 0;
       const isWorst = i === rows.length - 1;
       const barPct  = maxFee > 0 ? Math.max(4, (r.oneFee / maxFee) * 100) : 4;
-      const barColor = isBest ? 'var(--green)' : isWorst ? 'var(--red)' : '#4a5568';
+      const barColor = isBest ? 'var(--green)' : isWorst ? 'var(--red)' : 'var(--bar-neutral)';
 
       const tr = document.createElement('tr');
       if (isBest) tr.className = 'cheapest';

@@ -3,37 +3,204 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CryptoCalc – Free Crypto Calculator Tools</title>
-  <meta name="description" content="Free cryptocurrency calculator tools. Calculate crypto profit/loss, DCA returns, exchange fees, position size and more. No signup required." />
-  <meta name="keywords" content="crypto calculator, bitcoin calculator, crypto profit calculator, DCA calculator, crypto tools" />
-  <link rel="canonical" href="https://yourcryptocalc.com/" />
+  <title>Crypto Profit Calculator – Calculate Exact P&amp;L on Any Trade</title>
+  <meta name="description" content="Free crypto profit and loss calculator. Enter your buy price, sell price, investment amount and fees to calculate your exact profit or loss instantly." />
+  <meta name="keywords" content="crypto profit calculator, bitcoin profit calculator, crypto P&L calculator, cryptocurrency profit loss" />
+  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/profit-calculator/" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="CryptoCalc – Free Crypto Calculator Tools" />
-  <meta property="og:description" content="Free crypto calculators. Profit/loss, DCA, fees, position size. Instant results, no signup." />
+  <meta property="og:title" content="Crypto Profit Calculator – Calculate Exact P&L" />
+  <meta property="og:description" content="Free crypto profit and loss calculator. Instant results, no signup." />
   <meta property="og:type" content="website" />
 
   <!-- Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "CryptoCalc",
-    "description": "Free cryptocurrency calculator tools",
-    "url": "https://yourcryptocalc.com/"
+    "@type": "WebApplication",
+    "name": "Crypto Profit Calculator",
+    "description": "Calculate profit or loss on any cryptocurrency trade including exchange fees.",
+    "url": "https://zesty-haupia-16a953.netlify.app/profit-calculator/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I calculate crypto profit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To calculate crypto profit: subtract your buy price from your sell price, multiply by the number of coins, then subtract exchange fees. Formula: Profit = (Sell Price - Buy Price) × Coins - Fees."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How are exchange fees calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Exchange fees are usually a percentage of your trade value. Most exchanges charge between 0.1% and 0.2% per trade. You pay fees both when you buy and when you sell."
+        }
+      }
+    ]
   }
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    /* ── Result panel ── */
+    .result-panel {
+      display: none;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      animation: fadeUp .3s ease;
+    }
+    .result-panel.show { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* header strip */
+    .rp-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .rp-header.profit-mode { background: var(--gain-tint); border-bottom-color: var(--gain-line); }
+    .rp-header.loss-mode   { background: var(--loss-tint); border-bottom-color: var(--loss-line); }
+
+    .rp-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+    .profit-mode .rp-title { color: var(--green); }
+    .loss-mode   .rp-title { color: var(--red); }
+
+    .rp-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .profit-mode .rp-badge { background: var(--green); color: #fff; }
+    .loss-mode   .rp-badge { background: var(--red);   color: #fff; }
+
+    /* big number */
+    .rp-hero {
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .rp-hero-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .rp-hero-amount {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .profit-mode .rp-hero-amount { color: var(--green); }
+    .loss-mode   .rp-hero-amount { color: var(--red); }
+    .rp-hero-pct {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .profit-mode .rp-hero-pct { color: var(--green); }
+    .loss-mode   .rp-hero-pct { color: var(--red); }
+
+    /* breakdown rows */
+    .rp-rows { padding: 4px 16px 8px; }
+    .rp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .rp-row:last-child { border-bottom: none; }
+    .rp-row-label { color: var(--muted); }
+    .rp-row-val   { color: var(--text); font-weight: 500; }
+    .rp-row-val.green { color: var(--green); }
+    .rp-row-val.red   { color: var(--red); }
+    .rp-row-val.muted { color: var(--muted); font-weight: 400; }
+
+    /* mini bar chart */
+    .rp-chart {
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .rp-chart-title {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 10px;
+    }
+    .rp-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+    .rp-bar-row:last-child { margin-bottom: 0; }
+    .rp-bar-label {
+      font-size: 11px;
+      color: var(--muted);
+      width: 52px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .rp-bar-track {
+      flex: 1;
+      height: 14px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .rp-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .5s ease;
+    }
+    .rp-bar-fill.green { background: var(--green); }
+    .rp-bar-fill.gray  { background: var(--bar-neutral); }
+    .rp-bar-fill.red   { background: var(--red); }
+    .rp-bar-amt {
+      font-size: 11px;
+      color: var(--text);
+      width: 60px;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo">Crypto<span>Calc</span></a>
   <div class="nav-links">
-    <a href="#tools">Calculators</a>
+    <a href="/#tools">Calculators</a>
     <a href="/about.html">About</a>
   </div>
 </nav>
@@ -41,51 +208,156 @@
 <!-- AdSense Leaderboard 728x90 -->
 <div class="ad-banner" aria-hidden="true">Advertisement</div>
 
-<section class="hero">
-  <h1>Free <span>Crypto</span> Calculator Tools</h1>
-  <p>Instant calculations for traders and investors. No signup, no fees, no nonsense.</p>
-</section>
+<div class="page-grid">
 
-<section class="tools-section" id="tools">
-  <h2>All Tools</h2>
-  <div class="tools-grid">
+  <!-- Main Content -->
+  <main>
+    <div class="calc-header">
+      <h1>Crypto Profit / Loss Calculator</h1>
+      <p>Calculate your exact profit or loss on any cryptocurrency trade, including exchange fees.</p>
+    </div>
 
-    <a href="/profit-calculator/" class="tool-card">
-      <div class="tool-icon">📈</div>
-      <div class="tool-name">Profit / Loss Calculator</div>
-      <div class="tool-desc">Calculate exact profit or loss on any crypto trade including exchange fees.</div>
-      <span class="tool-badge">Most Popular</span>
-    </a>
+    <div class="calc-card">
 
-    <a href="/dca-calculator/" class="tool-card">
-      <div class="tool-icon">📅</div>
-      <div class="tool-name">DCA Calculator</div>
-      <div class="tool-desc">See how dollar-cost averaging into Bitcoin or any coin would have performed.</div>
-    </a>
+      <!-- Coin Selector -->
+      <div class="coin-tabs" id="coinTabs">
+        <button class="coin-tab active" data-coin="BTC">BTC</button>
+        <button class="coin-tab" data-coin="ETH">ETH</button>
+        <button class="coin-tab" data-coin="BNB">BNB</button>
+        <button class="coin-tab" data-coin="SOL">SOL</button>
+        <button class="coin-tab" data-coin="XRP">XRP</button>
+        <button class="coin-tab" data-coin="OTHER">Other</button>
+      </div>
 
-    <a href="/fee-calculator/" class="tool-card">
-      <div class="tool-icon">🔁</div>
-      <div class="tool-name">Exchange Fee Comparator</div>
-      <div class="tool-desc">Compare trading fees across Binance, Bybit, OKX and more for your trade size.</div>
-    </a>
+      <!-- Inputs -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="buyPrice">Buy Price (USD)</label>
+          <input type="number" id="buyPrice" placeholder="e.g. 30000" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="sellPrice">Sell Price (USD)</label>
+          <input type="number" id="sellPrice" placeholder="e.g. 60000" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="investment">Investment (USD)</label>
+          <input type="number" id="investment" placeholder="e.g. 500" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="fee">Exchange Fee (%)</label>
+          <input type="number" id="fee" placeholder="e.g. 0.1" min="0" max="10" step="any" value="0.1" />
+        </div>
+      </div>
 
-    <a href="/position-size-calculator/" class="tool-card">
-      <div class="tool-icon">📐</div>
-      <div class="tool-name">Position Size Calculator</div>
-      <div class="tool-desc">Calculate the right position size based on your account balance and risk tolerance.</div>
-    </a>
+      <button class="calc-btn" onclick="calculate()">Calculate Profit / Loss</button>
 
-    <a href="/converter/" class="tool-card">
-      <div class="tool-icon">💱</div>
-      <div class="tool-name">Crypto Converter</div>
-      <div class="tool-desc">Convert between Bitcoin, Ethereum, USDT and 100+ coins instantly.</div>
-    </a>
+      <!-- New Result Panel -->
+      <div class="result-panel" id="resultPanel">
 
-  </div>
-</section>
+        <!-- Header strip -->
+        <div class="rp-header" id="rpHeader">
+          <span class="rp-title" id="rpTitle">Your result</span>
+          <span class="rp-badge" id="rpBadge">PROFIT ↑</span>
+        </div>
+
+        <!-- Big number -->
+        <div class="rp-hero">
+          <div class="rp-hero-label">Net profit / loss</div>
+          <div class="rp-hero-amount" id="rpAmount">—</div>
+          <div class="rp-hero-pct" id="rpPct"></div>
+        </div>
+
+        <!-- Breakdown rows -->
+        <div class="rp-rows">
+          <div class="rp-row">
+            <span class="rp-row-label">Initial investment</span>
+            <span class="rp-row-val" id="rpInvestment">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Coins bought</span>
+            <span class="rp-row-val" id="rpCoins">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Sell value</span>
+            <span class="rp-row-val" id="rpSellValue">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Fees paid</span>
+            <span class="rp-row-val red" id="rpFees">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Net profit / loss</span>
+            <span class="rp-row-val" id="rpNet">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Break-even price</span>
+            <span class="rp-row-val muted" id="rpBreakeven">—</span>
+          </div>
+        </div>
+
+        <!-- Mini bar chart -->
+        <div class="rp-chart">
+          <div class="rp-chart-title">Where your money went</div>
+          <div class="rp-bar-row" id="barProfit">
+            <span class="rp-bar-label">Profit</span>
+            <div class="rp-bar-track"><div class="rp-bar-fill green" id="barProfitFill" style="width:0%"></div></div>
+            <span class="rp-bar-amt" id="barProfitAmt"></span>
+          </div>
+          <div class="rp-bar-row">
+            <span class="rp-bar-label">Capital</span>
+            <div class="rp-bar-track"><div class="rp-bar-fill gray" id="barCapFill" style="width:80%"></div></div>
+            <span class="rp-bar-amt" id="barCapAmt"></span>
+          </div>
+          <div class="rp-bar-row">
+            <span class="rp-bar-label">Fees</span>
+            <div class="rp-bar-track"><div class="rp-bar-fill red" id="barFeesFill" style="width:0%"></div></div>
+            <span class="rp-bar-amt" id="barFeesAmt" style="color: var(--red);"></span>
+          </div>
+        </div>
+
+      </div>
+      <!-- end result-panel -->
+
+    </div>
+
+    <!-- AdSense 300x250 below results -->
+    <div class="ad-square" aria-hidden="true">Advertisement</div>
+
+    <!-- SEO Content -->
+    <div class="content-section">
+      <h2>How to Use This Calculator</h2>
+      <p>Enter the price you bought your crypto at, the price you sold (or plan to sell) at, how much USD you invested, and your exchange's fee percentage. Hit calculate and you'll instantly see your profit or loss.</p>
+
+      <h3>What is a good crypto profit?</h3>
+      <p>Any positive return is a profit. Most serious traders aim for a minimum 2:1 risk-reward ratio, meaning they target at least 2% gain for every 1% they risk. For long-term holders, annual returns of 20–50% are considered strong.</p>
+
+      <h3>How exchange fees affect your profit</h3>
+      <p>Exchange fees are charged twice — once when you buy and once when you sell. On a $1,000 trade at 0.1% fee each way, you pay $2 total. On a $10,000 trade, that's $20. These add up fast, especially for active traders. Binance charges 0.1%, Bybit 0.1%, Coinbase up to 0.6%.</p>
+
+      <h3>Frequently Asked Questions</h3>
+
+      <h3>How do I calculate crypto profit?</h3>
+      <p>Formula: Profit = (Sell Price − Buy Price) × Coins − Total Fees. This calculator does all of this automatically.</p>
+
+      <h3>How are exchange fees calculated?</h3>
+      <p>Exchange fees are usually a percentage of your trade value. Most exchanges charge 0.1%–0.2% per trade. You pay fees both when you buy and when you sell, so total fees = buy fee + sell fee.</p>
+    </div>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div style="position: sticky; top: 72px;">
+      <div style="background: var(--bg2); border: 1px dashed var(--border); border-radius: 8px; height: 600px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted);">Advertisement</div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Mobile Sticky Ad -->
+<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
 
 <footer>
-  <p>&copy; 2026 CryptoCalc. All tools are for informational purposes only.</p>
+  <p>&copy; 2026 CryptoCalc. For informational purposes only. Not financial advice.</p>
   <div style="margin-top:10px;">
     <a href="/about.html">About</a>
     <a href="/privacy.html">Privacy</a>
@@ -93,6 +365,109 @@
     <a href="/terms.html">Terms</a>
   </div>
 </footer>
+
+<script>
+  // Coin selector
+  let selectedCoin = 'BTC';
+  document.querySelectorAll('.coin-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.coin-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      selectedCoin = this.dataset.coin;
+    });
+  });
+
+  // Format number as USD
+  function usd(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // Set bar width capped at 95% for visual clarity
+  function barW(val, total) {
+    if (total === 0) return '0%';
+    return Math.min(95, Math.max(2, Math.abs(val) / Math.abs(total) * 95)) + '%';
+  }
+
+  // Calculate
+  function calculate() {
+    const buyPrice   = parseFloat(document.getElementById('buyPrice').value);
+    const sellPrice  = parseFloat(document.getElementById('sellPrice').value);
+    const investment = parseFloat(document.getElementById('investment').value);
+    const feePercent = parseFloat(document.getElementById('fee').value) || 0;
+
+    if (!buyPrice || !sellPrice || !investment) {
+      alert('Please fill in buy price, sell price and investment amount.');
+      return;
+    }
+    if (buyPrice <= 0 || sellPrice <= 0 || investment <= 0) {
+      alert('All values must be greater than zero.');
+      return;
+    }
+
+    const coins      = investment / buyPrice;
+    const sellValue  = coins * sellPrice;
+    const buyFee     = investment * (feePercent / 100);
+    const sellFee    = sellValue  * (feePercent / 100);
+    const totalFees  = buyFee + sellFee;
+    const netProfit  = sellValue - investment - totalFees;
+    const pct        = ((netProfit / investment) * 100).toFixed(2);
+    const isProfit   = netProfit >= 0;
+
+    // Break-even: investment / coins + small fee adjustment
+    const breakeven  = buyPrice * (1 + feePercent / 100) / (1 - feePercent / 100);
+
+    // ── header ──
+    const header = document.getElementById('rpHeader');
+    header.className = 'rp-header ' + (isProfit ? 'profit-mode' : 'loss-mode');
+    document.getElementById('rpTitle').textContent = selectedCoin + ' trade result';
+    document.getElementById('rpBadge').textContent = isProfit ? 'PROFIT ↑' : 'LOSS ↓';
+
+    // ── hero ──
+    const sign = isProfit ? '+' : '−';
+    document.getElementById('rpAmount').textContent = sign + usd(netProfit);
+    document.getElementById('rpPct').textContent =
+      (isProfit ? '▲ +' : '▼ ') + pct + '% return on investment';
+
+    // ── rows ──
+    document.getElementById('rpInvestment').textContent = usd(investment);
+    document.getElementById('rpCoins').textContent      = coins.toFixed(6) + ' ' + selectedCoin;
+    document.getElementById('rpSellValue').textContent  = usd(sellValue);
+    document.getElementById('rpFees').textContent       = '−' + usd(totalFees);
+    const netEl = document.getElementById('rpNet');
+    netEl.textContent  = sign + usd(netProfit);
+    netEl.className    = 'rp-row-val ' + (isProfit ? 'green' : 'red');
+    document.getElementById('rpBreakeven').textContent  = '$' + breakeven.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+    // ── bar chart ──
+    const total = investment + Math.abs(netProfit);
+    // profit bar: only show if profit; show as loss bar (red) if negative
+    const barProfitFill = document.getElementById('barProfitFill');
+    const barProfit     = document.getElementById('barProfit');
+    barProfitFill.className = 'rp-bar-fill ' + (isProfit ? 'green' : 'red');
+    barProfitFill.style.width = barW(netProfit, total);
+    document.querySelector('#barProfit .rp-bar-label').textContent = isProfit ? 'Profit' : 'Loss';
+    document.getElementById('barProfitAmt').textContent = sign + usd(netProfit);
+    document.getElementById('barProfitAmt').style.color = isProfit ? 'var(--green)' : 'var(--red)';
+
+    document.getElementById('barCapFill').style.width  = barW(investment, total);
+    document.getElementById('barCapAmt').textContent   = usd(investment);
+
+    document.getElementById('barFeesFill').style.width = barW(totalFees, total);
+    document.getElementById('barFeesAmt').textContent  = '−' + usd(totalFees);
+
+    // ── show panel ──
+    const panel = document.getElementById('resultPanel');
+    panel.classList.remove('show');
+    void panel.offsetWidth; // force reflow for animation replay
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') calculate();
+  });
+</script>
 
 </body>
 </html>

@@ -6,7 +6,7 @@
   <title>Crypto DCA Calculator – Dollar Cost Averaging Returns</title>
   <meta name="description" content="Free crypto DCA calculator. See exactly how much you'd have made dollar cost averaging into Bitcoin, Ethereum or any crypto over any time period." />
   <meta name="keywords" content="crypto DCA calculator, dollar cost averaging crypto, bitcoin DCA calculator, ethereum DCA, crypto averaging calculator" />
-  <link rel="canonical" href="https://yourcryptocalc.com/dca-calculator/" />
+  <link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/dca-calculator/" />
   <meta property="og:title" content="Crypto DCA Calculator – Dollar Cost Averaging Returns" />
   <meta property="og:description" content="Calculate your DCA returns on any crypto. Free, instant, no signup." />
   <meta property="og:type" content="website" />
@@ -17,7 +17,7 @@
     "@type": "WebApplication",
     "name": "Crypto DCA Calculator",
     "description": "Calculate dollar cost averaging returns on any cryptocurrency.",
-    "url": "https://yourcryptocalc.com/dca-calculator/",
+    "url": "https://zesty-haupia-16a953.netlify.app/dca-calculator/",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -50,7 +50,7 @@
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 
   <style>
@@ -104,12 +104,12 @@
       align-items: center;
       border-bottom: 1px solid var(--border);
     }
-    .rp-header.profit-mode { background: #12271f; border-bottom-color: #1a3d2d; }
-    .rp-header.loss-mode   { background: #2a1515; border-bottom-color: #3d1a1a; }
+    .rp-header.profit-mode { background: var(--gain-tint); border-bottom-color: var(--gain-line); }
+    .rp-header.loss-mode   { background: var(--loss-tint); border-bottom-color: var(--loss-line); }
 
     .rp-title { font-size: 11px; font-weight: 500; letter-spacing: .04em; }
-    .profit-mode .rp-title { color: #5ccfa0; }
-    .loss-mode   .rp-title { color: #f07070; }
+    .profit-mode .rp-title { color: var(--green); }
+    .loss-mode   .rp-title { color: var(--red); }
 
     .rp-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
     .profit-mode .rp-badge { background: var(--green); color: #fff; }
@@ -166,7 +166,7 @@
       min-height: 4px;
       transition: height .4s ease;
     }
-    .dca-bar.invested { background: #2A3347; }
+    .dca-bar.invested { background: var(--bar-neutral); }
     .dca-bar.value-up { background: var(--green); }
     .dca-bar.value-dn { background: var(--red); }
 
@@ -315,7 +315,7 @@
           <div class="dca-chart-wrap" id="dcaChart"></div>
           <div class="chart-labels" id="chartLabels"></div>
           <div class="chart-legend">
-            <span class="legend-item"><span class="legend-dot" style="background:#2A3347"></span>Invested</span>
+            <span class="legend-item"><span class="legend-dot" style="background:var(--bar-neutral)"></span>Invested</span>
             <span class="legend-item" id="legendValue"><span class="legend-dot" style="background:var(--green)"></span>Current value</span>
           </div>
         </div>
