@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Exchange Fee Comparator – Find the Cheapest Exchange</title>
+  <meta name="description" content="Compare crypto exchange fees side by side. See exactly how much Binance, Coinbase, Bybit, Kraken and others charge on your trade size." />
+  <meta name="keywords" content="crypto exchange fee comparison, binance fees, coinbase fees, bybit fees, cheapest crypto exchange, trading fees calculator" />
+  <link rel="canonical" href="https://yourcryptocalc.com/fee-calculator/" />
+  <meta property="og:title" content="Crypto Exchange Fee Comparator – Find the Cheapest Exchange" />
+  <meta property="og:description" content="Compare trading fees across top exchanges instantly." />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Exchange Fee Comparator","url":"https://yourcryptocalc.com/fee-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .exchange-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    .exchange-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border-bottom: 1px solid var(--border);
+    }
+    .exchange-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .exchange-table tr:last-child td { border-bottom: none; }
+    .exchange-table tr.cheapest td { background: rgba(29,158,117,.08); }
+    .exchange-table tr.cheapest td:first-child { border-left: 2px solid var(--green); }
+
+    .ex-name { font-weight: 600; }
+    .ex-fee-pct { color: var(--muted); font-size: 12px; }
+    .fee-amount { font-weight: 600; }
+    .fee-amount.best { color: var(--green); }
+    .fee-amount.worst { color: var(--red); }
+
+    .badge-best {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: var(--green);
+      color: #fff;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .savings-box {
+      display: none;
+      margin-top: 16px;
+      background: #12271f;
+      border: 1px solid #1a3d2d;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+    .savings-box.show { display: block; }
+    .savings-title { font-size: 10px; color: #5ccfa0; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .savings-amt { font-size: 22px; font-weight: 700; color: var(--green); }
+    .savings-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+
+    .bar-cell { width: 120px; }
+    .fee-bar-track { background: var(--bg3); border-radius: 3px; height: 6px; }
+    .fee-bar-fill { height: 100%; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Crypto<span>Calc</span></a>
+  <div class="nav-links"><a href="/#tools">Calculators</a><a href="/about.html">About</a></div>
+</nav>
+
+<div class="ad-banner" aria-hidden="true">Advertisement</div>
+
+<div class="page-grid">
+  <main>
+    <div class="calc-header">
+      <h1>Crypto Exchange Fee Comparator</h1>
+      <p>Enter your trade size and see exactly how much each exchange charges you.</p>
+    </div>
+
+    <div class="calc-card">
+      <div class="form-grid">
+        <div class="form-group" style="grid-column:1/-1">
+          <label for="tradeSize">Trade size (USD)</label>
+          <input type="number" id="tradeSize" placeholder="e.g. 1000" min="0" step="any" />
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Compare Fees</button>
+
+      <div id="resultsWrap" style="display:none;">
+        <div class="savings-box" id="savingsBox">
+          <div class="savings-title">💰 You could save</div>
+          <div class="savings-amt" id="savingsAmt"></div>
+          <div class="savings-sub" id="savingsSub"></div>
+        </div>
+
+        <table class="exchange-table" id="feeTable">
+          <thead>
+            <tr>
+              <th>Exchange</th>
+              <th>Spot fee</th>
+              <th class="bar-cell">Relative cost</th>
+              <th>Fee on trade</th>
+              <th>Round trip</th>
+            </tr>
+          </thead>
+          <tbody id="feeBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ad-square" aria-hidden="true">Advertisement</div>
+
+    <div class="content-section">
+      <h2>Crypto Exchange Fee Comparison (2026)</h2>
+      <p>Exchange fees vary significantly — Coinbase charges up to 0.6% while Binance charges just 0.1%. On a $10,000 trade, that's the difference between paying $60 and $10. Over a year of active trading, fees can easily cost you hundreds or thousands of dollars.</p>
+
+      <h3>Maker vs taker fees</h3>
+      <p>Most exchanges have two fee tiers: <strong>maker fees</strong> (you add liquidity by placing limit orders) and <strong>taker fees</strong> (you remove liquidity with market orders). Taker fees are usually higher. This calculator uses taker fees, which is what most traders pay when buying or selling at market price.</p>
+
+      <h3>How to reduce exchange fees</h3>
+      <p>Most exchanges offer fee discounts if you hold their native token (BNB on Binance, KCS on KuCoin). Higher trading volume also unlocks lower fee tiers. Using limit orders (maker orders) instead of market orders can halve your fees on some exchanges.</p>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div style="position:sticky;top:72px;">
+      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;height:600px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);">Advertisement</div>
+    </div>
+  </aside>
+</div>
+
+<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+
+<footer>
+  <p>&copy; 2026 CryptoCalc. Fee data is approximate and may change. Verify on each exchange before trading.</p>
+  <div style="margin-top:10px;"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a><a href="/terms.html">Terms</a></div>
+</footer>
+
+<script>
+  // Taker fee rates (spot, standard tier, as of 2026)
+  const EXCHANGES = [
+    { name: 'Binance',   fee: 0.100, note: 'Standard taker' },
+    { name: 'Bybit',     fee: 0.100, note: 'Standard taker' },
+    { name: 'OKX',       fee: 0.100, note: 'Standard taker' },
+    { name: 'KuCoin',    fee: 0.100, note: 'Standard taker' },
+    { name: 'Kraken',    fee: 0.260, note: 'Standard taker' },
+    { name: 'Coinbase',  fee: 0.600, note: 'Coinbase Advanced' },
+    { name: 'Gate.io',   fee: 0.200, note: 'Standard taker' },
+    { name: 'HTX',       fee: 0.200, note: 'Standard taker' },
+  ];
+
+  function usd(n) {
+    if (n < 0.01) return '$' + n.toFixed(4);
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculate() {
+    const trade = parseFloat(document.getElementById('tradeSize').value);
+    if (!trade || trade <= 0) { alert('Enter a trade size greater than zero.'); return; }
+
+    const rows = EXCHANGES.map(ex => ({
+      ...ex,
+      oneFee:   trade * (ex.fee / 100),
+      roundTrip: trade * (ex.fee / 100) * 2,
+    })).sort((a, b) => a.fee - b.fee);
+
+    const minFee = rows[0].oneFee;
+    const maxFee = rows[rows.length - 1].oneFee;
+    const saving = rows[rows.length - 1].roundTrip - rows[0].roundTrip;
+
+    // savings box
+    const sb = document.getElementById('savingsBox');
+    document.getElementById('savingsAmt').textContent = usd(saving);
+    document.getElementById('savingsSub').textContent =
+      `vs using ${rows[rows.length-1].name} on a $${trade.toLocaleString()} round-trip trade`;
+    sb.classList.add('show');
+
+    // table
+    const tbody = document.getElementById('feeBody');
+    tbody.innerHTML = '';
+    rows.forEach((r, i) => {
+      const isBest  = i === 0;
+      const isWorst = i === rows.length - 1;
+      const barPct  = maxFee > 0 ? Math.max(4, (r.oneFee / maxFee) * 100) : 4;
+      const barColor = isBest ? 'var(--green)' : isWorst ? 'var(--red)' : '#4a5568';
+
+      const tr = document.createElement('tr');
+      if (isBest) tr.className = 'cheapest';
+      tr.innerHTML = `
+        <td>
+          <span class="ex-name">${r.name}</span>${isBest ? '<span class="badge-best">CHEAPEST</span>' : ''}
+          <div class="ex-fee-pct">${r.fee}% taker · ${r.note}</div>
+        </td>
+        <td>${r.fee}%</td>
+        <td class="bar-cell">
+          <div class="fee-bar-track">
+            <div class="fee-bar-fill" style="width:${barPct}%;background:${barColor};"></div>
+          </div>
+        </td>
+        <td class="fee-amount ${isBest?'best':isWorst?'worst':''}">${usd(r.oneFee)}</td>
+        <td class="fee-amount ${isBest?'best':isWorst?'worst':''}">${usd(r.roundTrip)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('resultsWrap').style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+
+</body>
+</html>

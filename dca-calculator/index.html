@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto DCA Calculator – Dollar Cost Averaging Returns</title>
+  <meta name="description" content="Free crypto DCA calculator. See exactly how much you'd have made dollar cost averaging into Bitcoin, Ethereum or any crypto over any time period." />
+  <meta name="keywords" content="crypto DCA calculator, dollar cost averaging crypto, bitcoin DCA calculator, ethereum DCA, crypto averaging calculator" />
+  <link rel="canonical" href="https://yourcryptocalc.com/dca-calculator/" />
+  <meta property="og:title" content="Crypto DCA Calculator – Dollar Cost Averaging Returns" />
+  <meta property="og:description" content="Calculate your DCA returns on any crypto. Free, instant, no signup." />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Crypto DCA Calculator",
+    "description": "Calculate dollar cost averaging returns on any cryptocurrency.",
+    "url": "https://yourcryptocalc.com/dca-calculator/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is DCA in crypto?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DCA (Dollar Cost Averaging) means buying a fixed dollar amount of crypto at regular intervals, regardless of price. It reduces the impact of volatility by spreading purchases over time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is DCA a good strategy for crypto?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DCA is widely considered one of the safest crypto investment strategies because it removes the need to time the market. By buying consistently, you automatically buy more coins when prices are low and fewer when they're high."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    /* ── Frequency tabs ── */
+    .freq-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      background: var(--bg3);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .freq-tab {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .freq-tab.active {
+      background: var(--bg2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Result panel (same pattern as profit calc) ── */
+    .result-panel {
+      display: none;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      animation: fadeUp .3s ease;
+    }
+    .result-panel.show { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .rp-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .rp-header.profit-mode { background: #12271f; border-bottom-color: #1a3d2d; }
+    .rp-header.loss-mode   { background: #2a1515; border-bottom-color: #3d1a1a; }
+
+    .rp-title { font-size: 11px; font-weight: 500; letter-spacing: .04em; }
+    .profit-mode .rp-title { color: #5ccfa0; }
+    .loss-mode   .rp-title { color: #f07070; }
+
+    .rp-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .profit-mode .rp-badge { background: var(--green); color: #fff; }
+    .loss-mode   .rp-badge { background: var(--red);   color: #fff; }
+
+    /* summary stats row */
+    .rp-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .rp-stat {
+      background: var(--bg2);
+      padding: 14px 16px;
+    }
+    .rp-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+    .rp-stat-val   { font-size: 20px; font-weight: 700; color: var(--text); }
+    .rp-stat-val.green { color: var(--green); }
+    .rp-stat-val.red   { color: var(--red); }
+
+    /* breakdown rows */
+    .rp-rows { padding: 4px 16px 8px; }
+    .rp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .rp-row:last-child { border-bottom: none; }
+    .rp-row-label { color: var(--muted); }
+    .rp-row-val   { color: var(--text); font-weight: 500; }
+    .rp-row-val.green { color: var(--green); }
+    .rp-row-val.red   { color: var(--red); }
+    .rp-row-val.muted { color: var(--muted); font-weight: 400; }
+
+    /* mini growth chart */
+    .rp-chart { padding: 14px 16px 16px; border-top: 1px solid var(--border); }
+    .rp-chart-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+
+    .dca-chart-wrap {
+      position: relative;
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+    }
+    .dca-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      min-height: 4px;
+      transition: height .4s ease;
+    }
+    .dca-bar.invested { background: #2A3347; }
+    .dca-bar.value-up { background: var(--green); }
+    .dca-bar.value-dn { background: var(--red); }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .chart-legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .legend-item { font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Crypto<span>Calc</span></a>
+  <div class="nav-links">
+    <a href="/#tools">Calculators</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<div class="ad-banner" aria-hidden="true">Advertisement</div>
+
+<div class="page-grid">
+  <main>
+    <div class="calc-header">
+      <h1>Crypto DCA Calculator</h1>
+      <p>See how much you'd have made dollar cost averaging into any cryptocurrency over time.</p>
+    </div>
+
+    <div class="calc-card">
+
+      <!-- Coin tabs -->
+      <div class="coin-tabs" id="coinTabs">
+        <button class="coin-tab active" data-coin="BTC">BTC</button>
+        <button class="coin-tab" data-coin="ETH">ETH</button>
+        <button class="coin-tab" data-coin="BNB">BNB</button>
+        <button class="coin-tab" data-coin="SOL">SOL</button>
+        <button class="coin-tab" data-coin="XRP">XRP</button>
+        <button class="coin-tab" data-coin="OTHER">Other</button>
+      </div>
+
+      <!-- Frequency tabs -->
+      <div class="freq-tabs" id="freqTabs">
+        <button class="freq-tab active" data-freq="daily"   data-label="day">Daily</button>
+        <button class="freq-tab"        data-freq="weekly"  data-label="week">Weekly</button>
+        <button class="freq-tab"        data-freq="monthly" data-label="month">Monthly</button>
+      </div>
+
+      <!-- Inputs -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="amountPerPeriod">Amount per <span id="periodLabel">day</span> (USD)</label>
+          <input type="number" id="amountPerPeriod" placeholder="e.g. 10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="numPeriods">Number of <span id="periodsLabel">days</span></label>
+          <input type="number" id="numPeriods" placeholder="e.g. 365" min="1" step="1" />
+        </div>
+        <div class="form-group">
+          <label for="avgBuyPrice">Average buy price (USD)</label>
+          <input type="number" id="avgBuyPrice" placeholder="e.g. 30000" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="currentPrice">Current price (USD)</label>
+          <input type="number" id="currentPrice" placeholder="e.g. 60000" min="0" step="any" />
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Calculate DCA Returns</button>
+
+      <!-- Result panel -->
+      <div class="result-panel" id="resultPanel">
+
+        <div class="rp-header" id="rpHeader">
+          <span class="rp-title" id="rpTitle">DCA result</span>
+          <span class="rp-badge" id="rpBadge">PROFIT ↑</span>
+        </div>
+
+        <!-- 2×2 stat grid -->
+        <div class="rp-stats">
+          <div class="rp-stat">
+            <div class="rp-stat-label">Total invested</div>
+            <div class="rp-stat-val" id="statInvested">—</div>
+          </div>
+          <div class="rp-stat">
+            <div class="rp-stat-label">Current value</div>
+            <div class="rp-stat-val" id="statValue">—</div>
+          </div>
+          <div class="rp-stat">
+            <div class="rp-stat-label">Total profit / loss</div>
+            <div class="rp-stat-val" id="statProfit">—</div>
+          </div>
+          <div class="rp-stat">
+            <div class="rp-stat-label">Return on investment</div>
+            <div class="rp-stat-val" id="statROI">—</div>
+          </div>
+        </div>
+
+        <!-- Breakdown rows -->
+        <div class="rp-rows">
+          <div class="rp-row">
+            <span class="rp-row-label">Coins accumulated</span>
+            <span class="rp-row-val" id="rpCoins">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Average buy price</span>
+            <span class="rp-row-val" id="rpAvgBuy">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Current price</span>
+            <span class="rp-row-val" id="rpCurrent">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Price change since avg</span>
+            <span class="rp-row-val" id="rpPriceChange">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Break-even price</span>
+            <span class="rp-row-val muted" id="rpBreakeven">—</span>
+          </div>
+          <div class="rp-row">
+            <span class="rp-row-label">Total purchases</span>
+            <span class="rp-row-val muted" id="rpPurchases">—</span>
+          </div>
+        </div>
+
+        <!-- Growth chart -->
+        <div class="rp-chart">
+          <div class="rp-chart-title">Invested vs current value over time</div>
+          <div class="dca-chart-wrap" id="dcaChart"></div>
+          <div class="chart-labels" id="chartLabels"></div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#2A3347"></span>Invested</span>
+            <span class="legend-item" id="legendValue"><span class="legend-dot" style="background:var(--green)"></span>Current value</span>
+          </div>
+        </div>
+
+      </div>
+      <!-- end result-panel -->
+
+    </div>
+
+    <div class="ad-square" aria-hidden="true">Advertisement</div>
+
+    <div class="content-section">
+      <h2>What is Dollar Cost Averaging (DCA)?</h2>
+      <p>Dollar cost averaging (DCA) is an investment strategy where you buy a fixed dollar amount of an asset at regular intervals — daily, weekly, or monthly — regardless of price. Instead of trying to time the market with one large purchase, you spread your buys over time.</p>
+
+      <h3>Why DCA works in crypto</h3>
+      <p>Crypto is highly volatile. When you DCA, you automatically buy more coins when prices are low and fewer when prices are high. Over time, this averages out your cost basis and reduces the risk of buying at the top. It's one of the most popular strategies among long-term Bitcoin and Ethereum holders.</p>
+
+      <h3>How to use this DCA calculator</h3>
+      <p>Enter how much you invest per period (daily, weekly, or monthly), how many periods you've been investing for, your average buy price, and today's current price. The calculator will show your total investment, how many coins you've accumulated, and your current profit or loss.</p>
+
+      <h3>Frequently Asked Questions</h3>
+
+      <h3>What is DCA in crypto?</h3>
+      <p>DCA (Dollar Cost Averaging) means buying a fixed dollar amount of crypto at regular intervals, regardless of price. It reduces volatility risk by spreading purchases over time rather than making one large buy.</p>
+
+      <h3>Is DCA a good strategy for crypto?</h3>
+      <p>Yes — DCA is widely considered one of the safest crypto strategies because it removes the need to time the market. By buying consistently, you automatically buy more when prices are low and fewer when they're high.</p>
+
+      <h3>How often should I DCA into crypto?</h3>
+      <p>Weekly or monthly DCA is most common and balances transaction fees against diversifying your entry points. Daily DCA gives the smoothest averaging effect but may incur higher fees depending on your exchange.</p>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div style="position: sticky; top: 72px;">
+      <div style="background: var(--bg2); border: 1px dashed var(--border); border-radius: 8px; height: 600px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted);">Advertisement</div>
+    </div>
+  </aside>
+</div>
+
+<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+
+<footer>
+  <p>&copy; 2026 CryptoCalc. For informational purposes only. Not financial advice.</p>
+  <div style="margin-top:10px;">
+    <a href="/about.html">About</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/terms.html">Terms</a>
+  </div>
+</footer>
+
+<script>
+  let selectedCoin = 'BTC';
+  let selectedFreq = 'daily';
+  let selectedLabel = 'day';
+
+  // Coin tabs
+  document.querySelectorAll('.coin-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.coin-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      selectedCoin = this.dataset.coin;
+    });
+  });
+
+  // Frequency tabs
+  document.querySelectorAll('.freq-tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.freq-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      selectedFreq  = this.dataset.freq;
+      selectedLabel = this.dataset.label;
+      document.getElementById('periodLabel').textContent  = selectedLabel;
+      document.getElementById('periodsLabel').textContent = selectedLabel + 's';
+    });
+  });
+
+  function usd(n, dec) {
+    dec = dec !== undefined ? dec : 2;
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  }
+
+  function calculate() {
+    const amount      = parseFloat(document.getElementById('amountPerPeriod').value);
+    const periods     = parseInt(document.getElementById('numPeriods').value);
+    const avgBuy      = parseFloat(document.getElementById('avgBuyPrice').value);
+    const currentP    = parseFloat(document.getElementById('currentPrice').value);
+
+    if (!amount || !periods || !avgBuy || !currentP) {
+      alert('Please fill in all four fields.');
+      return;
+    }
+    if (amount <= 0 || periods < 1 || avgBuy <= 0 || currentP <= 0) {
+      alert('All values must be greater than zero.');
+      return;
+    }
+
+    const totalInvested = amount * periods;
+    const coinsAccum    = totalInvested / avgBuy;
+    const currentValue  = coinsAccum * currentP;
+    const netProfit     = currentValue - totalInvested;
+    const roi           = ((netProfit / totalInvested) * 100).toFixed(2);
+    const isProfit      = netProfit >= 0;
+    const sign          = isProfit ? '+' : '−';
+
+    const priceChangePct = (((currentP - avgBuy) / avgBuy) * 100).toFixed(2);
+    const priceIsUp      = currentP >= avgBuy;
+
+    // header
+    document.getElementById('rpHeader').className = 'rp-header ' + (isProfit ? 'profit-mode' : 'loss-mode');
+    document.getElementById('rpTitle').textContent = selectedCoin + ' DCA result';
+    document.getElementById('rpBadge').textContent = isProfit ? 'PROFIT ↑' : 'LOSS ↓';
+
+    // stats
+    document.getElementById('statInvested').textContent = usd(totalInvested);
+    document.getElementById('statInvested').className   = 'rp-stat-val';
+
+    const valEl = document.getElementById('statValue');
+    valEl.textContent = usd(currentValue);
+    valEl.className   = 'rp-stat-val ' + (isProfit ? 'green' : 'red');
+
+    const profEl = document.getElementById('statProfit');
+    profEl.textContent = sign + usd(netProfit);
+    profEl.className   = 'rp-stat-val ' + (isProfit ? 'green' : 'red');
+
+    const roiEl = document.getElementById('statROI');
+    roiEl.textContent = (isProfit ? '+' : '') + roi + '%';
+    roiEl.className   = 'rp-stat-val ' + (isProfit ? 'green' : 'red');
+
+    // rows
+    document.getElementById('rpCoins').textContent       = coinsAccum.toFixed(6) + ' ' + selectedCoin;
+    document.getElementById('rpAvgBuy').textContent      = usd(avgBuy);
+    document.getElementById('rpCurrent').textContent     = usd(currentP);
+
+    const pcEl = document.getElementById('rpPriceChange');
+    pcEl.textContent = (priceIsUp ? '+' : '') + priceChangePct + '%';
+    pcEl.className   = 'rp-row-val ' + (priceIsUp ? 'green' : 'red');
+
+    document.getElementById('rpBreakeven').textContent  = usd(avgBuy); // avg buy IS break-even for DCA
+    document.getElementById('rpPurchases').textContent  = periods.toLocaleString() + ' purchases';
+
+    // chart — 10 segments showing invested vs value growth
+    const steps = Math.min(10, periods);
+    const chartEl    = document.getElementById('dcaChart');
+    const labelsEl   = document.getElementById('chartLabels');
+    chartEl.innerHTML = '';
+    labelsEl.innerHTML = '';
+
+    // For each step, interpolate between avg buy and current price
+    // Simple model: price moves linearly from avgBuy to currentP
+    let maxH = 0;
+    const bars = [];
+    for (let i = 1; i <= steps; i++) {
+      const frac        = i / steps;
+      const stepInvested = totalInvested * frac;
+      const stepCoins   = stepInvested / avgBuy;
+      // interpolate price
+      const stepPrice   = avgBuy + (currentP - avgBuy) * frac;
+      const stepValue   = stepCoins * stepPrice;
+      bars.push({ invested: stepInvested, value: stepValue });
+      maxH = Math.max(maxH, stepInvested, stepValue);
+    }
+
+    bars.forEach((b, i) => {
+      const invH  = Math.max(4, (b.invested / maxH) * 76);
+      const valH  = Math.max(4, (b.value   / maxH) * 76);
+      const valClass = b.value >= b.invested ? 'value-up' : 'value-dn';
+
+      // pair: invested + value side by side
+      const pair = document.createElement('div');
+      pair.style.cssText = 'flex:1;display:flex;gap:1px;align-items:flex-end;height:80px;';
+
+      const iBar = document.createElement('div');
+      iBar.className = 'dca-bar invested';
+      iBar.style.height = invH + 'px';
+      iBar.style.flex = '1';
+
+      const vBar = document.createElement('div');
+      vBar.className = 'dca-bar ' + valClass;
+      vBar.style.height = valH + 'px';
+      vBar.style.flex = '1';
+
+      pair.appendChild(iBar);
+      pair.appendChild(vBar);
+      chartEl.appendChild(pair);
+
+      // labels for first, mid and last
+      if (i === 0 || i === Math.floor(steps / 2) || i === steps - 1) {
+        const lbl = document.createElement('span');
+        // convert period index to human label
+        const periodNum = Math.round((i + 1) / steps * periods);
+        let txt = '';
+        if (selectedFreq === 'monthly') {
+          txt = periodNum >= 12 ? Math.floor(periodNum/12) + 'y' : periodNum + 'm';
+        } else if (selectedFreq === 'weekly') {
+          txt = periodNum >= 52 ? Math.floor(periodNum/52) + 'y' : periodNum + 'w';
+        } else {
+          txt = periodNum >= 365 ? Math.floor(periodNum/365) + 'y' : periodNum + 'd';
+        }
+        lbl.textContent = txt;
+      }
+    });
+
+    // simpler label row: start / mid / end
+    ['Start', 'Mid', 'Now'].forEach(t => {
+      const s = document.createElement('span');
+      s.textContent = t;
+      labelsEl.appendChild(s);
+    });
+
+    // legend color
+    document.querySelector('#legendValue .legend-dot').style.background = isProfit ? 'var(--green)' : 'var(--red)';
+
+    // show panel
+    const panel = document.getElementById('resultPanel');
+    panel.classList.remove('show');
+    void panel.offsetWidth;
+    panel.classList.add('show');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+
+</body>
+</html>

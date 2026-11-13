@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Position Size Calculator – Risk-Based Trade Sizing</title>
+  <meta name="description" content="Calculate the right position size for any crypto trade based on your account size and risk tolerance. Never risk more than you can afford to lose." />
+  <meta name="keywords" content="crypto position size calculator, bitcoin position size, risk management crypto, how much to invest crypto, trade size calculator" />
+  <link rel="canonical" href="https://yourcryptocalc.com/position-size-calculator/" />
+  <meta property="og:title" content="Crypto Position Size Calculator – Risk-Based Trade Sizing" />
+  <meta property="og:description" content="Calculate the ideal position size based on your risk tolerance and stop-loss." />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Position Size Calculator","url":"https://yourcryptocalc.com/position-size-calculator/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    /* ---- result panel ---- */
+    .result-panel { display:none; margin-top:24px; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); }
+    .result-panel.show { display:block; }
+
+    .rp-header { padding:10px 16px; font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+    .rp-header.safe-mode  { background:rgba(29,158,117,.15); color:#5ccfa0; }
+    .rp-header.risky-mode { background:rgba(226,75,74,.15);  color:#f08080; }
+
+    .rp-hero { background:var(--bg2); padding:20px 20px 16px; border-bottom:1px solid var(--border); }
+    .rp-hero-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+    .rp-hero-val { font-size:36px; font-weight:700; color:var(--text); line-height:1; }
+    .rp-hero-sub { font-size:13px; color:var(--muted); margin-top:6px; }
+
+    .rp-rows { background:var(--bg2); }
+    .rp-row { display:flex; justify-content:space-between; align-items:center; padding:11px 20px; border-bottom:1px solid var(--border); }
+    .rp-row:last-child { border-bottom:none; }
+    .rp-row-label { font-size:12px; color:var(--muted); }
+    .rp-row-val { font-size:13px; font-weight:600; color:var(--text); }
+    .rp-row-val.green { color:var(--green); }
+    .rp-row-val.red   { color:var(--red); }
+
+    /* risk meter */
+    .risk-meter { background:var(--bg2); border-top:1px solid var(--border); padding:16px 20px; }
+    .risk-meter-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+    .risk-track { background:var(--bg3); border-radius:4px; height:8px; position:relative; overflow:hidden; }
+    .risk-fill { height:100%; border-radius:4px; transition:width .4s ease; }
+    .risk-ticks { display:flex; justify-content:space-between; margin-top:5px; }
+    .risk-tick  { font-size:10px; color:var(--muted); }
+
+    /* leverage warning */
+    .lev-warning { display:none; margin-top:12px; background:rgba(226,75,74,.1); border:1px solid rgba(226,75,74,.3); border-radius:8px; padding:10px 14px; font-size:12px; color:#f08080; line-height:1.5; }
+    .lev-warning.show { display:block; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Crypto<span>Calc</span></a>
+  <div class="nav-links"><a href="/#tools">Calculators</a><a href="/about.html">About</a></div>
+</nav>
+
+<div class="ad-banner" aria-hidden="true">Advertisement</div>
+
+<div class="page-grid">
+  <main>
+    <div class="calc-header">
+      <h1>Crypto Position Size Calculator</h1>
+      <p>Enter your account balance, risk tolerance, and stop-loss to find the right position size.</p>
+    </div>
+
+    <div class="calc-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="accountSize">Account balance (USD)</label>
+          <input type="number" id="accountSize" placeholder="e.g. 10000" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="riskPct">Risk per trade (%)</label>
+          <input type="number" id="riskPct" placeholder="e.g. 1" min="0.01" max="100" step="0.1" />
+        </div>
+        <div class="form-group">
+          <label for="entryPrice">Entry price (USD)</label>
+          <input type="number" id="entryPrice" placeholder="e.g. 65000" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label for="stopLoss">Stop-loss price (USD)</label>
+          <input type="number" id="stopLoss" placeholder="e.g. 63000" min="0" step="any" />
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:4px;">
+        <label for="leverage" style="display:flex;justify-content:space-between;">
+          <span>Leverage (1× = spot)</span>
+          <span id="leverageDisplay" style="color:var(--green);font-weight:600;">1×</span>
+        </label>
+        <input type="range" id="leverage" min="1" max="20" step="1" value="1"
+               style="width:100%;accent-color:var(--green);cursor:pointer;" oninput="updateLeverageDisplay()" />
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;">
+          <span>1× Spot</span><span>5×</span><span>10×</span><span>15×</span><span>20×</span>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Calculate Position</button>
+
+      <div id="resultPanel" class="result-panel">
+        <div class="rp-header" id="rpHeader"></div>
+        <div class="rp-hero">
+          <div class="rp-hero-label">Recommended position size</div>
+          <div class="rp-hero-val" id="heroVal"></div>
+          <div class="rp-hero-sub" id="heroSub"></div>
+        </div>
+        <div class="rp-rows">
+          <div class="rp-row"><span class="rp-row-label">Max $ at risk</span>        <span class="rp-row-val red"   id="rrisk"></span></div>
+          <div class="rp-row"><span class="rp-row-label">Stop-loss distance</span>  <span class="rp-row-val"       id="rslDist"></span></div>
+          <div class="rp-row"><span class="rp-row-label">Coins / units to buy</span><span class="rp-row-val green" id="rcoins"></span></div>
+          <div class="rp-row"><span class="rp-row-label">Notional value</span>       <span class="rp-row-val"       id="rnotional"></span></div>
+          <div class="rp-row"><span class="rp-row-label">Leverage used</span>        <span class="rp-row-val"       id="rlev"></span></div>
+          <div class="rp-row"><span class="rp-row-label">% of account</span>         <span class="rp-row-val"       id="rAccPct"></span></div>
+        </div>
+        <div class="risk-meter">
+          <div class="risk-meter-label">Risk level</div>
+          <div class="risk-track"><div class="risk-fill" id="riskFill"></div></div>
+          <div class="risk-ticks"><span class="risk-tick">0%</span><span class="risk-tick">1%</span><span class="risk-tick">2%</span><span class="risk-tick">3%</span><span class="risk-tick">5%+</span></div>
+        </div>
+        <div class="lev-warning" id="levWarning">
+          ⚠️ You are using leverage. Your loss can exceed the calculated stop-loss if the exchange liquidates your position early due to funding rates or slippage.
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-square" aria-hidden="true">Advertisement</div>
+
+    <div class="content-section">
+      <h2>How to Size Your Crypto Positions</h2>
+      <p>Position sizing is one of the most important — and most ignored — parts of crypto trading. Most beginners focus on finding good entries, but professional traders obsess over how much to risk on each trade.</p>
+
+      <h3>The 1% rule</h3>
+      <p>Many professional traders risk no more than 1-2% of their account on a single trade. With a $10,000 account, that's $100-200 per trade. This may sound small, but it means you can survive 50+ losing trades in a row before wiping your account.</p>
+
+      <h3>How the calculator works</h3>
+      <p>The formula is simple: <strong>Position Size = (Account × Risk%) ÷ Stop-Loss Distance</strong>. If you have $10,000, risk 1%, and your stop is 5% below entry, your position is ($10,000 × 1%) ÷ 5% = $2,000. With leverage, your required margin is reduced but your risk stays the same.</p>
+
+      <h3>Stop-loss placement</h3>
+      <p>Always set your stop-loss before calculating position size, not after. Logical stop-loss levels are below key support zones, below recent swing lows, or at a percentage level that invalidates your trade idea.</p>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div style="position:sticky;top:72px;">
+      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;height:600px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);">Advertisement</div>
+    </div>
+  </aside>
+</div>
+
+<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+
+<footer>
+  <p>&copy; 2026 CryptoCalc. This calculator is for educational purposes. Always do your own research before trading.</p>
+  <div style="margin-top:10px;"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a><a href="/terms.html">Terms</a></div>
+</footer>
+
+<script>
+  function updateLeverageDisplay() {
+    const v = document.getElementById('leverage').value;
+    const el = document.getElementById('leverageDisplay');
+    el.textContent = v + '×';
+    el.style.color = v > 5 ? 'var(--red)' : v > 2 ? '#f4a84a' : 'var(--green)';
+  }
+
+  function usd(n) { return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function pct(n, dp=2) { return n.toFixed(dp) + '%'; }
+  function coins(n) {
+    if (n >= 1) return n.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+    return n.toFixed(8);
+  }
+
+  function calculate() {
+    const account  = parseFloat(document.getElementById('accountSize').value);
+    const risk     = parseFloat(document.getElementById('riskPct').value);
+    const entry    = parseFloat(document.getElementById('entryPrice').value);
+    const sl       = parseFloat(document.getElementById('stopLoss').value);
+    const leverage = parseInt(document.getElementById('leverage').value);
+
+    if (!account || account <= 0) { alert('Enter your account balance.'); return; }
+    if (!risk    || risk <= 0)    { alert('Enter your risk per trade %.'); return; }
+    if (!entry   || entry <= 0)   { alert('Enter your entry price.'); return; }
+    if (!sl      || sl <= 0)      { alert('Enter your stop-loss price.'); return; }
+    if (sl >= entry) { alert('Stop-loss must be below your entry price (for a long trade).'); return; }
+
+    const maxRisk   = account * (risk / 100);                    // $ you can lose
+    const slDist    = entry - sl;                                 // $ distance to stop
+    const slDistPct = (slDist / entry) * 100;                    // % distance to stop
+
+    // position size in $ (notional)
+    const positionNotional = (maxRisk / slDistPct) * 100;
+    // how much of your own capital you deploy
+    const capitalRequired  = positionNotional / leverage;
+    const coinsBought      = positionNotional / entry;
+    const accPct           = (capitalRequired / account) * 100;
+
+    // display
+    const panel  = document.getElementById('resultPanel');
+    const header = document.getElementById('rpHeader');
+
+    const isRisky = risk > 2;
+    header.textContent = isRisky ? '⚠️ HIGH RISK — consider reducing' : '✅ WITHIN SAFE RISK LIMITS';
+    header.className   = 'rp-header ' + (isRisky ? 'risky-mode' : 'safe-mode');
+
+    document.getElementById('heroVal').textContent = usd(capitalRequired);
+    document.getElementById('heroSub').textContent =
+      `Notional: ${usd(positionNotional)} · Entry: ${usd(entry)} · SL: ${usd(sl)}`;
+
+    document.getElementById('rrisk').textContent     = usd(maxRisk);
+    document.getElementById('rslDist').textContent   = usd(slDist) + ' (' + pct(slDistPct) + ')';
+    document.getElementById('rcoins').textContent    = coins(coinsBought) + ' coins';
+    document.getElementById('rnotional').textContent = usd(positionNotional);
+    document.getElementById('rlev').textContent      = leverage + '×' + (leverage === 1 ? ' (spot)' : '');
+    document.getElementById('rAccPct').textContent   = pct(accPct);
+
+    // risk meter (0–5% maps to 0–100%)
+    const fillPct = Math.min(100, (risk / 5) * 100);
+    const fillEl  = document.getElementById('riskFill');
+    fillEl.style.width      = fillPct + '%';
+    fillEl.style.background = risk <= 1 ? 'var(--green)' : risk <= 2 ? '#f4a84a' : 'var(--red)';
+
+    // leverage warning
+    document.getElementById('levWarning').className = 'lev-warning' + (leverage > 1 ? ' show' : '');
+
+    panel.classList.add('show');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+</script>
+
+</body>
+</html>

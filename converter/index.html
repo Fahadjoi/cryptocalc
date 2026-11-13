@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Converter – Convert BTC, ETH, Crypto to USD Instantly</title>
+  <meta name="description" content="Convert Bitcoin, Ethereum, and 20+ cryptocurrencies to USD, EUR, GBP and other currencies instantly. Free real-time crypto converter." />
+  <meta name="keywords" content="crypto converter, bitcoin to usd, ethereum to usd, convert crypto, btc usd calculator, crypto currency converter" />
+  <link rel="canonical" href="https://yourcryptocalc.com/converter/" />
+  <meta property="og:title" content="Crypto Converter – Convert BTC, ETH, Crypto to USD" />
+  <meta property="og:description" content="Convert crypto to fiat and fiat to crypto instantly." />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Crypto Converter","url":"https://yourcryptocalc.com/converter/","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .conv-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 540px) {
+      .conv-row { grid-template-columns: 1fr; }
+      .swap-btn { justify-self: center; transform: rotate(90deg); }
+    }
+
+    .conv-side { display: flex; flex-direction: column; gap: 8px; }
+    .conv-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    .conv-input-wrap {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .conv-input-wrap:focus-within { border-color: var(--green); }
+
+    .conv-input-wrap input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-width: 0;
+    }
+    .conv-input-wrap input::placeholder { color: var(--muted); font-weight: 400; font-size: 15px; }
+    .conv-input-wrap input::-webkit-outer-spin-button,
+    .conv-input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .conv-select {
+      background: var(--bg2);
+      border: none;
+      border-left: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 12px;
+      height: 100%;
+      min-height: 48px;
+      cursor: pointer;
+      outline: none;
+      white-space: nowrap;
+    }
+    .conv-select:focus { background: var(--bg3); }
+
+    .swap-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: color .2s, border-color .2s;
+      flex-shrink: 0;
+      margin-bottom: 1px;
+    }
+    .swap-btn:hover { color: var(--green); border-color: var(--green); }
+
+    /* result */
+    .conv-result {
+      display: none;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-top: 4px;
+    }
+    .conv-result.show { display: block; }
+    .conv-result-main { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1.1; }
+    .conv-result-sub  { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+    /* quick amounts */
+    .quick-amounts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .qa-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .qa-btn:hover, .qa-btn.active { color: var(--green); border-color: var(--green); }
+
+    /* price table */
+    .price-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .price-table th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
+    .price-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-table .sym { font-weight: 700; color: var(--green); }
+
+    .stale-notice { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; }
+
+    /* disclaimer */
+    .price-disclaimer {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Crypto<span>Calc</span></a>
+  <div class="nav-links"><a href="/#tools">Calculators</a><a href="/about.html">About</a></div>
+</nav>
+
+<div class="ad-banner" aria-hidden="true">Advertisement</div>
+
+<div class="page-grid">
+  <main>
+    <div class="calc-header">
+      <h1>Crypto Converter</h1>
+      <p>Convert between crypto and fiat currencies using reference prices.</p>
+    </div>
+
+    <div class="calc-card">
+
+      <!-- quick amounts -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Quick amounts</div>
+        <div class="quick-amounts" id="quickAmounts">
+          <button class="qa-btn" onclick="setAmount(0.001)">0.001</button>
+          <button class="qa-btn" onclick="setAmount(0.01)">0.01</button>
+          <button class="qa-btn" onclick="setAmount(0.1)">0.1</button>
+          <button class="qa-btn" onclick="setAmount(1)">1</button>
+          <button class="qa-btn" onclick="setAmount(10)">10</button>
+          <button class="qa-btn" onclick="setAmount(100)">100</button>
+        </div>
+      </div>
+
+      <div class="conv-row">
+        <div class="conv-side">
+          <div class="conv-label">Amount</div>
+          <div class="conv-input-wrap">
+            <input type="number" id="fromAmount" placeholder="1" min="0" step="any" oninput="convertFrom()" />
+            <select class="conv-select" id="fromCurrency" onchange="convertFrom()"></select>
+          </div>
+        </div>
+
+        <button class="swap-btn" onclick="swapCurrencies()" title="Swap">⇄</button>
+
+        <div class="conv-side">
+          <div class="conv-label">Converted to</div>
+          <div class="conv-input-wrap">
+            <input type="number" id="toAmount" placeholder="—" min="0" step="any" oninput="convertTo()" />
+            <select class="conv-select" id="toCurrency" onchange="convertFrom()"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-result" id="convResult">
+        <div class="conv-result-main" id="convMain"></div>
+        <div class="conv-result-sub"  id="convSub"></div>
+      </div>
+
+      <div class="price-disclaimer">
+        📌 <strong>Note:</strong> This converter uses reference prices for illustration. For live trading rates, always check your exchange directly. Prices update when you reload the page.
+      </div>
+    </div>
+
+    <!-- price reference table -->
+    <div class="calc-card" style="margin-top:20px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Reference prices used</div>
+      <table class="price-table">
+        <thead>
+          <tr><th>Asset</th><th>Symbol</th><th>Price (USD)</th><th>1 USD =</th></tr>
+        </thead>
+        <tbody id="priceBody"></tbody>
+      </table>
+      <div class="stale-notice" id="priceNote"></div>
+    </div>
+
+    <div class="ad-square" aria-hidden="true">Advertisement</div>
+
+    <div class="content-section">
+      <h2>How to Convert Crypto to USD</h2>
+      <p>Converting crypto to USD is straightforward: multiply the number of coins you hold by the current price. For example, 0.5 BTC at $65,000/BTC = $32,500. This converter does that math for any supported coin and currency pair.</p>
+
+      <h3>What affects crypto prices?</h3>
+      <p>Crypto prices fluctuate based on supply and demand, macroeconomic news, regulatory changes, and market sentiment. Bitcoin's price is also influenced by its fixed supply of 21 million coins. Unlike stocks, crypto markets never close — prices can move 24/7.</p>
+
+      <h3>Crypto vs fiat conversion tips</h3>
+      <p>When converting large amounts, be aware that the price you see on a converter may differ from the actual execution price on an exchange (this difference is called slippage). For amounts over $10,000, check the order book depth on your exchange before executing.</p>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div style="position:sticky;top:72px;">
+      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;height:600px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);">Advertisement</div>
+    </div>
+  </aside>
+</div>
+
+<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+
+<footer>
+  <p>&copy; 2026 CryptoCalc. Reference prices are for estimation only. Not financial advice.</p>
+  <div style="margin-top:10px;"><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a><a href="/terms.html">Terms</a></div>
+</footer>
+
+<script>
+  // Reference prices (USD) — illustrative, page-load static
+  // These are approximate mid-2026 reference values
+  const CRYPTO_PRICES = {
+    BTC:  65000,
+    ETH:  3400,
+    BNB:  580,
+    SOL:  165,
+    XRP:  0.58,
+    ADA:  0.44,
+    AVAX: 38,
+    DOT:  7.5,
+    LINK: 16,
+    MATIC:0.90,
+    LTC:  86,
+    DOGE: 0.14,
+    TRX:  0.12,
+    UNI:  9.5,
+    ATOM: 8.8,
+    NEAR: 7.2,
+    ARB:  1.2,
+    OP:   2.1,
+    INJ:  28,
+    SUI:  1.8,
+  };
+
+  const FIAT_RATES = {   // relative to 1 USD
+    USD: 1,
+    EUR: 0.918,
+    GBP: 0.786,
+    JPY: 149.5,
+    CAD: 1.345,
+    AUD: 1.512,
+    CHF: 0.895,
+    SGD: 1.325,
+    AED: 3.672,
+    PKR: 278,
+  };
+
+  const ALL_CURRENCIES = {
+    // cryptos first
+    ...Object.fromEntries(Object.entries(CRYPTO_PRICES).map(([k,v]) => [k, { usdPrice: v, type: 'crypto' }])),
+    // fiats
+    ...Object.fromEntries(Object.entries(FIAT_RATES).map(([k,v]) => [k, { usdPrice: 1/v, type: 'fiat' }])),
+  };
+
+  function getUsdValue(amount, currency) {
+    return amount * ALL_CURRENCIES[currency].usdPrice;
+  }
+  function fromUsd(usdVal, currency) {
+    return usdVal / ALL_CURRENCIES[currency].usdPrice;
+  }
+
+  // ---- populate selects ----
+  function populateSelects() {
+    const fromSel = document.getElementById('fromCurrency');
+    const toSel   = document.getElementById('toCurrency');
+    const groups  = { Cryptocurrency: Object.keys(CRYPTO_PRICES), 'Fiat Currency': Object.keys(FIAT_RATES) };
+
+    [fromSel, toSel].forEach(sel => {
+      sel.innerHTML = '';
+      for (const [groupName, keys] of Object.entries(groups)) {
+        const og = document.createElement('optgroup');
+        og.label = groupName;
+        keys.forEach(k => {
+          const opt = document.createElement('option');
+          opt.value = k;
+          opt.textContent = k;
+          og.appendChild(opt);
+        });
+        sel.appendChild(og);
+      }
+    });
+
+    fromSel.value = 'BTC';
+    toSel.value   = 'USD';
+  }
+
+  // ---- conversion ----
+  function convertFrom() {
+    const amt  = parseFloat(document.getElementById('fromAmount').value);
+    const from = document.getElementById('fromCurrency').value;
+    const to   = document.getElementById('toCurrency').value;
+    if (!amt || isNaN(amt)) { clearResult(); return; }
+
+    const usdVal = getUsdValue(amt, from);
+    const result = fromUsd(usdVal, to);
+
+    document.getElementById('toAmount').value = formatOut(result, to);
+    showResult(amt, from, result, to, usdVal);
+  }
+
+  function convertTo() {
+    const amt  = parseFloat(document.getElementById('toAmount').value);
+    const from = document.getElementById('fromCurrency').value;
+    const to   = document.getElementById('toCurrency').value;
+    if (!amt || isNaN(amt)) { clearResult(); return; }
+
+    const usdVal = getUsdValue(amt, to);
+    const result = fromUsd(usdVal, from);
+
+    document.getElementById('fromAmount').value = formatOut(result, from);
+    showResult(result, from, amt, to, usdVal);
+  }
+
+  function formatOut(n, currency) {
+    const isCrypto = ALL_CURRENCIES[currency]?.type === 'crypto';
+    if (isCrypto) {
+      if (n < 0.0001) return n.toFixed(8);
+      if (n < 1)      return n.toFixed(6);
+      return n.toFixed(4);
+    }
+    if (currency === 'JPY' || currency === 'PKR') return n.toFixed(0);
+    return n.toFixed(2);
+  }
+
+  function showResult(fromAmt, fromCur, toAmt, toCur, usdVal) {
+    const el = document.getElementById('convResult');
+    document.getElementById('convMain').textContent =
+      formatOut(fromAmt, fromCur) + ' ' + fromCur + ' = ' + formatOut(toAmt, toCur) + ' ' + toCur;
+    document.getElementById('convSub').textContent =
+      '≈ $' + usdVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD · Reference price';
+    el.classList.add('show');
+  }
+
+  function clearResult() {
+    document.getElementById('convResult').classList.remove('show');
+  }
+
+  function swapCurrencies() {
+    const fromSel = document.getElementById('fromCurrency');
+    const toSel   = document.getElementById('toCurrency');
+    const fromAmt = document.getElementById('fromAmount');
+    const toAmt   = document.getElementById('toAmount');
+
+    const tmpCur = fromSel.value;
+    const tmpAmt = fromAmt.value;
+    fromSel.value = toSel.value;
+    toSel.value   = tmpCur;
+    fromAmt.value = toAmt.value;
+    toAmt.value   = tmpAmt;
+    convertFrom();
+  }
+
+  function setAmount(val) {
+    document.getElementById('fromAmount').value = val;
+    document.querySelectorAll('.qa-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    convertFrom();
+  }
+
+  // ---- price reference table ----
+  function buildPriceTable() {
+    const tbody = document.getElementById('priceBody');
+    Object.entries(CRYPTO_PRICES).forEach(([sym, price]) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${getCoinName(sym)}</td>
+        <td class="sym">${sym}</td>
+        <td>$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td>${(1/price).toFixed(price > 100 ? 8 : 4)} ${sym}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('priceNote').textContent =
+      'Prices are reference values for illustration. Last updated: page load.';
+  }
+
+  function getCoinName(sym) {
+    const names = { BTC:'Bitcoin', ETH:'Ethereum', BNB:'BNB', SOL:'Solana', XRP:'XRP', ADA:'Cardano',
+      AVAX:'Avalanche', DOT:'Polkadot', LINK:'Chainlink', MATIC:'Polygon', LTC:'Litecoin',
+      DOGE:'Dogecoin', TRX:'TRON', UNI:'Uniswap', ATOM:'Cosmos', NEAR:'NEAR Protocol',
+      ARB:'Arbitrum', OP:'Optimism', INJ:'Injective', SUI:'Sui' };
+    return names[sym] || sym;
+  }
+
+  // init
+  populateSelects();
+  buildPriceTable();
+  convertFrom();
+</script>
+
+</body>
+</html>
