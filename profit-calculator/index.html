@@ -3,53 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crypto Profit Calculator – Calculate Exact P&L on Any Trade</title>
-  <meta name="description" content="Free crypto profit and loss calculator. Enter your buy price, sell price, investment amount and fees to calculate your exact profit or loss instantly." />
-  <meta name="keywords" content="crypto profit calculator, bitcoin profit calculator, crypto P&L calculator, cryptocurrency profit loss" />
-  <link rel="canonical" href="https://yourcryptocalc.com/profit-calculator/" />
+  <title>CryptoCalc – Free Crypto Calculator Tools</title>
+  <meta name="description" content="Free cryptocurrency calculator tools. Calculate crypto profit/loss, DCA returns, exchange fees, position size and more. No signup required." />
+  <meta name="keywords" content="crypto calculator, bitcoin calculator, crypto profit calculator, DCA calculator, crypto tools" />
+  <link rel="canonical" href="https://yourcryptocalc.com/" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Crypto Profit Calculator – Calculate Exact P&L" />
-  <meta property="og:description" content="Free crypto profit and loss calculator. Instant results, no signup." />
+  <meta property="og:title" content="CryptoCalc – Free Crypto Calculator Tools" />
+  <meta property="og:description" content="Free crypto calculators. Profit/loss, DCA, fees, position size. Instant results, no signup." />
   <meta property="og:type" content="website" />
 
   <!-- Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Crypto Profit Calculator",
-    "description": "Calculate profit or loss on any cryptocurrency trade including exchange fees.",
-    "url": "https://yourcryptocalc.com/profit-calculator/",
-    "applicationCategory": "FinanceApplication",
-    "operatingSystem": "Web",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-  }
-  </script>
-
-  <!-- FAQPage Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I calculate crypto profit?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "To calculate crypto profit: subtract your buy price from your sell price, multiply by the number of coins, then subtract exchange fees. Formula: Profit = (Sell Price - Buy Price) × Coins - Fees."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How are exchange fees calculated?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Exchange fees are usually a percentage of your trade value. Most exchanges charge between 0.1% and 0.2% per trade. You pay fees both when you buy and when you sell."
-        }
-      }
-    ]
+    "@type": "WebSite",
+    "name": "CryptoCalc",
+    "description": "Free cryptocurrency calculator tools",
+    "url": "https://yourcryptocalc.com/"
   }
   </script>
 
@@ -62,7 +33,7 @@
 <nav>
   <a href="/" class="logo">Crypto<span>Calc</span></a>
   <div class="nav-links">
-    <a href="/#tools">Calculators</a>
+    <a href="#tools">Calculators</a>
     <a href="/about.html">About</a>
   </div>
 </nav>
@@ -70,114 +41,51 @@
 <!-- AdSense Leaderboard 728x90 -->
 <div class="ad-banner" aria-hidden="true">Advertisement</div>
 
-<div class="page-grid">
+<section class="hero">
+  <h1>Free <span>Crypto</span> Calculator Tools</h1>
+  <p>Instant calculations for traders and investors. No signup, no fees, no nonsense.</p>
+</section>
 
-  <!-- Main Content -->
-  <main>
-    <div class="calc-header">
-      <h1>Crypto Profit / Loss Calculator</h1>
-      <p>Calculate your exact profit or loss on any cryptocurrency trade, including exchange fees.</p>
-    </div>
+<section class="tools-section" id="tools">
+  <h2>All Tools</h2>
+  <div class="tools-grid">
 
-    <div class="calc-card">
+    <a href="/profit-calculator/" class="tool-card">
+      <div class="tool-icon">📈</div>
+      <div class="tool-name">Profit / Loss Calculator</div>
+      <div class="tool-desc">Calculate exact profit or loss on any crypto trade including exchange fees.</div>
+      <span class="tool-badge">Most Popular</span>
+    </a>
 
-      <!-- Coin Selector -->
-      <div class="coin-tabs" id="coinTabs">
-        <button class="coin-tab active" data-coin="BTC">BTC</button>
-        <button class="coin-tab" data-coin="ETH">ETH</button>
-        <button class="coin-tab" data-coin="BNB">BNB</button>
-        <button class="coin-tab" data-coin="SOL">SOL</button>
-        <button class="coin-tab" data-coin="XRP">XRP</button>
-        <button class="coin-tab" data-coin="OTHER">Other</button>
-      </div>
+    <a href="/dca-calculator/" class="tool-card">
+      <div class="tool-icon">📅</div>
+      <div class="tool-name">DCA Calculator</div>
+      <div class="tool-desc">See how dollar-cost averaging into Bitcoin or any coin would have performed.</div>
+    </a>
 
-      <!-- Inputs -->
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="buyPrice">Buy Price (USD)</label>
-          <input type="number" id="buyPrice" placeholder="e.g. 30000" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="sellPrice">Sell Price (USD)</label>
-          <input type="number" id="sellPrice" placeholder="e.g. 60000" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="investment">Investment (USD)</label>
-          <input type="number" id="investment" placeholder="e.g. 500" min="0" step="any" />
-        </div>
-        <div class="form-group">
-          <label for="fee">Exchange Fee (%)</label>
-          <input type="number" id="fee" placeholder="e.g. 0.1" min="0" max="10" step="any" value="0.1" />
-        </div>
-      </div>
+    <a href="/fee-calculator/" class="tool-card">
+      <div class="tool-icon">🔁</div>
+      <div class="tool-name">Exchange Fee Comparator</div>
+      <div class="tool-desc">Compare trading fees across Binance, Bybit, OKX and more for your trade size.</div>
+    </a>
 
-      <button class="calc-btn" onclick="calculate()">Calculate Profit / Loss</button>
+    <a href="/position-size-calculator/" class="tool-card">
+      <div class="tool-icon">📐</div>
+      <div class="tool-name">Position Size Calculator</div>
+      <div class="tool-desc">Calculate the right position size based on your account balance and risk tolerance.</div>
+    </a>
 
-      <!-- Results -->
-      <div class="result-box" id="resultBox">
-        <div class="result-header" id="resultHeader">Results</div>
-        <div class="result-row">
-          <span class="label">Investment</span>
-          <span class="value" id="rInvestment">–</span>
-        </div>
-        <div class="result-row">
-          <span class="label">Coins bought</span>
-          <span class="value" id="rCoins">–</span>
-        </div>
-        <div class="result-row">
-          <span class="label">Sell value</span>
-          <span class="value" id="rSellValue">–</span>
-        </div>
-        <div class="result-row">
-          <span class="label">Fees paid</span>
-          <span class="value" id="rFees">–</span>
-        </div>
-        <div class="result-profit" id="rProfit">
-          <span>Net Profit / Loss</span>
-          <span id="rProfitValue">–</span>
-        </div>
-      </div>
-    </div>
+    <a href="/converter/" class="tool-card">
+      <div class="tool-icon">💱</div>
+      <div class="tool-name">Crypto Converter</div>
+      <div class="tool-desc">Convert between Bitcoin, Ethereum, USDT and 100+ coins instantly.</div>
+    </a>
 
-    <!-- AdSense 300x250 below results -->
-    <div class="ad-square" aria-hidden="true">Advertisement</div>
-
-    <!-- SEO Content -->
-    <div class="content-section">
-      <h2>How to Use This Calculator</h2>
-      <p>Enter the price you bought your crypto at, the price you sold (or plan to sell) at, how much USD you invested, and your exchange's fee percentage. Hit calculate and you'll instantly see your profit or loss.</p>
-
-      <h3>What is a good crypto profit?</h3>
-      <p>Any positive return is a profit. Most serious traders aim for a minimum 2:1 risk-reward ratio, meaning they target at least 2% gain for every 1% they risk. For long-term holders, annual returns of 20–50% are considered strong.</p>
-
-      <h3>How exchange fees affect your profit</h3>
-      <p>Exchange fees are charged twice — once when you buy and once when you sell. On a $1,000 trade at 0.1% fee each way, you pay $2 total. On a $10,000 trade, that's $20. These add up fast, especially for active traders. Binance charges 0.1%, Bybit 0.1%, Coinbase up to 0.6%.</p>
-
-      <h3>Frequently Asked Questions</h3>
-
-      <h3>How do I calculate crypto profit?</h3>
-      <p>Formula: Profit = (Sell Price − Buy Price) × Coins − Total Fees. This calculator does all of this automatically.</p>
-
-      <h3>How are exchange fees calculated?</h3>
-      <p>Exchange fees are usually a percentage of your trade value. Most exchanges charge 0.1%–0.2% per trade. You pay fees both when you buy and when you sell, so total fees = buy fee + sell fee.</p>
-    </div>
-  </main>
-
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <!-- AdSense 300x600 sticky sidebar -->
-    <div style="position: sticky; top: 72px;">
-      <div style="background: var(--bg2); border: 1px dashed var(--border); border-radius: 8px; height: 600px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted);">Advertisement</div>
-    </div>
-  </aside>
-
-</div>
-
-<!-- Mobile Sticky Ad -->
-<div class="sticky-ad-mobile" aria-hidden="true">Advertisement</div>
+  </div>
+</section>
 
 <footer>
-  <p>&copy; 2026 CryptoCalc. For informational purposes only. Not financial advice.</p>
+  <p>&copy; 2026 CryptoCalc. All tools are for informational purposes only.</p>
   <div style="margin-top:10px;">
     <a href="/about.html">About</a>
     <a href="/privacy.html">Privacy</a>
@@ -185,72 +93,6 @@
     <a href="/terms.html">Terms</a>
   </div>
 </footer>
-
-<script>
-  // Coin selector
-  let selectedCoin = 'BTC';
-  document.querySelectorAll('.coin-tab').forEach(tab => {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.coin-tab').forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      selectedCoin = this.dataset.coin;
-    });
-  });
-
-  // Format number as USD
-  function usd(n) {
-    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  // Calculate
-  function calculate() {
-    const buyPrice  = parseFloat(document.getElementById('buyPrice').value);
-    const sellPrice = parseFloat(document.getElementById('sellPrice').value);
-    const investment = parseFloat(document.getElementById('investment').value);
-    const feePercent = parseFloat(document.getElementById('fee').value) || 0;
-
-    if (!buyPrice || !sellPrice || !investment) {
-      alert('Please fill in buy price, sell price and investment amount.');
-      return;
-    }
-    if (buyPrice <= 0 || sellPrice <= 0 || investment <= 0) {
-      alert('All values must be greater than zero.');
-      return;
-    }
-
-    const coins     = investment / buyPrice;
-    const sellValue = coins * sellPrice;
-    const buyFee    = investment * (feePercent / 100);
-    const sellFee   = sellValue * (feePercent / 100);
-    const totalFees = buyFee + sellFee;
-    const netProfit = sellValue - investment - totalFees;
-    const pct       = ((netProfit / investment) * 100).toFixed(2);
-    const isProfit  = netProfit >= 0;
-
-    // Populate results
-    document.getElementById('rInvestment').textContent = usd(investment);
-    document.getElementById('rCoins').textContent = coins.toFixed(6) + ' ' + selectedCoin;
-    document.getElementById('rSellValue').textContent = usd(sellValue);
-    document.getElementById('rFees').textContent = usd(totalFees);
-
-    const profitEl = document.getElementById('rProfit');
-    const profitValEl = document.getElementById('rProfitValue');
-    profitEl.className = 'result-profit ' + (isProfit ? 'green' : 'red');
-    profitValEl.textContent = (isProfit ? '+' : '') + usd(netProfit) + ' (' + (isProfit ? '+' : '') + pct + '%)';
-
-    document.getElementById('resultHeader').textContent =
-      'Results for ' + selectedCoin + ' trade';
-
-    const box = document.getElementById('resultBox');
-    box.classList.add('show');
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  // Allow Enter key to calculate
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') calculate();
-  });
-</script>
 
 </body>
 </html>
