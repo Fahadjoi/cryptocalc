@@ -115,6 +115,7 @@ A: Rewards and your original stake are both held in the coin. If the coin's pric
   var $ = CC.$, f = CC.fmt, lastSig = '';
   CC.page({
     ids: ['coin', 'amount', 'apr', 'comp', 'years', 'topup', 'comm', 'move'],
+    keep: ['comm'],
     calc: function () {
       var amount = CC.n('amount'), apr = CC.n('apr'), years = CC.n('years'), every = parseInt(CC.radio('comp'), 10) || 0;
       var topup = Math.max(0, CC.n('topup') || 0), comm = Math.min(100, Math.max(0, CC.n('comm') || 0)) / 100, move = Math.max(-100, CC.n('move') || 0);

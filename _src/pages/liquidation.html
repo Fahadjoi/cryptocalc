@@ -117,6 +117,7 @@ A: A 1× long would only be liquidated if the price fell almost to zero. A 1× s
   var $ = CC.$, f = CC.fmt, LEVS = [2, 3, 5, 10, 20, 50, 100];
   CC.page({
     ids: ['coin', 'dir', 'entry', 'margin', 'lev', 'mmr'],
+    keep: ['mmr'],
     coinOpt: { stables: false },
     calc: function () {
       var L = CC.radio('dir') !== 'short', entry = CC.n('entry'), margin = CC.n('margin'), lev = CC.n('lev');

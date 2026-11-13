@@ -32,7 +32,12 @@
 
   function calc() {
     var a = $('from').value, b = $('to').value, ra = usd(a), rb = usd(b);
-    if (!ready || !isFinite(ra) || !isFinite(rb)) return;
+    if (!ready) return;
+    if (!isFinite(ra) || !isFinite(rb)) {
+      $('out').hidden = true; $('state').hidden = false;
+      $('state').textContent = 'The live rate for ' + code(isFinite(ra) ? b : a) + ' is unavailable right now. Try another currency or come back in a minute.';
+      return;
+    }
     var rate = ra / rb;
     if (lastEdited === 'result') { var r = parseFloat($('result').value); $('amount').value = r >= 0 ? tidy(r / rate) : ''; }
     else { var am = parseFloat($('amount').value); $('result').value = am >= 0 ? tidy(am * rate) : ''; }
@@ -54,10 +59,41 @@
 
     var rl = $('rateLine'), cc = CC.coin(a) || CC.coin(b);
     if (rl) rl.textContent = '1 ' + code(a) + ' is worth ' + show(rate, b) + ' right now, and 1 ' + code(b) + ' buys ' + show(1 / rate, a) + '.' + (cc && cc.ch24 != null ? ' Over the past 24 hours ' + cc.name + ' has ' + (cc.ch24 >= 0 ? 'risen ' : 'fallen ') + Math.abs(cc.ch24).toFixed(2) + '% against the US dollar, trading between ' + f.usd(cc.low) + ' and ' + f.usd(cc.high) + '.' : '');
+    pairChart(a, b);
     if (!$('market')) return;
     var fc = isFiat(b) ? b : isFiat(a) ? a : 'USD';
     $('inCode').textContent = ' in ' + fc;
     CC.marketRows($('market'), { stables: true, fiat: fc, onPick: function (id) { $('from').value = id; lastEdited = 'amount'; calc(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+  }
+
+  /* 30-day chart of the selected pair, from daily closes */
+  var hist = {}, chartSig = '';
+  function constant(k) { return isFiat(k) || k === 'tether'; }
+  function usdSeries(k) {
+    if (constant(k)) return Promise.resolve(null);
+    var sym = CC.BN[k]; if (!sym) return Promise.reject(new Error('no history'));
+    return hist[k] || (hist[k] = CC.getJSON(CC.BHOST + '/klines?interval=1d&limit=31&symbol=' + sym + 'USDT').then(function (j) {
+      if (!Array.isArray(j) || j.length < 5) throw new Error('thin'); return j.map(function (x) { return [x[0], parseFloat(x[4])]; });
+    }).catch(function (e) { delete hist[k]; throw e; }));
+  }
+  function short(v) { var a = Math.abs(v); return a >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : a >= 1000 ? f.num(v, 0) : a >= 1 ? f.num(v, 2) : Number(v.toPrecision(3)).toString(); }
+  function pairChart(a, b) {
+    var box = $('pairChart'), wrap = $('pairChartWrap'); if (!box) return;
+    var sig = a + '|' + b; if (sig === chartSig) return; chartSig = sig;
+    if (constant(a) && constant(b)) { wrap.hidden = true; return; }
+    Promise.all([usdSeries(a), usdSeries(b)]).then(function (r) {
+      if (sig !== chartSig) return;
+      var A = r[0], B = r[1], base = A || B, ca = usd(a), cb = usd(b), n = Math.min(A ? A.length : 99, B ? B.length : 99);
+      var series = base.slice(-n).map(function (x, i) { var va = A ? A[A.length - n + i][1] : ca, vb = B ? B[B.length - n + i][1] : cb; return { t: x[0], val: va / vb }; });
+      var hi = series[0], lo = series[0]; series.forEach(function (p) { if (p.val > hi.val) hi = p; if (p.val < lo.val) lo = p; });
+      var ch = (series[n - 1].val - series[0].val) / series[0].val * 100;
+      wrap.hidden = false;
+      $('pcTitle').textContent = code(a) + ' to ' + code(b) + ', last 30 days';
+      $('pcHi').textContent = show(hi.val, b); $('pcHiD').textContent = f.date(hi.t);
+      $('pcLo').textContent = show(lo.val, b); $('pcLoD').textContent = f.date(lo.t);
+      $('pcCh').textContent = f.pct(ch, true); $('pcCh').className = ch >= 0 ? 'up' : 'down';
+      CC.lineChart(box, series, { zoom: true, gain: ch >= 0, endLabel: 'Today', valLabel: '1 ' + code(a) + ' =', tipFmt: function (v) { return show(v, b); }, axisFmt: short, aria: code(a) + ' to ' + code(b) + ' rate over the last 30 days' });
+    }).catch(function () { if (sig === chartSig) wrap.hidden = true; });
   }
 
   $('amount').addEventListener('input', function () { lastEdited = 'amount'; calc(); });

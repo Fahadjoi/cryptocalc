@@ -29,6 +29,8 @@ kind: tool
         </div>
         {{f feeIn|Entry fee|0.1|%|max=10}}
         {{f feeOut|Exit fee|0.1|%|max=10}}
+        <div class="field"><label for="fund">Funding rate per 8 hours</label><div class="inp"><input id="fund" type="number" inputmode="decimal" step="any" value="0"><span class="unit">%</span></div><p class="hint">Futures only. Leave at 0 for spot.</p></div>
+        {{f days|Days held|0|days|max=3650}}
       </div>
       <p class="field hint" style="margin-top:14px">Not sure of your fee? <a href="/fee-calculator/">Compare ten exchanges</a>. Most charge about 0.1% per spot trade.</p>
       <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this trade</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
@@ -49,6 +51,7 @@ kind: tool
           <div><dt>Price move</dt><dd id="move"></dd></div>
           <div><dt>Profit before fees</dt><dd id="gross"></dd></div>
           <div><dt>Fees, entry and exit</dt><dd id="fees"></dd></div>
+          <div id="fundRow" hidden><dt id="fundLbl">Funding</dt><dd id="fundVal"></dd></div>
           <div id="liveRow" hidden><dt id="liveLbl">If you closed at the live price</dt><dd id="liveNet"></dd></div>
         </dl>
         <h3 class="subhead">Price levels for this trade</h3>
@@ -82,15 +85,19 @@ kind: tool
   <h2>Leverage, margin and liquidation</h2>
   <p>Leverage lets a small deposit control a larger position. With $1,000 at 10× you hold a $10,000 position, so a 1% price move changes your balance by about 10%. Fees are charged on the full $10,000 as well, which is why leveraged trades pay ten times the fees of the same deposit on spot.</p>
   <p>The exchange closes the position when losses use up your margin. This calculator estimates that level as:</p>
-  <div class="formula">Liquidation (long) ≈ entry × (1 − 1 ÷ leverage)<small>For a short: entry × (1 + 1 ÷ leverage). This assumes isolated margin and ignores maintenance margin and funding.</small></div>
-  <p>Treat it as the best case. Real exchanges keep back a maintenance margin, often around 0.5% of the position, so the actual liquidation price is a little closer to entry than the estimate. If the exit you typed lies beyond liquidation, the result shows the loss of your full margin, because the trade would never reach that price.</p>
+  <div class="formula">Liquidation (long) ≈ entry × (1 − 1 ÷ leverage + 0.5%)<small>For a short: entry × (1 + 1 ÷ leverage − 0.5%). Isolated margin with a 0.5% maintenance margin rate.</small></div>
+  <p>The 0.5% is the maintenance margin most exchanges keep back on large coins at small sizes. Yours may differ, and the <a href="/liquidation-calculator/">liquidation calculator</a> lets you set it exactly. If the exit you typed lies beyond liquidation, the result shows the loss of your full margin, because the trade would never reach that price.</p>
+
+  <h2>Funding on perpetual futures</h2>
+  <p>Perpetual contracts have no expiry, so exchanges use a funding payment to keep their price near the spot price. Every eight hours one side pays the other a small percentage of the position. When the rate is positive, longs pay shorts. When it is negative, shorts pay longs.</p>
+  <div class="formula">Funding = position size × rate × 3 × days held<small>Three payments a day. Paid by longs and received by shorts when the rate is positive.</small></div>
+  <p>A typical rate of 0.01% looks harmless, but on a $10,000 position held for 30 days it comes to $90, more than four times the trading fees on the same trade. Rates change at every payment, so use an average for the period you expect to hold.</p>
 
   <h2>Long and short</h2>
   <p>A <strong>long</strong> buys first and sells later, so it profits when the price rises. A <strong>short</strong> sells borrowed coins first and buys them back later, so it profits when the price falls. Short profit is capped, because a price cannot fall below zero, while a short's loss is not capped if the price keeps rising. Spot accounts can only go long. Shorts need a margin or futures account.</p>
 
   <h2>What this calculator leaves out</h2>
   <ul>
-    <li><strong>Funding payments</strong> on perpetual futures, charged every few hours and able to add up on trades held for days.</li>
     <li><strong>Slippage</strong>, the gap between the price you see and the price your order fills at, which grows with order size and thin order books.</li>
     <li><strong>Withdrawal and network fees</strong> for moving coins off the exchange.</li>
     <li><strong>Tax</strong> on the gain, which depends on where you live.</li>
@@ -116,23 +123,26 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
 (function () {
   var $ = CC.$, f = CC.fmt;
   var TARGETS = [10, 25, 50, 100];
-  CC.page({
-    ids: ['coin', 'dir', 'entry', 'exit', 'margin', 'lev', 'feeIn', 'feeOut'],
+  var pg = CC.page({
+    ids: ['coin', 'dir', 'entry', 'exit', 'margin', 'lev', 'feeIn', 'feeOut', 'fund', 'days'],
+    keep: ['feeIn', 'feeOut'],
     coinOpt: { stables: false },
     calc: function () {
       var L = CC.radio('dir') !== 'short';
       var entry = CC.n('entry'), exit = CC.n('exit'), margin = CC.n('margin');
       var lev = Math.min(125, Math.max(1, CC.n('lev') || 1));
       var fi = Math.max(0, CC.n('feeIn') || 0) / 100, fo = Math.max(0, CC.n('feeOut') || 0) / 100;
+      var fr = (CC.n('fund') || 0) / 100, days = Math.max(0, CC.n('days') || 0);
       var ok = entry > 0 && exit > 0 && margin > 0 && fo < 1;
       $('empty').hidden = ok; $('out').hidden = !ok;
       if (!ok) return;
 
       var pos = margin * lev, qty = pos / entry, c = CC.coin($('coin').value) || { sym: '' };
-      function pnl(x) { var val = qty * x, gross = L ? val - pos : pos - val, fees = pos * fi + val * fo; return { gross: gross, fees: fees, net: gross - fees }; }
+      var funding = pos * fr * 3 * days * (L ? 1 : -1);   // positive = you pay
+      function pnl(x) { var val = qty * x, gross = L ? val - pos : pos - val, fees = pos * fi + val * fo; return { gross: gross, fees: fees, net: gross - fees - funding }; }
       var r = pnl(exit);
-      var be = L ? entry * (1 + fi) / (1 - fo) : entry * (1 - fi) / (1 + fo);
-      var liq = lev > 1 ? (L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev)) : null;
+      var be = L ? (pos * (1 + fi) + funding) / (qty * (1 - fo)) : (pos * (1 - fi) - funding) / (qty * (1 + fo));
+      var liq = lev > 1 ? CC.liq(entry, lev, L) : null;
       var dead = liq != null && (L ? exit <= liq : exit >= liq);
       var net = dead ? -margin : r.net, gain = net >= 0;
 
@@ -141,16 +151,21 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
       CC.count($('net'), net, function (v) { return f.money(v, true); });
       $('roi').textContent = f.pct(net / margin * 100, true) + ' on your ' + f.money(margin);
       $('pos').textContent = f.money(pos) + ' (' + f.amt(qty) + ' ' + c.sym + ')';
-      var mv = (exit - entry) / entry * 100;
-      $('move').textContent = f.pct(mv, true);
+      $('move').textContent = f.pct((exit - entry) / entry * 100, true);
       $('gross').textContent = f.money(r.gross, true);
       $('fees').textContent = f.money(r.fees);
+      $('fundRow').hidden = funding === 0;
+      if (funding !== 0) {
+        $('fundLbl').textContent = 'Funding ' + (funding > 0 ? 'paid' : 'received') + ' over ' + f.num(days, 1) + (days === 1 ? ' day' : ' days');
+        $('fundVal').textContent = f.money(-funding, true); $('fundVal').className = funding > 0 ? 'down' : 'up';
+      }
 
-      var notes = '';
+      var notes = '', cost = r.fees + Math.max(0, funding);
       if (dead) notes += '<div class="note bad">At ' + f.num(lev) + '× leverage this position is liquidated near $' + f.price(liq) + ', before the price reaches your exit. You would lose your whole ' + f.money(margin) + '.</div>';
-      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but fees of ' + f.money(r.fees) + ' turn the trade into a loss. Your exit needs to pass $' + f.price(be) + '.</div>';
-      else if (r.gross > 0 && r.fees / r.gross > 0.2) notes += '<div class="note">Fees take ' + Math.round(r.fees / r.gross * 100) + '% of this trade\'s profit. A wider target or a cheaper exchange would keep more of it.</div>';
-      if (lev >= 20 && !dead) notes += '<div class="note">At ' + f.num(lev) + '× a move of only ' + (100 / lev).toFixed(1) + '% against you wipes out the position.</div>';
+      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but costs of ' + f.money(cost) + ' turn the trade into a loss. Your exit needs to pass $' + f.price(be) + '.</div>';
+      else if (r.gross > 0 && cost / r.gross > 0.2) notes += '<div class="note">Fees' + (funding > 0 ? ' and funding' : '') + ' take ' + Math.round(cost / r.gross * 100) + '% of this trade\'s profit. A wider target or a cheaper exchange would keep more of it.</div>';
+      if (lev >= 20 && !dead) notes += '<div class="note">At ' + f.num(lev) + '× a move of only ' + Math.abs((liq - entry) / entry * 100).toFixed(1) + '% against you liquidates the position.</div>';
+      if (lev === 1 && fr !== 0 && days > 0) notes += '<div class="note plain">Funding only applies to perpetual futures. Set it to 0 if this is a spot trade.</div>';
       if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
 
       var live = c.price;
@@ -169,7 +184,7 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
 
       $('targets').innerHTML = TARGETS.map(function (t) {
         var T = t / 100;
-        var x = L ? (T * margin + pos * (1 + fi)) / (qty * (1 - fo)) : (pos * (1 - fi) - T * margin) / (qty * (1 + fo));
+        var x = L ? (T * margin + funding + pos * (1 + fi)) / (qty * (1 - fo)) : (pos * (1 - fi) - funding - T * margin) / (qty * (1 + fo));
         if (!(x > 0)) return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r" colspan="3">Not reachable on a short at this leverage</td></tr>';
         return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r"><b>$' + f.price(x) + '</b></td><td class="r">' + f.pct((x - entry) / entry * 100, true) + '</td><td class="r"><button type="button" class="chip" data-x="' + CC.round(x) + '">Use</button></td></tr>';
       }).join('');
@@ -179,5 +194,14 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
     var b = e.target.closest('[data-x]'); if (!b) return;
     $('exit').value = b.dataset.x; $('exit').dataset.touched = 1;
     $('exit').dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  // Switching direction flips an untouched example exit to the profitable side
+  document.querySelectorAll('input[name="dir"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      var ex = $('exit'), en = CC.n('entry');
+      if (ex.dataset.touched || !(en > 0) || new URLSearchParams(location.search).has('exit')) return;
+      ex.dataset.autolive = r.value === 'short' ? '0.9' : '1.1';
+      ex.value = CC.round(en * parseFloat(ex.dataset.autolive)); pg.run();
+    });
   });
 })();

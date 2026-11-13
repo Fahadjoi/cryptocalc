@@ -6,7 +6,7 @@ path: /
 <div class="home">
   <div class="intro">
     <h1 class="rise">Work out the trade before you place it.</h1>
-    <p class="lede rise" style="--d:1">Eight free calculators that use live prices and count the fees on both sides. Nothing to sign up for.</p>
+    <p class="lede rise" style="--d:1">Free calculators and a portfolio tracker that use live prices and count the fees on both sides. Nothing to sign up for.</p>
     <ul class="linklist rise" style="--d:3" id="tools">{{toollist}}</ul>
   </div>
 
@@ -62,6 +62,7 @@ path: /
   var $ = CC.$, f = CC.fmt;
   CC.page({
     ids: ['coin', 'buy', 'sell', 'inv', 'fee'],
+    keep: ['inv', 'fee'],
     coinOpt: { stables: false },
     calc: function () {
       var buy = CC.n('buy'), sell = CC.n('sell'), inv = CC.n('inv'), fee = (CC.n('fee') || 0) / 100;

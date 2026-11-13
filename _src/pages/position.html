@@ -25,6 +25,7 @@ kind: tool
         <div class="field"><label for="lev">Leverage</label><div class="inp"><input id="lev" type="number" inputmode="decimal" step="any" min="1" max="125" value="1"><span class="unit">×</span></div>
           <div class="chips"><button type="button" class="chip" data-set="lev:1">Spot</button><button type="button" class="chip" data-set="lev:3">3×</button><button type="button" class="chip" data-set="lev:5">5×</button><button type="button" class="chip" data-set="lev:10">10×</button></div>
         </div>
+        <div class="field full">{{f fee|Trading fee per side|0.1|%|max=10}}<p class="hint">Counted in your risk, so a stopped trade costs what you planned and no more. Set to 0 to ignore fees.</p></div>
       </div>
       <p class="field hint" style="margin-top:14px">Put the stop below entry for a long, above entry for a short. The calculator works out the direction from that.</p>
       <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this plan</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
@@ -42,6 +43,7 @@ kind: tool
         <div id="notes"></div>
         <dl class="rows">
           <div><dt>Amount at risk</dt><dd id="riskUsd" class="down"></dd></div>
+          <div id="feeRow"><dt>Of which fees if stopped</dt><dd id="feeUsd"></dd></div>
           <div><dt>Stop distance</dt><dd id="dist"></dd></div>
           <div><dt>Margin needed</dt><dd id="margin"></dd></div>
           <div id="tpRow"><dt>Profit at take-profit</dt><dd id="reward" class="up"></dd></div>
@@ -62,13 +64,14 @@ kind: tool
 <article class="prose reveal">
   <h2>What position sizing does</h2>
   <p>Most traders pick a size first and find out what they lost afterwards. Position sizing reverses that. You choose the loss you can accept, and the size follows from how far away your stop is. A wide stop gives a small position, a tight stop gives a larger one, and the money at risk stays the same either way.</p>
-  <div class="formula">Position size = (balance × risk %) ÷ (stop distance ÷ entry price)<small>Coins to buy = (balance × risk %) ÷ |entry − stop|</small></div>
+  <div class="formula">Coins to buy = (balance × risk %) ÷ (|entry − stop| + fees per coin)<small>Position size = coins × entry price. Fees per coin = entry × fee + stop × fee.</small></div>
 
   <h3>A worked example</h3>
   <div class="example">
     <p>Your account holds <b>$10,000</b> and you risk <b>1%</b>, so the most you will lose is <b>$100</b>.</p>
     <p>You plan to buy at <b>$60,000</b> with a stop at <b>$58,200</b>. The stop is $1,800 away, which is 3% of the entry.</p>
-    <p>Coins: 100 ÷ 1,800 = 0.05556 BTC. Position size: 0.05556 × 60,000 = <b>$3,333</b>. If the stop is hit you lose $100, exactly 1% of the account.</p>
+    <p>Ignoring fees, coins: 100 ÷ 1,800 = 0.05556 BTC. Position size: 0.05556 × 60,000 = <b>$3,333</b>.</p>
+    <p>With a 0.1% fee each way, a stopped trade also pays about $118 per coin in fees, so the size drops to 100 ÷ 1,918 = 0.05213 BTC, or <b>$3,128</b>. Either way, a hit stop costs $100.</p>
   </div>
 
   <h2>Choosing a risk percentage</h2>
@@ -93,9 +96,9 @@ kind: tool
 
   <h2>What this calculator leaves out</h2>
   <ul>
-    <li><strong>Fees:</strong> a stopped trade also pays entry and exit fees, so the real loss is slightly above the figure shown. Use the <a href="/profit-calculator/">profit calculator</a> to see it.</li>
+    <li><strong>Funding:</strong> perpetual futures charge or pay funding every eight hours, which the <a href="/profit-calculator/">profit calculator</a> can include.</li>
     <li><strong>Slippage:</strong> in a fast market a stop can fill below its price.</li>
-    <li><strong>Maintenance margin:</strong> real liquidation happens a little before the estimate used here.</li>
+    <li><strong>Your exact maintenance margin:</strong> the liquidation check assumes 0.5%. Set your own in the <a href="/liquidation-calculator/">liquidation calculator</a>.</li>
   </ul>
 
 @faq
@@ -118,7 +121,8 @@ A: A very tight stop can call for a position larger than your balance and levera
 (function () {
   var $ = CC.$, f = CC.fmt;
   CC.page({
-    ids: ['coin', 'bal', 'risk', 'entry', 'stop', 'tp', 'lev'],
+    ids: ['coin', 'bal', 'risk', 'entry', 'stop', 'tp', 'lev', 'fee'],
+    keep: ['bal', 'risk', 'fee'],
     coinOpt: { stables: false },
     calc: function () {
       var bal = CC.n('bal'), risk = CC.n('risk'), entry = CC.n('entry'), stop = CC.n('stop'), tp = CC.n('tp');
@@ -129,16 +133,17 @@ A: A very tight stop can call for a position larger than your balance and levera
 
       var L = stop < entry, c = CC.coin($('coin').value) || { sym: '' };
       var dist = Math.abs(entry - stop), distPct = dist / entry * 100;
-      var riskUsd = bal * risk / 100, qty = riskUsd / dist, notional = qty * entry;
+      var fee = Math.min(10, Math.max(0, CC.n('fee') || 0)) / 100, lossPer = dist + (entry + stop) * fee;
+      var riskUsd = bal * risk / 100, qty = riskUsd / lossPer, notional = qty * entry;
       var maxNotional = bal * lev, capped = notional > maxNotional * 1.0000001, notes = '';
       if (capped) {
-        var want = notional; qty = maxNotional / entry; notional = maxNotional; riskUsd = qty * dist;
+        var want = notional; qty = maxNotional / entry; notional = maxNotional; riskUsd = qty * lossPer;
         notes += '<div class="note">Your stop is tight enough that risking ' + f.pct(risk) + ' would need a ' + f.money(want) + ' position, more than your account can open at ' + f.num(lev) + '×. This is the largest you can afford, and it risks ' + f.money(riskUsd) + ' (' + f.pct(riskUsd / bal * 100) + ').</div>';
       }
       var marginNeed = notional / lev;
-      var liq = lev > 1 ? (L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev)) : null;
+      var liq = lev > 1 ? CC.liq(entry, lev, L) : null;
       if (liq != null && (L ? liq >= stop : liq <= stop)) {
-        notes += '<div class="note bad">At ' + f.num(lev) + '× you would be liquidated near $' + f.price(liq) + ', before your stop at $' + f.price(stop) + '. Keep leverage under ' + Math.max(1, Math.floor(entry / dist * 0.9)) + '× for this stop to work.</div>';
+        notes += '<div class="note bad">At ' + f.num(lev) + '× you would be liquidated near $' + f.price(liq) + ', before your stop at $' + f.price(stop) + '. Keep leverage under ' + Math.max(1, Math.floor(1 / (dist / entry + 0.005) * 0.95)) + '× for this stop to work.</div>';
       }
       if (risk > 3) notes += '<div class="note bad">Risking ' + f.pct(risk) + ' per trade means ten losses in a row would cost about ' + Math.round((1 - Math.pow(1 - risk / 100, 10)) * 100) + '% of your account.</div>';
 
@@ -147,6 +152,7 @@ A: A very tight stop can call for a position larger than your balance and levera
       CC.count($('size'), notional, function (v) { return f.money(v); });
       $('sub').textContent = (L ? 'Buy ' : 'Short ') + f.amt(qty) + ' ' + c.sym;
       $('riskUsd').textContent = f.money(riskUsd) + ' (' + f.pct(riskUsd / bal * 100) + ')';
+      $('feeRow').hidden = fee === 0; $('feeUsd').textContent = f.money(qty * (entry + stop) * fee);
       $('dist').textContent = '$' + f.price(dist) + ' (' + f.pct(distPct) + ')';
       $('margin').textContent = f.money(marginNeed) + ' (' + f.pct(marginNeed / bal * 100) + ' of balance)';
 
@@ -154,11 +160,12 @@ A: A very tight stop can call for a position larger than your balance and levera
       $('tpRow').hidden = $('rrRow').hidden = $('wrRow').hidden = !tpOk;
       if (hasTp && !tpOk) notes += '<div class="note">The take-profit is on the wrong side of the entry for a ' + (L ? 'long' : 'short') + ', so it was ignored.</div>';
       if (tpOk) {
-        var rr = Math.abs(tp - entry) / dist;
-        $('reward').textContent = f.money(qty * Math.abs(tp - entry), true);
-        $('rr').textContent = '1 to ' + rr.toFixed(2);
-        $('wr').textContent = f.pct(100 / (1 + rr));
-        if (rr < 1) notes += '<div class="note">You are risking more than you stand to make. This setup has to win more than ' + f.pct(100 / (1 + rr)) + ' of the time just to break even.</div>';
+        var gainPer = Math.abs(tp - entry) - (entry + tp) * fee, rr = gainPer / lossPer;
+        $('reward').textContent = f.money(qty * gainPer, true) + (fee ? ' after fees' : '');
+        $('rr').textContent = '1 to ' + Math.max(0, rr).toFixed(2);
+        $('wr').textContent = rr > 0 ? f.pct(100 / (1 + rr)) : 'Cannot break even';
+        if (rr <= 0) notes += '<div class="note bad">Fees are larger than the move to your take-profit, so this target loses money even when it is hit.</div>';
+        else if (rr < 1) notes += '<div class="note">You are risking more than you stand to make. This setup has to win more than ' + f.pct(100 / (1 + rr)) + ' of the time just to break even.</div>';
       }
       if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
       $('needle').style.left = Math.min(100, riskUsd / bal * 100 / 5 * 100) + '%';

@@ -349,6 +349,19 @@ table.t { width: 100%; border-collapse: collapse; font-size: 15px; }
 .pairs a:hover { border-color: var(--edge); transform: translateY(-2px); }
 .prose .pairs { margin-top: 12px; }
 
+/* ---------- Stats row, allocation bar, portfolio inputs ---------- */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 18px; border-top: 1px solid var(--line); }
+.stats > div { padding: 14px 16px 2px 0; }
+.stats > div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+.stats span { display: block; font-size: 14px; color: var(--muted); }
+.stats b { display: block; font-size: 20px; font-weight: 750; overflow-wrap: anywhere; }
+.stats small { font-size: 13px; color: var(--muted); }
+.alloc { display: flex; height: 14px; border-radius: 3px; overflow: hidden; margin-top: 18px; background: var(--sunken); gap: 2px; }
+.alloc i { display: block; height: 100%; transition: width .8s var(--ease); min-width: 0; }
+.pf-in { width: 110px; text-align: right; background: var(--sunken); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-weight: 600; }
+.pf-in:focus { outline: none; border-color: var(--edge); box-shadow: 0 0 0 3px var(--mark); }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr; } .stats > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); } .pf-in { width: 84px; } }
+
 /* ---------- Forms (contact) ---------- */
 .form { display: grid; gap: 16px; max-width: 520px; }
 .form textarea { width: 100%; min-height: 150px; border: 0; background: transparent; padding: 11px 12px; outline: none; resize: vertical; font-size: 16px; }

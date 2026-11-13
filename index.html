@@ -18,13 +18,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=5">
+<link rel="stylesheet" href="/css/style.css?v=6">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "CryptoCalc", "url": "https://zesty-haupia-16a953.netlify.app/", "description": "Free crypto calculators with live prices: profit and loss, position size, liquidation price, average cost, exchange fees, DCA backtest, staking rewards and a coin converter. No signup."}</script>
 </head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a></nav>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a></nav>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
 <div class="ticker" id="ticker" aria-label="Live coin prices"></div>
@@ -32,8 +32,8 @@
 <div class="home">
   <div class="intro">
     <h1 class="rise">Work out the trade before you place it.</h1>
-    <p class="lede rise" style="--d:1">Eight free calculators that use live prices and count the fees on both sides. Nothing to sign up for.</p>
-    <ul class="linklist rise" style="--d:3" id="tools"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li></ul>
+    <p class="lede rise" style="--d:1">Free calculators and a portfolio tracker that use live prices and count the fees on both sides. Nothing to sign up for.</p>
+    <ul class="linklist rise" style="--d:3" id="tools"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul>
   </div>
 
   <section class="card strong ticket rise" style="--d:2" aria-labelledby="ticketTitle">
@@ -85,15 +85,16 @@
 </main>
 <footer><div class="foot">
 <div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
-<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
 <div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=5"></script>
+<script src="/js/app.js?v=6"></script>
 <script>
 (function () {
   var $ = CC.$, f = CC.fmt;
   CC.page({
     ids: ['coin', 'buy', 'sell', 'inv', 'fee'],
+    keep: ['inv', 'fee'],
     coinOpt: { stables: false },
     calc: function () {
       var buy = CC.n('buy'), sell = CC.n('sell'), inv = CC.n('inv'), fee = (CC.n('fee') || 0) / 100;

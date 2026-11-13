@@ -1,5 +1,5 @@
-title: Crypto Exchange Fee Calculator | Compare 10 exchanges
-desc: Compare spot trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year.
+title: Crypto Exchange Fee Calculator | Spot and futures on 10 exchanges
+desc: Compare spot and futures trading fees on Binance, Bybit, OKX, KuCoin, Bitget, Gate, HTX, MEXC, Kraken Pro and Coinbase Advanced. See the cost of your order per trade, per month and per year.
 path: /fee-calculator/
 kind: tool
 ---
@@ -16,6 +16,13 @@ kind: tool
       <div class="fields" style="grid-template-columns:1fr">
         <div class="field">{{f size|Order size|1000|USD}}
           <div class="chips"><button type="button" class="chip" data-set="size:100">$100</button><button type="button" class="chip" data-set="size:1000">$1,000</button><button type="button" class="chip" data-set="size:10000">$10,000</button><button type="button" class="chip" data-set="size:50000">$50,000</button></div>
+        </div>
+        <div class="field"><span class="lbl">Market</span>
+          <div class="seg" role="radiogroup" aria-label="Market">
+            <label><input type="radio" name="mkt" value="spot" checked><span>Spot</span></label>
+            <label><input type="radio" name="mkt" value="fut"><span>Futures (perpetual)</span></label>
+          </div>
+          <p class="hint" id="mktHint">Buying and selling the coins themselves.</p>
         </div>
         <div class="field"><span class="lbl">Order type</span>
           <div class="seg" role="radiogroup" aria-label="Order type">
@@ -44,7 +51,8 @@ kind: tool
             <tbody id="rows"></tbody>
           </table>
         </div>
-        <div class="note plain">Base-tier spot rates for a new account with no token discount or volume tier. Exchanges change fees without notice and some rates differ by country, so confirm on the exchange before you trade.</div>
+        <div class="note plain" id="tableNote"></div>
+        <div class="actions"><a class="btn solid" id="tryBtn" href="/profit-calculator/">Work out a trade at the lowest fee</a></div>
       </div>
     </div>
   </section>
@@ -62,6 +70,10 @@ kind: tool
     <p>At <b>0.10%</b> each order costs $1.00, so the round trip costs <b>$2.00</b>.</p>
     <p>At <b>0.80%</b> each order costs $8.00, so the round trip costs <b>$16.00</b>. The trade has to gain 1.6% before it makes anything.</p>
   </div>
+
+  <h2>Spot fees and futures fees</h2>
+  <p>Futures rates look far lower than spot rates, typically 0.02% for makers and 0.05% for takers against 0.10% on spot. The catch is what they are charged on. A futures fee applies to the whole leveraged position, so a $1,000 deposit at 10× pays 0.05% of $10,000, which is $5, the same as 0.5% of your own money. Enter the full position size, not your margin, when you compare futures.</p>
+  <p>Futures also carry funding payments every eight hours, which this table does not show. The <a href="/profit-calculator/">profit calculator</a> includes them.</p>
 
   <h2>Why the table uses base-tier rates</h2>
   <p>Every exchange lowers its fees as your 30-day volume grows, but the starting tier is what a new or occasional trader pays, and the tiers are where exchanges differ most. Kraken Pro starts at 0.40% maker and 0.80% taker and drops to 0.30% and 0.60% once you pass $2,500 in 30-day volume. Coinbase Advanced lists 0.50% maker and 0.90% taker as its United States entry rate, 0.25% and 0.50% in the EU and UK, and 0.09% and 0.10% in several other markets. The big offshore exchanges sit close to 0.10% from the first trade.</p>
@@ -93,7 +105,7 @@ A: Yes. Each order is charged separately, so buying and later selling costs two 
 Q: Why are Coinbase and Kraken more expensive?
 A: Their entry tiers are priced higher than the large offshore exchanges, and both lower the rate as your 30-day volume grows. Many traders accept the higher cost for local regulation and bank transfers in their own currency.
 Q: Do these rates apply to futures?
-A: No. The table covers spot trading. Futures use separate and usually lower rates, commonly about 0.02% maker and 0.05% taker, charged on the full leveraged position.
+A: Switch the market to Futures to see perpetual futures rates. They are commonly about 0.02% maker and 0.05% taker, and they are charged on the full leveraged position, not on your margin.
 @end
 </article>
 {{aside}}
@@ -102,8 +114,8 @@ A: No. The table covers spot trading. Futures use separate and usually lower rat
 @script
 (function () {
   var $ = CC.$, f = CC.fmt;
-  // [name, maker %, taker %, note]  Base-tier spot rates, checked 13 Nov 2026
-  var EX = [
+  // [name, maker %, taker %, note]  Base-tier rates, checked 13 Nov 2026
+  var SPOT = [
     ['MEXC', 0, 0.05, 'Can differ by country'],
     ['OKX', 0.08, 0.10, ''],
     ['Binance', 0.10, 0.10, '25% off when paid in BNB'],
@@ -115,30 +127,47 @@ A: No. The table covers spot trading. Futures use separate and usually lower rat
     ['Coinbase Advanced', 0.50, 0.90, 'US rate. 0.25% / 0.50% in the EU and UK'],
     ['Kraken Pro', 0.40, 0.80, '0.30% / 0.60% after $2,500 of volume']
   ];
-  var first = true;
+  var FUT = [
+    ['MEXC', 0, 0.02, 'Can differ by country'],
+    ['Binance', 0.02, 0.05, ''],
+    ['OKX', 0.02, 0.05, ''],
+    ['Gate', 0.02, 0.05, ''],
+    ['Kraken Pro', 0.02, 0.05, ''],
+    ['Bybit', 0.02, 0.055, ''],
+    ['KuCoin', 0.02, 0.06, ''],
+    ['Bitget', 0.02, 0.06, ''],
+    ['HTX', 0.02, 0.06, '']
+  ];
+  var first = true, lastMkt = '';
   CC.page({
-    ids: ['size', 'type', 'orders'],
+    ids: ['size', 'mkt', 'type', 'orders'],
+    keep: ['size', 'orders'],
     calc: function () {
-      var size = CC.n('size'), orders = Math.max(0, CC.n('orders') || 0), maker = CC.radio('type') === 'maker';
+      var size = CC.n('size'), orders = Math.max(0, CC.n('orders') || 0), maker = CC.radio('type') === 'maker', fut = CC.radio('mkt') === 'fut';
+      $('mktHint').textContent = fut ? 'Enter the full position size, margin times leverage. Fees are charged on that.' : 'Buying and selling the coins themselves.';
+      $('tableNote').textContent = (fut ? 'Base-tier USDT perpetual futures rates. Coinbase prices futures per contract, so it is left out. Funding payments are separate.' : 'Base-tier spot rates for a new account with no token discount or volume tier.') + ' Exchanges change fees without notice and some rates differ by country, so confirm on the exchange before you trade.';
       var ok = size > 0;
       $('empty').hidden = ok; $('out').hidden = !ok;
       if (!ok) return;
-      var list = EX.map(function (e, i) { var rate = maker ? e[1] : e[2]; return { name: e[0], rate: rate, cost: size * rate / 100, note: e[3], i: i }; })
+      var list = (fut ? FUT : SPOT).map(function (e, i) { var rate = maker ? e[1] : e[2]; return { name: e[0], rate: rate, cost: size * rate / 100, note: e[3], i: i, mk: e[1], tk: e[2] }; })
         .sort(function (a, b) { return a.rate - b.rate || a.i - b.i; });
       var lo = list[0], hi = list[list.length - 1], max = hi.cost || 1;
       var lows = list.filter(function (x) { return x.rate === lo.rate; }).map(function (x) { return x.name; });
+      var his = list.filter(function (x) { return x.rate === hi.rate; }).map(function (x) { return x.name; });
       $('verdict').textContent = 'Cheapest for this order: ' + (lows.length > 2 ? lows.slice(0, 2).join(', ') + ' and ' + (lows.length - 2) + ' more' : lows.join(' and '));
       CC.count($('best'), lo.cost, function (v) { return f.money(v); });
       var gap = (hi.cost - lo.cost) * orders * 12;
-      $('sub').textContent = hi.name + ' charges ' + f.money(hi.cost) + ' for the same order.' + (orders > 0 ? ' At ' + f.num(orders) + ' orders a month the gap is ' + f.money(gap) + ' a year.' : '');
+      $('sub').textContent = hi.rate === lo.rate ? 'Every exchange listed charges the same for this order.' : (his.length > 2 ? 'The most expensive charge ' : his.join(' and ') + (his.length > 1 ? ' charge ' : ' charges ')) + f.money(hi.cost) + ' for the same order.' + (orders > 0 ? ' At ' + f.num(orders) + ' orders a month the gap is ' + f.money(gap) + ' a year.' : '');
+      $('tryBtn').href = '/profit-calculator/?feeIn=' + lo.rate + '&feeOut=' + lo.rate + (fut ? '&lev=5' : '');
+      var animate = first || lastMkt !== (fut ? 'f' : 's'); first = false; lastMkt = fut ? 'f' : 's';
       $('rows').innerHTML = list.map(function (x) {
-        var cls = x.rate === lo.rate ? ' best' : x.rate === hi.rate ? ' worst' : '';
+        var cls = x.rate === lo.rate ? ' best' : x.rate === hi.rate ? ' worst' : '', w = Math.max(1.5, x.cost / max * 100);
         return '<tr><td><b>' + x.name + '</b>' + (x.rate === lo.rate ? '<span class="tag-best">Lowest</span>' : '') + (x.note ? '<span class="tnote">' + x.note + '</span>' : '') + '</td>' +
-          '<td class="r">' + x.rate.toFixed(2) + '%</td><td class="r"><b>' + f.money(x.cost) + '</b></td>' +
-          '<td class="barcell hide-s"><div class="hbar' + cls + '" data-w="' + Math.max(1.5, x.cost / max * 100) + '"' + (first ? '' : ' style="width:' + Math.max(1.5, x.cost / max * 100) + '%;transition:none"') + '></div></td>' +
+          '<td class="r">' + (Math.round(x.rate * 1000) % 10 ? x.rate.toFixed(3) : x.rate.toFixed(2)) + '%</td><td class="r"><b>' + f.money(x.cost) + '</b></td>' +
+          '<td class="barcell hide-s"><div class="hbar' + cls + '" data-w="' + w + '"' + (animate ? '' : ' style="width:' + w + '%;transition:none"') + '></div></td>' +
           '<td class="r">' + f.money(x.cost * orders) + '</td><td class="r hide-s">' + f.money(x.cost * orders * 12) + '</td></tr>';
       }).join('');
-      if (first) { first = false; requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll('#rows .hbar').forEach(function (b, i) { b.style.transitionDelay = (i * 50) + 'ms'; b.style.width = b.dataset.w + '%'; }); }); }); }
+      if (animate) requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll('#rows .hbar').forEach(function (b, i) { b.style.transitionDelay = (i * 50) + 'ms'; b.style.width = b.dataset.w + '%'; }); }); });
     }
   });
 })();

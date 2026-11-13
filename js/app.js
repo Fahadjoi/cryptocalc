@@ -23,6 +23,12 @@ window.CC = (function () {
     CHF: 'Swiss franc', SGD: 'Singapore dollar', TRY: 'Turkish lira', BRL: 'Brazilian real', NGN: 'Nigerian naira'
   };
 
+  // Binance spot symbols (against USDT) used for the backup price feed and price history
+  var BN = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE', cardano: 'ADA', tron: 'TRX', 'avalanche-2': 'AVAX', chainlink: 'LINK',
+    'the-open-network': 'TON', sui: 'SUI', polkadot: 'DOT', litecoin: 'LTC', uniswap: 'UNI', near: 'NEAR', arbitrum: 'ARB', 'polygon-ecosystem-token': 'POL', 'usd-coin': 'USDC' };
+  var BHOST = 'https://data-api.binance.vision/api/v3';
+  var lastTry = 0;
+
   var coins = META.map(function (m) { return { id: m[0], sym: m[1], name: m[2], stable: !!m[3] }; });
   var fx = { USD: 1 };
   var state = { ts: 0, live: false, error: false, loaded: false };
@@ -69,6 +75,11 @@ window.CC = (function () {
     },
     date: function (ts) { return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
   };
+  // Isolated-margin liquidation estimate for USDT-margined contracts
+  function liq(entry, lev, isLong, mmr) {
+    mmr = mmr == null ? 0.005 : mmr;
+    return Math.max(0, isLong ? entry * (1 - 1 / lev + mmr) : entry * (1 + 1 / lev - mmr));
+  }
   function round(p) { return Number(Number(p).toPrecision(5)); }
 
   /* Animated number: counts from the element's previous value to the new one */
@@ -96,7 +107,7 @@ window.CC = (function () {
       for (var k in d) c[k] = d[k];
     });
     coins.sort(function (a, b) { return (b.mcap || 0) - (a.mcap || 0); });
-    fx = data.fx; fx.USD = 1;
+    if (data.fx) { fx = data.fx; fx.USD = 1; }
     state.ts = data.ts; state.loaded = true;
   }
   function emit() {
@@ -107,7 +118,24 @@ window.CC = (function () {
   function readCache() { try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch (e) { return null; } }
   function getJSON(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
 
+  // Backup: coin prices straight from Binance when the main feed fails. Currency rates come from the last saved set.
+  function backup() {
+    var syms = Object.keys(BN).map(function (k) { return '"' + BN[k] + 'USDT"'; }).join(',');
+    return getJSON(BHOST + '/ticker/24hr?symbols=' + encodeURIComponent('[' + syms + ']')).then(function (list) {
+      var by = {}; list.forEach(function (t) { by[t.symbol] = t; });
+      var out = [{ id: 'tether', price: 1, ch24: 0 }];
+      Object.keys(BN).forEach(function (id) {
+        var t = by[BN[id] + 'USDT']; if (!t) return;
+        out.push({ id: id, price: parseFloat(t.lastPrice), ch24: parseFloat(t.priceChangePercent), high: parseFloat(t.highPrice), low: parseFloat(t.lowPrice) });
+      });
+      if (out.length < 5) throw new Error('thin');
+      var savedFx = null; try { savedFx = JSON.parse(localStorage.getItem('cc_fx')); } catch (e) {}
+      apply({ ts: Date.now(), coins: out, fx: savedFx || undefined });
+      state.live = true; state.error = false; state.backup = true;
+    });
+  }
   function refresh() {
+    lastTry = Date.now();
     var ids = META.map(function (m) { return m[0]; }).join(',');
     return Promise.all([
       getJSON(API + '/coins/markets?vs_currency=usd&ids=' + ids + '&sparkline=true&price_change_percentage=24h,7d'),
@@ -127,21 +155,21 @@ window.CC = (function () {
           };
         })
       };
-      apply(data); state.live = true; state.error = false;
-      try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+      apply(data); state.live = true; state.error = false; state.backup = false;
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); localStorage.setItem('cc_fx', JSON.stringify(rates)); } catch (e) {}
       emit();
     }).catch(function () {
-      state.live = false; state.error = true;
-      if (!state.loaded) { var c = readCache(); if (c) apply(c); }   // fall back to the last prices we saw
-      emit();
+      if (!state.loaded) { var c = readCache(); if (c) apply(c); }   // names, icons and the last prices we saw
+      return backup().catch(function () { state.live = false; state.error = true; }).then(emit);
     });
   }
   function start() {
     var c = readCache(), age = c ? Date.now() - c.ts : Infinity;
     if (c && age < FRESH_ENOUGH) { apply(c); state.live = age < TTL * 2; emit(); }
     if (age > TTL) refresh();
-    setInterval(function () { if (!document.hidden && Date.now() - state.ts > TTL) refresh(); }, 15000);
-    document.addEventListener('visibilitychange', function () { if (!document.hidden && Date.now() - state.ts > TTL) refresh(); });
+    var due = function () { return !document.hidden && Date.now() - state.ts > TTL && Date.now() - lastTry > (state.error || state.backup ? TTL * 2 : TTL); };
+    setInterval(function () { if (due()) refresh(); }, 15000);
+    document.addEventListener('visibilitychange', function () { if (due()) refresh(); });
     setInterval(renderUpdated, 10000);
   }
   function on(f) { subs.push(f); if (state.loaded || state.error) f(state); }
@@ -183,7 +211,7 @@ window.CC = (function () {
     document.querySelectorAll('[data-updated]').forEach(function (el) {
       if (!state.loaded) { el.innerHTML = state.error ? '<span class="live-dot off"></span>Live prices unavailable' : 'Loading prices…'; return; }
       var liveNow = !state.error && Date.now() - state.ts < TTL * 3;
-      el.innerHTML = '<span class="live-dot' + (liveNow ? '' : ' off') + '"></span>' + (liveNow ? 'Live' : 'Last known prices') + ', updated ' + ago(state.ts);
+      el.innerHTML = '<span class="live-dot' + (liveNow ? '' : ' off') + '"></span>' + (liveNow ? (state.backup ? 'Live, backup feed' : 'Live') : 'Last known prices') + ', updated ' + ago(state.ts);
     });
   }
 
@@ -251,19 +279,20 @@ window.CC = (function () {
   /* Line chart with two series (val solid, inv dashed), hover tooltip. series: [{t, val, inv}] */
   function lineChart(el, series, o) {
     o = o || {};
-    var W = 640, H = 250, padT = 14, padB = 22, n = series.length;
-    var max = 0, min = Infinity; series.forEach(function (s) { max = Math.max(max, s.val, s.inv); min = Math.min(min, s.val, s.inv); });
+    var W = Math.max(640, Math.min(1100, el.clientWidth || 640)), H = W > 800 ? 300 : 250, padT = 14, padB = 22, n = series.length;
+    var max = 0, min = Infinity; var two = series[0].inv != null;
+    series.forEach(function (s) { max = Math.max(max, s.val, two ? s.inv : s.val); min = Math.min(min, s.val, two ? s.inv : s.val); });
     if (o.zoom && max > min) { var pad = (max - min) * 0.12; min = Math.max(0, min - pad); max += pad; } else { min = 0; max = max * 1.08 || 1; }
     var X = function (i) { return n > 1 ? i / (n - 1) * W : 0; }, Y = function (v) { return padT + (1 - (v - min) / (max - min)) * (H - padT - padB); };
     var val = '', inv = '';
-    series.forEach(function (s, i) { val += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.val).toFixed(1); inv += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.inv).toFixed(1); });
+    series.forEach(function (s, i) { val += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.val).toFixed(1); if (two) inv += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.inv).toFixed(1); });
     var grid = '', axis = '';
-    for (var g = 0; g <= 3; g++) { var v = o.zoom ? min + (max - min) * g / 3.4 : max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + (o.zoom && max < 1e5 ? '$' + fmt.num(v, 0) : fmt.compact(v)) + '</text>'; }
+    for (var g = 0; g <= 3; g++) { var v = o.zoom ? min + (max - min) * g / 3.4 : max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + (o.axisFmt ? o.axisFmt(v) : o.zoom && max < 1e5 ? '$' + fmt.num(v, 0) : fmt.compact(v)) + '</text>'; }
     var mid = Math.floor((n - 1) / 2);
     axis += '<text x="0" y="' + (H - 4) + '">' + (o.startLabel || fmt.date(series[0].t)) + '</text><text x="' + W / 2 + '" y="' + (H - 4) + '" text-anchor="middle">' + fmt.date(series[mid].t) + '</text><text x="' + W + '" y="' + (H - 4) + '" text-anchor="end">' + (o.endLabel || fmt.date(series[n - 1].t)) + '</text>';
     var neg = o.gain === false ? ' neg' : '', st = o.still ? ' style="animation:none;stroke-dashoffset:0"' : '', sa = o.still ? ' style="animation:none;opacity:.1"' : '';
     el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria || 'Chart') + '"><g class="grid">' + grid + '</g><g class="axis">' + axis + '</g>' +
-      '<path class="a-val' + neg + '"' + sa + ' d="' + val + 'L' + W + ' ' + Y(min) + 'L0 ' + Y(min) + 'Z"/><path class="l-inv" d="' + inv + '"/><path class="l-val' + neg + '" pathLength="1"' + st + ' d="' + val + '"/>' +
+      '<path class="a-val' + neg + '"' + sa + ' d="' + val + 'L' + W + ' ' + Y(min) + 'L0 ' + Y(min) + 'Z"/>' + (two ? '<path class="l-inv" d="' + inv + '"/>' : '') + '<path class="l-val' + neg + '" pathLength="1"' + st + ' d="' + val + '"/>' +
       '<g style="display:none"><line class="cross" y1="' + padT + '" y2="' + (H - padB) + '"/><circle class="dot" r="4.5"/><circle class="dot" r="3.5"/></g></svg><div class="chart-tip"></div>';
     var svg = el.firstChild, hov = svg.lastChild, tip = el.lastChild;
     function move(e) {
@@ -271,8 +300,9 @@ window.CC = (function () {
       var i = Math.max(0, Math.min(n - 1, Math.round(cx / r.width * (n - 1)))), s = series[i], x = X(i);
       hov.style.display = ''; var c = hov.children;
       c[0].setAttribute('x1', x); c[0].setAttribute('x2', x);
-      c[1].setAttribute('cx', x); c[1].setAttribute('cy', Y(s.val)); c[2].setAttribute('cx', x); c[2].setAttribute('cy', Y(s.inv));
-      tip.innerHTML = '<b>' + fmt.date(s.t) + '</b><br>' + (o.valLabel || 'Value') + ' ' + fmt.money(s.val) + '<br>' + (o.invLabel || 'Put in') + ' ' + fmt.money(s.inv);
+      c[1].setAttribute('cx', x); c[1].setAttribute('cy', Y(s.val)); c[2].setAttribute('cx', x); c[2].setAttribute('cy', Y(two ? s.inv : s.val));
+      var tf = o.tipFmt || fmt.money;
+      tip.innerHTML = '<b>' + fmt.date(s.t) + '</b><br>' + (o.valLabel || 'Value') + ' ' + tf(s.val) + (two ? '<br>' + (o.invLabel || 'Put in') + ' ' + tf(s.inv) : '');
       tip.style.left = Math.max(14, Math.min(86, x / W * 100)) + '%'; tip.style.opacity = 1;
     }
     function leave() { hov.style.display = 'none'; tip.style.opacity = 0; }
@@ -313,6 +343,10 @@ window.CC = (function () {
     var sel = $('coin');
     fillCoins(sel, cfg.coinOpt);
     ids.forEach(function (k) { if (q.has(k)) { setVal(k, q.get(k)); restored = true; } });
+    var keep = cfg.keep || [], kept = {};
+    try { kept = JSON.parse(localStorage.getItem('cc_keep')) || {}; } catch (e) {}
+    keep.forEach(function (k) { if (!q.has(k) && kept[k] != null && kept[k] !== '') setVal(k, kept[k]); });
+    function saveKept() { keep.forEach(function (k) { kept[k] = getVal(k); }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} }
     var run = function () { try { cfg.calc(); } catch (e) { console.error(e); } };
     function autofill(force) {
       if (!sel) return; var c = coin(sel.value); if (!c || c.price == null) return;
@@ -323,7 +357,7 @@ window.CC = (function () {
     document.querySelectorAll('.inputs input, .inputs select').forEach(function (el) {
       var h = function (e) {
         if (el === sel) { autofill(true); if (cfg.onCoin) cfg.onCoin(); }
-        else if (e.isTrusted) el.dataset.touched = 1;
+        else if (e.isTrusted) { el.dataset.touched = 1; if (keep.length) saveKept(); }
         run();
       };
       el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', h);
@@ -336,16 +370,16 @@ window.CC = (function () {
       });
     });
     document.querySelectorAll('[data-set]').forEach(function (b) {
-      b.addEventListener('click', function () { var p = b.dataset.set.split(':'), el = $(p[0]); el.value = p[1]; el.dataset.touched = 1; run(); });
+      b.addEventListener('click', function () { var p = b.dataset.set.split(':'), el = $(p[0]); el.value = p[1]; el.dataset.touched = 1; if (keep.length) saveKept(); run(); });
     });
     var sb = $('shareBtn'); if (sb) sb.addEventListener('click', function () { share(ids); });
-    var rb = $('resetBtn'); if (rb) rb.addEventListener('click', function () { location.href = location.pathname; });
+    var rb = $('resetBtn'); if (rb) rb.addEventListener('click', function () { keep.forEach(function (k) { delete kept[k]; }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} location.href = location.pathname; });
     on(function () {
       if (state.loaded) { fillCoins(sel, cfg.coinOpt); if (!filled) { filled = true; autofill(false); } }
       run();
     });
     run();
-    return { run: run };
+    return { run: run, autofill: autofill };
   }
 
   /* ---------- Boot ---------- */
@@ -371,6 +405,6 @@ window.CC = (function () {
     $: $, esc: esc, fmt: fmt, round: round, count: count, on: on, coin: coin, coins: function () { return coins; },
     fx: function (code) { return fx[code]; }, FIATS: FIATS, state: state, n: n, radio: radio, getVal: getVal, setVal: setVal,
     fillCoins: fillCoins, marketRows: marketRows, ladder: ladder, spark: spark, icon: icon, toast: toast, share: share, page: page,
-    getJSON: getJSON, API: API, lineChart: lineChart, reduced: reduced
+    getJSON: getJSON, API: API, lineChart: lineChart, liq: liq, BN: BN, BHOST: BHOST, reduced: reduced
   };
 })();

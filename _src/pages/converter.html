@@ -31,6 +31,18 @@ scripts: /js/converter.js
   </div>
 </section>
 
+<section class="section reveal" id="pairChartWrap" hidden style="margin-top:48px">
+  <div class="section-head"><h2 id="pcTitle">Last 30 days</h2><p>Daily closing rate, currencies converted at today's exchange rate</p></div>
+  <div class="card"><div class="card-body">
+    <div class="chart" id="pairChart"></div>
+    <div class="stats">
+      <div><span>30-day high</span><b id="pcHi"></b><small id="pcHiD"></small></div>
+      <div><span>30-day low</span><b id="pcLo"></b><small id="pcLoD"></small></div>
+      <div><span>Change over 30 days</span><b id="pcCh"></b><small>first close to now</small></div>
+    </div>
+  </div></div>
+</section>
+
 <section class="section reveal" style="margin-top:48px">
   <div class="section-head"><h2 id="refTitle">Quick reference</h2><p>At the current rate</p></div>
   <div class="tool-grid">

@@ -128,9 +128,7 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
 (function () {
   var $ = CC.$, f = CC.fmt, mem = {}, pending = {}, req = 0, lastSig = '';
 
-  var BN = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE', cardano: 'ADA', tron: 'TRX', 'avalanche-2': 'AVAX', chainlink: 'LINK',
-    'the-open-network': 'TON', sui: 'SUI', polkadot: 'DOT', litecoin: 'LTC', uniswap: 'UNI', near: 'NEAR', arbitrum: 'ARB', 'polygon-ecosystem-token': 'POL' };
-  var BHOST = 'https://data-api.binance.vision/api/v3/klines?interval=1d&limit=1000&symbol=';
+  var BN = CC.BN, BHOST = CC.BHOST + '/klines?interval=1d&limit=1000&symbol=';
   function candles(j) { if (!Array.isArray(j)) throw new Error('bad'); return j.map(function (k) { return [k[0], parseFloat(k[4])]; }); }
   // Returns {p: [[time, price]...], full: bool}. Tries Binance spot history (up to 5 years), falls back to one year from CoinGecko.
   function history(id, days) {
@@ -138,7 +136,7 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
     if (mem[key]) return Promise.resolve(mem[key]);
     if (days <= 990 && mem[id + ':long']) return Promise.resolve(mem[id + ':long']);
     if (pending[key]) return pending[key];
-    var sym = BN[id], job;
+    var sym = id === 'usd-coin' ? null : BN[id], job;
     if (sym) {
       job = CC.getJSON(BHOST + sym + 'USDT').then(function (j) {
         var p = candles(j);
@@ -190,6 +188,7 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
 
   CC.page({
     ids: ['coin', 'amount', 'every', 'days', 'fee'],
+    keep: ['amount', 'fee'],
     coinOpt: { stables: false },
     calc: function () {
       var id = $('coin').value, amount = CC.n('amount'), step = parseInt(CC.radio('every'), 10) || 7, days = parseInt(CC.radio('days'), 10) || 365;

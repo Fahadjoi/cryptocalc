@@ -13,6 +13,7 @@ TOOLS = [
     ('/dca-calculator/', 'DCA', 'DCA backtest', 'What regular buys over the past five years are worth today'),
     ('/staking-calculator/', 'Staking', 'Staking rewards', 'What staking adds up to with compounding'),
     ('/converter/', 'Converter', 'Converter', 'Live rates between 20 coins and 15 currencies'),
+    ('/portfolio/', 'Portfolio', 'Portfolio tracker', 'Your holdings valued at live prices, saved in your browser'),
 ]
 PCOINS = [('bitcoin', 'BTC', 'Bitcoin'), ('ethereum', 'ETH', 'Ethereum'), ('tether', 'USDT', 'Tether'), ('binancecoin', 'BNB', 'BNB'), ('solana', 'SOL', 'Solana'),
           ('ripple', 'XRP', 'XRP'), ('dogecoin', 'DOGE', 'Dogecoin'), ('cardano', 'ADA', 'Cardano'), ('tron', 'TRX', 'TRON'), ('litecoin', 'LTC', 'Litecoin')]
@@ -96,7 +97,7 @@ def render(raw):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=5">
+<link rel="stylesheet" href="/css/style.css?v=6">
 {ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -111,7 +112,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=5"></script>
+<script src="/js/app.js?v=6"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -119,7 +120,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=5"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=6"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     out = OUT / (path.strip('/') + '/index.html' if path.endswith('/') else path.strip('/'))
     if path == '/': out = OUT / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
