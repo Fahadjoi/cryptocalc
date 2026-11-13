@@ -10,20 +10,22 @@
 <meta property="og:description" content="Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/converter/">
+<meta property="og:image" content="https://zesty-haupia-16a953.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFE04A">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
 <script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=4">
+<link rel="stylesheet" href="/css/style.css?v=5">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How often do the rates update?", "acceptedAnswer": {"@type": "Answer", "text": "Once a minute while the page is open. The time of the last update is shown at the top of the converter."}}, {"@type": "Question", "name": "Can I convert one coin directly into another?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other."}}, {"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed."}}, {"@type": "Question", "name": "Is this the rate I will get on my exchange?", "acceptedAnswer": {"@type": "Answer", "text": "It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent."}}, {"@type": "Question", "name": "Does the converter charge anything?", "acceptedAnswer": {"@type": "Answer", "text": "No. It only shows rates. It does not hold, send or trade any money."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Converter", "url": "https://zesty-haupia-16a953.netlify.app/converter/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute."}</script>
 </head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position size</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/converter/">Converter</a></nav>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a></nav>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
 <div class="ticker" id="ticker" aria-label="Live coin prices"></div>
@@ -72,6 +74,11 @@
   </div></div>
 </section>
 
+<section class="section reveal" style="margin-top:56px">
+  <div class="section-head"><h2>Popular conversions</h2><p>Each has its own page with a live rate</p></div>
+  <div class="pairs"><a href="/convert/btc-to-usd/">BTC to USD</a><a href="/convert/eth-to-usd/">ETH to USD</a><a href="/convert/usdt-to-usd/">USDT to USD</a><a href="/convert/bnb-to-usd/">BNB to USD</a><a href="/convert/sol-to-usd/">SOL to USD</a><a href="/convert/xrp-to-usd/">XRP to USD</a><a href="/convert/btc-to-pkr/">BTC to PKR</a><a href="/convert/eth-to-pkr/">ETH to PKR</a><a href="/convert/usdt-to-pkr/">USDT to PKR</a><a href="/convert/bnb-to-pkr/">BNB to PKR</a><a href="/convert/sol-to-pkr/">SOL to PKR</a><a href="/convert/xrp-to-pkr/">XRP to PKR</a><a href="/convert/btc-to-inr/">BTC to INR</a><a href="/convert/eth-to-inr/">ETH to INR</a><a href="/convert/usdt-to-inr/">USDT to INR</a><a href="/convert/bnb-to-inr/">BNB to INR</a><a href="/convert/sol-to-inr/">SOL to INR</a><a href="/convert/xrp-to-inr/">XRP to INR</a><a href="/convert/btc-to-eur/">BTC to EUR</a><a href="/convert/eth-to-eur/">ETH to EUR</a><a href="/convert/usdt-to-eur/">USDT to EUR</a><a href="/convert/bnb-to-eur/">BNB to EUR</a><a href="/convert/sol-to-eur/">SOL to EUR</a><a href="/convert/xrp-to-eur/">XRP to EUR</a></div>
+</section>
+
 <div class="guide">
 <article class="prose reveal">
   <h2>How the conversion is worked out</h2>
@@ -103,88 +110,15 @@
 
 <section class="faq"><h2>Common questions</h2><details><summary>How often do the rates update?</summary><p>Once a minute while the page is open. The time of the last update is shown at the top of the converter.</p></details><details><summary>Can I convert one coin directly into another?</summary><p>Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other.</p></details><details><summary>Where do the prices come from?</summary><p>From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed.</p></details><details><summary>Is this the rate I will get on my exchange?</summary><p>It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent.</p></details><details><summary>Does the converter charge anything?</summary><p>No. It only shows rates. It does not hold, send or trade any money.</p></details></section>
 </article>
-<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same trade costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past year are worth today</span></a></li></ul></aside>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li></ul></aside>
 </div>
 </main>
 <footer><div class="foot">
 <div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
-<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li></ul></div>
 <div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=4"></script>
-<script>
-(function () {
-  var $ = CC.$, f = CC.fmt, F = CC.FIATS, ready = false, lastEdited = 'amount';
-  var q = new URLSearchParams(location.search);
-
-  function localFiat() {
-    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-    var m = { 'Asia/Karachi': 'PKR', 'Asia/Kolkata': 'INR', 'Asia/Calcutta': 'INR', 'Asia/Dubai': 'AED', 'Asia/Riyadh': 'SAR', 'Asia/Tokyo': 'JPY', 'Europe/London': 'GBP',
-      'Europe/Istanbul': 'TRY', 'Africa/Lagos': 'NGN', 'America/Sao_Paulo': 'BRL', 'Asia/Singapore': 'SGD', 'Europe/Zurich': 'CHF', 'America/Toronto': 'CAD', 'America/Vancouver': 'CAD' };
-    if (m[tz]) return m[tz];
-    if (tz.indexOf('Australia/') === 0) return 'AUD';
-    if (tz.indexOf('Europe/') === 0) return 'EUR';
-    return 'USD';
-  }
-  var want = { from: q.get('from') || 'bitcoin', to: q.get('to') || localFiat() };
-  if (q.get('amount') > 0) $('amount').value = q.get('amount');
-
-  function isFiat(k) { return !!F[k]; }
-  function code(k) { if (isFiat(k)) return k; var c = CC.coin(k); return c ? c.sym : k; }
-  function label(k) { if (isFiat(k)) return F[k]; var c = CC.coin(k); return c ? c.name : k; }
-  function usd(k) { if (isFiat(k)) { var r = CC.fx(k); return r ? 1 / r : NaN; } var c = CC.coin(k); return c && c.price != null ? c.price : NaN; }
-  function show(n, k) { return isFiat(k) ? f.fiat(n, k) : f.amt(n) + ' ' + code(k); }
-  function tidy(x) { return isFinite(x) ? Number(x.toPrecision(8)) : ''; }
-
-  function fill(sel, keep) {
-    var coins = CC.coins().map(function (c) { return '<option value="' + c.id + '">' + CC.esc(c.sym) + ' · ' + CC.esc(c.name) + '</option>'; }).join('');
-    var fiats = Object.keys(F).map(function (k) { return '<option value="' + k + '">' + k + ' · ' + F[k] + '</option>'; }).join('');
-    sel.innerHTML = '<optgroup label="Coins">' + coins + '</optgroup><optgroup label="Currencies">' + fiats + '</optgroup>';
-    sel.value = keep; if (!sel.value) sel.selectedIndex = 0;
-  }
-
-  function calc() {
-    var a = $('from').value, b = $('to').value, ra = usd(a), rb = usd(b);
-    if (!ready || !isFinite(ra) || !isFinite(rb)) return;
-    var rate = ra / rb;
-    if (lastEdited === 'result') { var r = parseFloat($('result').value); $('amount').value = r >= 0 ? tidy(r / rate) : ''; }
-    else { var am = parseFloat($('amount').value); $('result').value = am >= 0 ? tidy(am * rate) : ''; }
-    var amt = parseFloat($('amount').value);
-    $('state').hidden = true; $('out').hidden = false;
-    var has = amt > 0;
-    $('lead').textContent = has ? show(amt, a) + ' equals' : '1 ' + code(a) + ' equals';
-    CC.count($('big'), (has ? amt : 1) * rate, function (v) { return show(v, b); });
-    var c = CC.coin(a) || CC.coin(b), ch = c && c.ch24 != null ? ' ' + c.sym + ' is ' + (c.ch24 >= 0 ? 'up ' : 'down ') + Math.abs(c.ch24).toFixed(2) + '% in 24 hours.' : '';
-    $('sub').textContent = '1 ' + code(a) + ' = ' + show(rate, b) + '. 1 ' + code(b) + ' = ' + show(1 / rate, a) + '.' + ch;
-
-    var la = isFiat(a) ? [10, 50, 100, 500, 1000, 5000, 10000] : ra > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : ra > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
-    var lb = isFiat(b) ? [10, 50, 100, 500, 1000, 5000, 10000] : rb > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : rb > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
-    $('refTitle').textContent = code(a) + ' and ' + code(b) + ' quick reference';
-    $('refA1').textContent = label(a); $('refA2').textContent = label(b); $('refB1').textContent = label(b); $('refB2').textContent = label(a);
-    $('refA').innerHTML = la.map(function (x) { return '<tr><td>' + show(x, a) + '</td><td class="r"><b>' + show(x * rate, b) + '</b></td></tr>'; }).join('');
-    $('refB').innerHTML = lb.map(function (x) { return '<tr><td>' + show(x, b) + '</td><td class="r"><b>' + show(x / rate, a) + '</b></td></tr>'; }).join('');
-    $('quick').innerHTML = la.slice(0, 6).map(function (x) { return '<button type="button" class="chip" data-q="' + x + '">' + f.num(x, 3) + ' ' + code(a) + '</button>'; }).join('');
-
-    var fc = isFiat(b) ? b : isFiat(a) ? a : 'USD';
-    $('inCode').textContent = ' in ' + fc;
-    CC.marketRows($('market'), { stables: true, fiat: fc, onPick: function (id) { $('from').value = id; lastEdited = 'amount'; calc(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
-  }
-
-  $('amount').addEventListener('input', function () { lastEdited = 'amount'; calc(); });
-  $('result').addEventListener('input', function () { lastEdited = 'result'; calc(); });
-  $('from').addEventListener('change', function () { lastEdited = 'amount'; calc(); });
-  $('to').addEventListener('change', function () { lastEdited = 'amount'; calc(); });
-  $('swap').addEventListener('click', function () { var a = $('from').value; $('from').value = $('to').value; $('to').value = a; lastEdited = 'amount'; calc(); });
-  $('quick').addEventListener('click', function (e) { var b = e.target.closest('[data-q]'); if (!b) return; $('amount').value = b.dataset.q; lastEdited = 'amount'; calc(); });
-  $('shareBtn').addEventListener('click', function () { CC.share(['amount', 'from', 'to']); });
-
-  fill($('from'), want.from); fill($('to'), want.to);
-  CC.on(function (s) {
-    if (!s.loaded) { $('state').textContent = s.error ? 'Live rates are unavailable right now. Please try again in a minute.' : 'Loading live rates…'; return; }
-    fill($('from'), $('from').value || want.from); fill($('to'), $('to').value || want.to);
-    ready = true; calc();
-  });
-})();
-</script>
+<script src="/js/app.js?v=5"></script>
+<script src="/js/converter.js?v=5"></script>
 </body>
 </html>

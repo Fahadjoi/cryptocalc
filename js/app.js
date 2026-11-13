@@ -247,6 +247,38 @@ window.CC = (function () {
       return '<div class="k-' + r.kind + '" style="--i:' + (animate ? i : 0) + (animate ? '' : ';animation:none') + '"><span class="tag">' + esc(r.label) + '</span><span class="p">$' + fmt.price(r.price) + '</span><span class="d">' + (r.kind === 'entry' ? 'entry' : fmt.pct(d, true)) + '</span></div>';
     }).join('');
   }
+
+  /* Line chart with two series (val solid, inv dashed), hover tooltip. series: [{t, val, inv}] */
+  function lineChart(el, series, o) {
+    o = o || {};
+    var W = 640, H = 250, padT = 14, padB = 22, n = series.length;
+    var max = 0, min = Infinity; series.forEach(function (s) { max = Math.max(max, s.val, s.inv); min = Math.min(min, s.val, s.inv); });
+    if (o.zoom && max > min) { var pad = (max - min) * 0.12; min = Math.max(0, min - pad); max += pad; } else { min = 0; max = max * 1.08 || 1; }
+    var X = function (i) { return n > 1 ? i / (n - 1) * W : 0; }, Y = function (v) { return padT + (1 - (v - min) / (max - min)) * (H - padT - padB); };
+    var val = '', inv = '';
+    series.forEach(function (s, i) { val += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.val).toFixed(1); inv += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.inv).toFixed(1); });
+    var grid = '', axis = '';
+    for (var g = 0; g <= 3; g++) { var v = o.zoom ? min + (max - min) * g / 3.4 : max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + (o.zoom && max < 1e5 ? '$' + fmt.num(v, 0) : fmt.compact(v)) + '</text>'; }
+    var mid = Math.floor((n - 1) / 2);
+    axis += '<text x="0" y="' + (H - 4) + '">' + (o.startLabel || fmt.date(series[0].t)) + '</text><text x="' + W / 2 + '" y="' + (H - 4) + '" text-anchor="middle">' + fmt.date(series[mid].t) + '</text><text x="' + W + '" y="' + (H - 4) + '" text-anchor="end">' + (o.endLabel || fmt.date(series[n - 1].t)) + '</text>';
+    var neg = o.gain === false ? ' neg' : '', st = o.still ? ' style="animation:none;stroke-dashoffset:0"' : '', sa = o.still ? ' style="animation:none;opacity:.1"' : '';
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria || 'Chart') + '"><g class="grid">' + grid + '</g><g class="axis">' + axis + '</g>' +
+      '<path class="a-val' + neg + '"' + sa + ' d="' + val + 'L' + W + ' ' + Y(min) + 'L0 ' + Y(min) + 'Z"/><path class="l-inv" d="' + inv + '"/><path class="l-val' + neg + '" pathLength="1"' + st + ' d="' + val + '"/>' +
+      '<g style="display:none"><line class="cross" y1="' + padT + '" y2="' + (H - padB) + '"/><circle class="dot" r="4.5"/><circle class="dot" r="3.5"/></g></svg><div class="chart-tip"></div>';
+    var svg = el.firstChild, hov = svg.lastChild, tip = el.lastChild;
+    function move(e) {
+      var r = svg.getBoundingClientRect(), cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      var i = Math.max(0, Math.min(n - 1, Math.round(cx / r.width * (n - 1)))), s = series[i], x = X(i);
+      hov.style.display = ''; var c = hov.children;
+      c[0].setAttribute('x1', x); c[0].setAttribute('x2', x);
+      c[1].setAttribute('cx', x); c[1].setAttribute('cy', Y(s.val)); c[2].setAttribute('cx', x); c[2].setAttribute('cy', Y(s.inv));
+      tip.innerHTML = '<b>' + fmt.date(s.t) + '</b><br>' + (o.valLabel || 'Value') + ' ' + fmt.money(s.val) + '<br>' + (o.invLabel || 'Put in') + ' ' + fmt.money(s.inv);
+      tip.style.left = Math.max(14, Math.min(86, x / W * 100)) + '%'; tip.style.opacity = 1;
+    }
+    function leave() { hov.style.display = 'none'; tip.style.opacity = 0; }
+    svg.addEventListener('mousemove', move); svg.addEventListener('touchstart', move, { passive: true }); svg.addEventListener('touchmove', move, { passive: true });
+    svg.addEventListener('mouseleave', leave); svg.addEventListener('touchend', leave);
+  }
   var toastT;
   function toast(msg) {
     var t = $('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
@@ -339,6 +371,6 @@ window.CC = (function () {
     $: $, esc: esc, fmt: fmt, round: round, count: count, on: on, coin: coin, coins: function () { return coins; },
     fx: function (code) { return fx[code]; }, FIATS: FIATS, state: state, n: n, radio: radio, getVal: getVal, setVal: setVal,
     fillCoins: fillCoins, marketRows: marketRows, ladder: ladder, spark: spark, icon: icon, toast: toast, share: share, page: page,
-    getJSON: getJSON, API: API, reduced: reduced
+    getJSON: getJSON, API: API, lineChart: lineChart, reduced: reduced
   };
 })();

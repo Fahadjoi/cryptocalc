@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Staking Calculator | Rewards with compounding</title>
+<meta name="description" content="Free staking rewards calculator. Enter your amount, reward rate and time to see rewards with daily, weekly or monthly compounding, monthly top-ups, validator commission and a price-change scenario.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/staking-calculator/">
+<meta property="og:title" content="Crypto Staking Calculator | Rewards with compounding">
+<meta property="og:description" content="Free staking rewards calculator. Enter your amount, reward rate and time to see rewards with daily, weekly or monthly compounding, monthly top-ups, validator commission and a price-change scenario.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/staking-calculator/">
+<meta property="og:image" content="https://zesty-haupia-16a953.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css?v=5">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate staking rewards?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply your staked amount by the yearly rate and by the fraction of a year you stake. $1,000 at 5% for one year earns $50. If rewards are restaked, each period's rewards also earn rewards, which lifts the one-year total to $51.27 with daily compounding."}}, {"@type": "Question", "name": "What is the difference between APR and APY?", "acceptedAnswer": {"@type": "Answer", "text": "APR is the simple yearly rate. APY includes the effect of compounding. The same product has a higher APY than APR whenever rewards are restaked, for example 5% APR is 5.13% APY with daily compounding."}}, {"@type": "Question", "name": "Does compounding frequency make a big difference?", "acceptedAnswer": {"@type": "Answer", "text": "Not at modest rates. At 5% a year, daily compounding earns $51.27 on $1,000 and monthly compounding earns $51.16. The gap grows at high rates and over many years."}}, {"@type": "Question", "name": "Are staking rewards guaranteed?", "acceptedAnswer": {"@type": "Answer", "text": "No. Rates vary with network conditions, validators can be penalised, and the coin's price can fall by more than the rewards you earn."}}, {"@type": "Question", "name": "Why does the result change when I enter a price change?", "acceptedAnswer": {"@type": "Answer", "text": "Rewards and your original stake are both held in the coin. If the coin's price is different at the end, the dollar value of everything you hold changes by the same percentage."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Staking Calculator", "url": "https://zesty-haupia-16a953.netlify.app/staking-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free staking rewards calculator. Enter your amount, reward rate and time to see rewards with daily, weekly or monthly compounding, monthly top-ups, validator commission and a price-change scenario."}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a></nav>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Staking rewards calculator</h1>
+  <p class="rise" style="--d:1">See what staking or an earn product adds up to, with compounding, top-ups and a price change taken into account.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your stake</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field"><label for="amount">Amount staked</label><div class="inp"><input id="amount" type="number" inputmode="decimal" step="any" value="1000" min="0"><span class="unit">USD</span></div></div>
+        <div class="field"><label for="apr">Reward rate per year (APR)</label><div class="inp"><input id="apr" type="number" inputmode="decimal" step="any" value="5" max="1000" min="0"><span class="unit">%</span></div></div>
+        <div class="field full"><span class="lbl">Rewards are</span>
+          <div class="seg" role="radiogroup" aria-label="Rewards are">
+            <label><input type="radio" name="comp" value="0"><span>Paid out</span></label>
+            <label><input type="radio" name="comp" value="1" checked><span>Restaked daily</span></label>
+            <label><input type="radio" name="comp" value="7"><span>Weekly</span></label>
+            <label><input type="radio" name="comp" value="30"><span>Monthly</span></label>
+          </div>
+        </div>
+        <div class="field"><label for="years">Time staked</label><div class="inp"><input id="years" type="number" inputmode="decimal" step="any" min="0" max="30" value="1"><span class="unit">years</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="years:0.5">6 mo</button><button type="button" class="chip" data-set="years:1">1 yr</button><button type="button" class="chip" data-set="years:3">3 yr</button><button type="button" class="chip" data-set="years:5">5 yr</button></div>
+        </div>
+        <div class="field"><label for="topup">Added every month</label><div class="inp"><input id="topup" type="number" inputmode="decimal" step="any" value="0" min="0"><span class="unit">USD</span></div></div>
+        <div class="field"><label for="comm">Validator or platform fee on rewards</label><div class="inp"><input id="comm" type="number" inputmode="decimal" step="any" value="0" max="100" min="0"><span class="unit">%</span></div></div>
+        <div class="field"><label for="move">Coin price change by the end</label><div class="inp"><input id="move" type="number" inputmode="decimal" step="any" min="-100" value="0"><span class="unit">%</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="move:-50">−50%</button><button type="button" class="chip" data-set="move:0">0%</button><button type="button" class="chip" data-set="move:50">+50%</button><button type="button" class="chip" data-set="move:100">+100%</button></div>
+        </div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this plan</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Rewards earned</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an amount, a reward rate and a time above zero.</p>
+      <div id="out">
+        <div class="verdict up" id="verdict"></div>
+        <div class="big" id="rewards"></div>
+        <div class="sub" id="sub"></div>
+        <div class="chart" id="chart"></div>
+        <div class="legend"><span><i></i>Balance with rewards</span><span><i class="inv"></i>Money you put in</span></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>You put in</dt><dd id="put"></dd></div>
+          <div><dt>Balance at the end, at today's price</dt><dd id="final"></dd></div>
+          <div id="moveRow"><dt id="moveLbl"></dt><dd id="moved"></dd></div>
+          <div><dt>Effective yearly rate (APY)</dt><dd id="apy"></dd></div>
+          <div><dt>Rewards per day at the start</dt><dd id="daily"></dd></div>
+          <div id="coinRow" hidden><dt>In coins at the live price</dt><dd id="coins"></dd></div>
+        </dl>
+        <h3 class="subhead">Year by year</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>End of</th><th class="r">Put in</th><th class="r">Rewards so far</th><th class="r">Balance</th></tr></thead><tbody id="yearly"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>How staking rewards are worked out</h2>
+  <p>Staking pays a percentage of your balance over time, in the same coin you staked. The calculator steps through the period one day at a time. Each day it adds that day's share of the yearly rate, and on the schedule you choose it moves the collected rewards into the staked balance so they start earning too.</p>
+  <div class="formula">Balance after one year = amount × (1 + rate ÷ periods) ^ periods<small>Periods is how many times a year rewards are restaked: 365 for daily, 52 for weekly, 12 for monthly.</small></div>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You stake <b>$1,000</b> at <b>5%</b> a year and restake the rewards daily.</p>
+    <p>After one year: 1,000 × (1 + 0.05 ÷ 365) ^ 365 = <b>$1,051.27</b>.</p>
+    <p>Without restaking you would have $1,050.00. Compounding added $1.27 in the first year, and the gap widens every year after: over ten years it is $648.66 against $500.00.</p>
+  </div>
+
+  <h2>APR and APY</h2>
+  <p><strong>APR</strong> is the plain yearly rate with no compounding. <strong>APY</strong> is what you actually earn in a year once rewards are restaked. A 5% APR compounded daily is a 5.13% APY, and a 20% APR compounded daily is a 22.13% APY. Platforms tend to advertise whichever number looks larger, so check which one you are being shown. Enter the APR here and the calculator reports the APY.</p>
+
+  <h2>The price matters more than the rate</h2>
+  <p>Rewards are paid in the coin, so their value in dollars moves with the coin's price. A 5% reward does not help much if the coin falls 40% while you hold it. The price change field shows that plainly: it applies the change to your whole final balance, the original stake and the rewards together.</p>
+  <p>High reward rates often belong to small or new coins whose supply is growing quickly. When everyone's balance grows by 15% a year, each coin tends to be worth less, and the real return can be far below the headline rate.</p>
+
+  <h2>Costs and catches to check first</h2>
+  <ul>
+    <li><strong>Commission.</strong> Validators and exchanges usually keep a share of rewards, often 5% to 25% of them. Enter it in the fee field, or use the net rate your platform quotes and leave the fee at zero.</li>
+    <li><strong>Lock-up and unbonding.</strong> Many networks hold your coins for days or weeks after you ask to withdraw, and you cannot sell during that time.</li>
+    <li><strong>Variable rates.</strong> Staking rates change as more or fewer people stake. The rate you enter is assumed to hold for the whole period.</li>
+    <li><strong>Slashing.</strong> On some networks a validator that misbehaves or goes offline loses part of the stake, and its delegators share the loss.</li>
+    <li><strong>Platform risk.</strong> Coins held in an exchange's earn product are a loan to that company. If it fails, they can be lost.</li>
+    <li><strong>Tax.</strong> In many countries each reward counts as income when it is received.</li>
+  </ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How do I calculate staking rewards?</summary><p>Multiply your staked amount by the yearly rate and by the fraction of a year you stake. $1,000 at 5% for one year earns $50. If rewards are restaked, each period's rewards also earn rewards, which lifts the one-year total to $51.27 with daily compounding.</p></details><details><summary>What is the difference between APR and APY?</summary><p>APR is the simple yearly rate. APY includes the effect of compounding. The same product has a higher APY than APR whenever rewards are restaked, for example 5% APR is 5.13% APY with daily compounding.</p></details><details><summary>Does compounding frequency make a big difference?</summary><p>Not at modest rates. At 5% a year, daily compounding earns $51.27 on $1,000 and monthly compounding earns $51.16. The gap grows at high rates and over many years.</p></details><details><summary>Are staking rewards guaranteed?</summary><p>No. Rates vary with network conditions, validators can be penalised, and the coin's price can fall by more than the rewards you earn.</p></details><details><summary>Why does the result change when I enter a price change?</summary><p>Rewards and your original stake are both held in the coin. If the coin's price is different at the end, the dollar value of everything you hold changes by the same percentage.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=5"></script>
+<script>
+(function () {
+  var $ = CC.$, f = CC.fmt, lastSig = '';
+  CC.page({
+    ids: ['coin', 'amount', 'apr', 'comp', 'years', 'topup', 'comm', 'move'],
+    calc: function () {
+      var amount = CC.n('amount'), apr = CC.n('apr'), years = CC.n('years'), every = parseInt(CC.radio('comp'), 10) || 0;
+      var topup = Math.max(0, CC.n('topup') || 0), comm = Math.min(100, Math.max(0, CC.n('comm') || 0)) / 100, move = Math.max(-100, CC.n('move') || 0);
+      var ok = amount > 0 && apr > 0 && years > 0 && years <= 30 && apr <= 1000;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var c = CC.coin($('coin').value) || { sym: '' }, r = apr / 100 * (1 - comm), days = Math.round(years * 365);
+      var B = amount, pool = 0, put = amount, now = Date.now(), series = [{ t: now, val: amount, inv: amount }], yearly = [];
+      for (var d = 1; d <= days; d++) {
+        pool += B * r / 365;
+        if (every && d % every === 0) { B += pool; pool = 0; }
+        if (topup && d % 30 === 0 && d < days) { B += topup; put += topup; }
+        if (d % 30 === 0 || d === days) series.push({ t: now + d * 86400000, val: B + pool, inv: put });
+        if (d % 365 === 0 || d === days) yearly.push({ d: d, put: put, bal: B + pool });
+      }
+      var total = B + pool, rewards = total - put, m = every ? 365 / every : 0, apy = every ? (Math.pow(1 + r / m, m) - 1) * 100 : r * 100;
+      $('verdict').textContent = 'Earned over ' + (years >= 1 ? f.num(years, 1) + (years === 1 ? ' year' : ' years') : Math.round(years * 12) + ' months');
+      CC.count($('rewards'), rewards, function (v) { return f.money(v, true); });
+      $('sub').textContent = 'on ' + f.money(put) + ' put in, a ' + f.pct(rewards / put * 100) + ' gain at an unchanged price';
+      $('put').textContent = f.money(put);
+      $('final').textContent = f.money(total);
+      $('moveRow').hidden = move === 0;
+      if (move !== 0) {
+        var mv = total * (1 + move / 100);
+        $('moveLbl').textContent = 'Balance if ' + (c.sym || 'the coin') + ' ends ' + f.pct(move, true).replace('.00', '');
+        $('moved').textContent = f.money(mv) + ' (' + f.money(mv - put, true) + ')';
+        $('moved').className = mv >= put ? 'up' : 'down';
+      }
+      $('apy').textContent = f.pct(apy) + (comm > 0 ? ' after the fee' : '');
+      $('daily').textContent = f.money(amount * r / 365);
+      $('coinRow').hidden = c.price == null;
+      if (c.price != null) $('coins').textContent = f.amt(amount / c.price) + ' → ' + f.amt(total / c.price) + ' ' + c.sym + (topup ? ', top-ups included' : '');
+      var notes = '';
+      if (move < 0 && total * (1 + move / 100) < put) notes += '<div class="note bad">With a ' + f.pct(Math.abs(move)).replace('.00', '') + ' price fall the rewards do not cover the loss. You would end ' + f.money(put - total * (1 + move / 100)) + ' below what you put in.</div>';
+      if (apr >= 30) notes += '<div class="note">Rates this high usually come from fast-growing coin supply or short promotions, and rarely hold for long. Treat the result as a best case.</div>';
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+      $('yearly').innerHTML = yearly.map(function (y) {
+        var lbl = y.d % 365 === 0 ? 'Year ' + y.d / 365 : 'Month ' + Math.round(y.d / 30.4);
+        return '<tr><td>' + lbl + '</td><td class="r">' + f.money(y.put) + '</td><td class="r up">' + f.money(y.bal - y.put, true) + '</td><td class="r"><b>' + f.money(y.bal) + '</b></td></tr>';
+      }).join('');
+      var sig = [every, days, topup > 0].join('|');
+      CC.lineChart($('chart'), series, { still: sig === lastSig, startLabel: 'Today', zoom: true, valLabel: 'Balance', aria: 'Balance with rewards against money put in, over time' }); lastSig = sig;
+    }
+  });
+})();
+</script>
+</body>
+</html>

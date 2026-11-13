@@ -1,12 +1,12 @@
-title: Crypto DCA Calculator | Backtest with real prices
-desc: Free DCA calculator that replays real daily prices from the past year. See what regular buys of Bitcoin, Ethereum and 16 other coins would be worth today, with average cost and a lump-sum comparison.
+title: Crypto DCA Calculator | Backtest up to 5 years of real prices
+desc: Free DCA calculator that replays real daily prices from the past five years. See what regular buys of Bitcoin, Ethereum and 16 other coins would be worth today, with average cost and a lump-sum comparison.
 path: /dca-calculator/
 kind: tool
 ---
 <main class="wrap">
 <header class="tool-head">
   <h1 class="rise">DCA calculator</h1>
-  <p class="rise" style="--d:1">Replay regular buys against real daily prices from the past year and see what they would be worth today.</p>
+  <p class="rise" style="--d:1">Replay regular buys against real daily prices from up to five years back and see what they would be worth today.</p>
 </header>
 
 <div class="tool-grid wide">
@@ -26,12 +26,13 @@ kind: tool
             <label><input type="radio" name="every" value="30"><span>Month</span></label>
           </div>
         </div>
-        <div class="field"><span class="lbl">Starting</span>
+        <div class="field"><span class="lbl">Starting how long ago</span>
           <div class="seg" role="radiogroup" aria-label="Starting">
-            <label><input type="radio" name="days" value="30"><span>1 mo ago</span></label>
             <label><input type="radio" name="days" value="90"><span>3 mo</span></label>
-            <label><input type="radio" name="days" value="180"><span>6 mo</span></label>
-            <label><input type="radio" name="days" value="365" checked><span>1 year</span></label>
+            <label><input type="radio" name="days" value="365" checked><span>1 yr</span></label>
+            <label><input type="radio" name="days" value="730"><span>2 yr</span></label>
+            <label><input type="radio" name="days" value="1095"><span>3 yr</span></label>
+            <label><input type="radio" name="days" value="1826"><span>5 yr</span></label>
           </div>
         </div>
         {{f fee|Fee per buy|0.1|%|max=10}}
@@ -72,7 +73,7 @@ kind: tool
   <div class="formula">Average cost = total money put in ÷ total coins bought</div>
 
   <h2>How this backtest works</h2>
-  <p>The calculator loads one real closing price per day for the past year. Starting on the date you choose, it makes a buy at that day's price on every scheduled day, takes off the fee, and adds the coins to a running total. The final figure is those coins valued at today's price.</p>
+  <p>The calculator loads one real closing price per day, going back as far as five years. Starting on the date you choose, it makes a buy at that day's price on every scheduled day, takes off the fee, and adds the coins to a running total. The final figure is those coins valued at today's price.</p>
   <ol>
     <li>Each buy converts your amount, minus the fee, into coins at that day's price.</li>
     <li>The chart tracks two lines: the money you have put in so far, and what your coins were worth on each day.</li>
@@ -102,7 +103,7 @@ kind: tool
   <h2>Limits of a backtest</h2>
   <ul>
     <li><strong>The past is not a forecast.</strong> A plan that did well last year tells you nothing certain about next year.</li>
-    <li><strong>One year of history.</strong> The free price feed provides 365 days of daily data, so longer plans cannot be tested here.</li>
+    <li><strong>Five years at most.</strong> Coins that launched more recently are tested from their first trading day, and the result says so.</li>
     <li><strong>Daily prices.</strong> Your real buys fill at whatever the price is at that moment, which can differ from the daily figure by a percent or two.</li>
     <li><strong>No spread or tax.</strong> Only the percentage fee you enter is taken off.</li>
   </ul>
@@ -115,7 +116,7 @@ A: It depends on what the price does next. In a rising market a lump sum usually
 Q: How often should I buy?
 A: Weekly or monthly suits most people. Over long periods the average cost is similar for any frequency, so pick the one that matches when you get paid and keeps fixed fees small relative to each buy.
 Q: Where do the prices come from?
-A: Daily prices and live prices come from CoinGecko's public market data. The backtest uses one price per day for the past 365 days.
+A: Daily closing prices come from Binance's public spot market data for each coin against USDT, and live prices come from CoinGecko. If the Binance history cannot be reached, the backtest falls back to one year of CoinGecko data and tells you.
 Q: Does the result include fees?
 A: Yes. The fee percentage you enter is taken off every buy before the coins are counted, and the same fee is applied to the lump-sum comparison.
 @end
@@ -127,50 +128,36 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
 (function () {
   var $ = CC.$, f = CC.fmt, mem = {}, pending = {}, req = 0, lastSig = '';
 
-  function history(id) {
-    if (mem[id]) return Promise.resolve(mem[id]);
-    try { var s = JSON.parse(sessionStorage.getItem('cc_h_' + id)); if (s && Date.now() - s.ts < 1800000) { mem[id] = s.p; return Promise.resolve(s.p); } } catch (e) {}
-    if (pending[id]) return pending[id];
-    return pending[id] = CC.getJSON(CC.API + '/coins/' + id + '/market_chart?vs_currency=usd&days=365&interval=daily').then(function (j) {
-      if (!j.prices || j.prices.length < 10) throw new Error('no data');
-      var p = j.prices.map(function (x) { return [x[0], Number(x[1].toPrecision(7))]; });
-      mem[id] = p; try { sessionStorage.setItem('cc_h_' + id, JSON.stringify({ ts: Date.now(), p: p })); } catch (e) {}
-      return p;
-    }).finally(function () { delete pending[id]; });
+  var BN = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE', cardano: 'ADA', tron: 'TRX', 'avalanche-2': 'AVAX', chainlink: 'LINK',
+    'the-open-network': 'TON', sui: 'SUI', polkadot: 'DOT', litecoin: 'LTC', uniswap: 'UNI', near: 'NEAR', arbitrum: 'ARB', 'polygon-ecosystem-token': 'POL' };
+  var BHOST = 'https://data-api.binance.vision/api/v3/klines?interval=1d&limit=1000&symbol=';
+  function candles(j) { if (!Array.isArray(j)) throw new Error('bad'); return j.map(function (k) { return [k[0], parseFloat(k[4])]; }); }
+  // Returns {p: [[time, price]...], full: bool}. Tries Binance spot history (up to 5 years), falls back to one year from CoinGecko.
+  function history(id, days) {
+    var key = id + (days > 990 ? ':long' : '');
+    if (mem[key]) return Promise.resolve(mem[key]);
+    if (days <= 990 && mem[id + ':long']) return Promise.resolve(mem[id + ':long']);
+    if (pending[key]) return pending[key];
+    var sym = BN[id], job;
+    if (sym) {
+      job = CC.getJSON(BHOST + sym + 'USDT').then(function (j) {
+        var p = candles(j);
+        if (days <= 990 || p.length < 1000) return { p: p, full: true };
+        return CC.getJSON(BHOST + sym + 'USDT&endTime=' + (p[0][0] - 1)).then(function (j2) { return { p: candles(j2).concat(p), full: true }; }, function () { return { p: p, full: true }; });
+      });
+    } else job = Promise.reject(new Error('no pair'));
+    job = job.catch(function () {
+      return CC.getJSON(CC.API + '/coins/' + id + '/market_chart?vs_currency=usd&days=365&interval=daily').then(function (j) {
+        if (!j.prices || j.prices.length < 10) throw new Error('no data');
+        return { p: j.prices, full: false };
+      });
+    }).then(function (h) { mem[key] = h; return h; }).finally(function () { delete pending[key]; });
+    return pending[key] = job;
   }
   function showState(html) { $('out').hidden = true; $('state').hidden = false; $('state').innerHTML = html; }
 
-  function draw(series, still, gain) {
-    var W = 640, H = 250, padT = 14, padB = 22, n = series.length;
-    var max = 0; series.forEach(function (s) { max = Math.max(max, s.val, s.inv); }); max = max * 1.08 || 1;
-    var X = function (i) { return n > 1 ? i / (n - 1) * W : 0; }, Y = function (v) { return padT + (1 - v / max) * (H - padT - padB); };
-    var val = '', inv = '';
-    series.forEach(function (s, i) { val += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.val).toFixed(1); inv += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.inv).toFixed(1); });
-    var grid = '', axis = '';
-    for (var g = 0; g <= 3; g++) { var v = max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + f.compact(v) + '</text>'; }
-    var mid = Math.floor((n - 1) / 2);
-    axis += '<text x="0" y="' + (H - 4) + '">' + f.date(series[0].t) + '</text><text x="' + W / 2 + '" y="' + (H - 4) + '" text-anchor="middle">' + f.date(series[mid].t) + '</text><text x="' + W + '" y="' + (H - 4) + '" text-anchor="end">Today</text>';
-    var neg = gain ? '' : ' neg', st = still ? ' style="animation:none;stroke-dashoffset:0"' : '', sa = still ? ' style="animation:none;opacity:.1"' : '';
-    $('chart').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Chart of money put in against the value of the coins over time"><g class="grid">' + grid + '</g><g class="axis">' + axis + '</g>' +
-      '<path class="a-val' + neg + '"' + sa + ' d="' + val + 'L' + W + ' ' + Y(0) + 'L0 ' + Y(0) + 'Z"/><path class="l-inv" d="' + inv + '"/><path class="l-val' + neg + '" pathLength="1"' + st + ' d="' + val + '"/>' +
-      '<g id="hover" style="display:none"><line class="cross" y1="' + padT + '" y2="' + (H - padB) + '"/><circle class="dot" r="4.5"/><circle class="dot" r="3.5"/></g></svg><div class="chart-tip" id="tip"></div>';
-    var svg = $('chart').firstChild, hov = svg.querySelector('#hover'), tip = $('tip');
-    function move(e) {
-      var r = svg.getBoundingClientRect(), cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-      var i = Math.max(0, Math.min(n - 1, Math.round(cx / r.width * (n - 1)))), s = series[i], x = X(i);
-      hov.style.display = ''; var c = hov.children;
-      c[0].setAttribute('x1', x); c[0].setAttribute('x2', x);
-      c[1].setAttribute('cx', x); c[1].setAttribute('cy', Y(s.val)); c[2].setAttribute('cx', x); c[2].setAttribute('cy', Y(s.inv));
-      tip.innerHTML = '<b>' + f.date(s.t) + '</b><br>Value ' + f.money(s.val) + '<br>Put in ' + f.money(s.inv);
-      tip.style.left = Math.max(14, Math.min(86, x / W * 100)) + '%'; tip.style.opacity = 1;
-    }
-    function leave() { hov.style.display = 'none'; tip.style.opacity = 0; }
-    svg.addEventListener('mousemove', move); svg.addEventListener('touchstart', move, { passive: true }); svg.addEventListener('touchmove', move, { passive: true });
-    svg.addEventListener('mouseleave', leave); svg.addEventListener('touchend', leave);
-  }
-
-  function compute(p, amount, step, days, fee, c, sig) {
-    var last = p.length - 1, start = Math.max(0, last - days), coins = 0, invested = 0, buys = [], series = [];
+  function compute(h, amount, step, days, fee, c, sig) {
+    var p = h.p, last = p.length - 1, start = Math.max(0, last - days), coins = 0, invested = 0, buys = [], series = [];
     for (var i = start; i <= last; i++) {
       if ((i - start) % step === 0 && i < last) { coins += amount * (1 - fee) / p[i][1]; invested += amount; buys.push(p[i]); }
       series.push({ t: p[i][0], inv: invested, val: coins * p[i][1] });
@@ -196,8 +183,9 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
     var d = value - lump, note = Math.abs(d) < 0.005 ? '' : d > 0
       ? '<div class="note good">Spreading the buys beat a single lump sum by ' + f.money(d) + ' over this period, because ' + c.sym + ' was cheaper later on than on day one.</div>'
       : '<div class="note plain">A single lump sum on day one would have ended ' + f.money(-d) + ' ahead over this period, because ' + c.sym + ' was cheaper on day one than on most later buy days.</div>';
+    if (start === 0 && last < days) note += '<div class="note plain">' + (h.full ? c.sym + ' only has price history from ' + f.date(p[0][0]) + ', so the test starts there.' : 'Only one year of history could be loaded just now, so the test starts on ' + f.date(p[0][0]) + '.') + '</div>';
     if ($('notes').dataset.h !== note) { $('notes').innerHTML = note; $('notes').dataset.h = note; }
-    draw(series, sig === lastSig, gain); lastSig = sig;
+    CC.lineChart($('chart'), series, { still: sig === lastSig, gain: gain, endLabel: 'Today', aria: 'Money put in against the value of the coins over time' }); lastSig = sig;
   }
 
   CC.page({
@@ -207,10 +195,10 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
       var id = $('coin').value, amount = CC.n('amount'), step = parseInt(CC.radio('every'), 10) || 7, days = parseInt(CC.radio('days'), 10) || 365;
       var fee = Math.min(0.99, Math.max(0, CC.n('fee') || 0) / 100), my = ++req;
       if (!(amount > 0)) return showState('Enter an amount per buy above zero.');
-      if (!mem[id]) showState('<div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:85%;margin-top:12px"></div><div class="skeleton" style="width:40%;margin-top:12px"></div>');
-      history(id).then(function (p) {
+      if (!mem[id] && !mem[id + ':long']) showState('<div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:85%;margin-top:12px"></div><div class="skeleton" style="width:40%;margin-top:12px"></div>');
+      history(id, days).then(function (h) {
         if (my !== req) return;
-        compute(p, amount, step, days, fee, CC.coin(id) || { sym: '' }, id + '|' + step + '|' + days);
+        compute(h, amount, step, days, fee, CC.coin(id) || { sym: '' }, id + '|' + step + '|' + days);
       }).catch(function () {
         if (my !== req) return;
         showState('Price history could not be loaded just now. The free price feed limits how often it can be asked. <button type="button" class="btn" id="retry" style="margin-top:12px">Try again</button>');

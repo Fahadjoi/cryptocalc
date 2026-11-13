@@ -287,7 +287,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 15px; }
 .faq h2 { margin-top: 0; }
 .prose h3 { font-size: 19px; font-weight: 700; margin: 26px 0 8px; }
 .prose p, .prose li { color: var(--muted); max-width: 68ch; font-size: 17px; }
-.prose p + p { margin-top: 12px; }
+.prose p + p, .prose ul + p, .prose ol + p { margin-top: 12px; }
 .prose ul, .prose ol { margin: 10px 0 0 22px; }
 .prose li + li { margin-top: 6px; }
 .prose strong { color: var(--ink); font-weight: 650; }
@@ -338,6 +338,16 @@ table.t { width: 100%; border-collapse: collapse; font-size: 15px; }
 .swap { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--edge); background: var(--mark); color: var(--on-mark); display: grid; place-items: center; margin-bottom: 4px; transition: transform .45s var(--ease); }
 .swap:hover { transform: rotate(180deg); }
 .swap svg { width: 20px; height: 20px; }
+
+/* ---------- Buy rows / pair links ---------- */
+.buy { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; margin-bottom: 8px; align-items: center; animation: noteIn .3s var(--ease); }
+.buy-head { font-size: 14px; color: var(--muted); margin: 18px 0 6px; animation: none; }
+.buy-head span:last-child { width: 68px; }
+.buy .inp input { font-size: 16px; padding: 9px 10px; }
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.pairs a { display: block; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 15px; font-weight: 600; text-decoration: none; transition: border-color .15s, transform .2s var(--ease); }
+.pairs a:hover { border-color: var(--edge); transform: translateY(-2px); }
+.prose .pairs { margin-top: 12px; }
 
 /* ---------- Forms (contact) ---------- */
 .form { display: grid; gap: 16px; max-width: 520px; }
