@@ -14,18 +14,19 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFE04A">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
-<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=7">
+<link rel="stylesheet" href="/css/style.css?v=8">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate staking rewards?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply your staked amount by the yearly rate and by the fraction of a year you stake. $1,000 at 5% for one year earns $50. If rewards are restaked, each period's rewards also earn rewards, which lifts the one-year total to $51.27 with daily compounding."}}, {"@type": "Question", "name": "What is the difference between APR and APY?", "acceptedAnswer": {"@type": "Answer", "text": "APR is the simple yearly rate. APY includes the effect of compounding. The same product has a higher APY than APR whenever rewards are restaked, for example 5% APR is 5.13% APY with daily compounding."}}, {"@type": "Question", "name": "Does compounding frequency make a big difference?", "acceptedAnswer": {"@type": "Answer", "text": "Not at modest rates. At 5% a year, daily compounding earns $51.27 on $1,000 and monthly compounding earns $51.16. The gap grows at high rates and over many years."}}, {"@type": "Question", "name": "Are staking rewards guaranteed?", "acceptedAnswer": {"@type": "Answer", "text": "No. Rates vary with network conditions, validators can be penalised, and the coin's price can fall by more than the rewards you earn."}}, {"@type": "Question", "name": "Why does the result change when I enter a price change?", "acceptedAnswer": {"@type": "Answer", "text": "Rewards and your original stake are both held in the coin. If the coin's price is different at the end, the dollar value of everything you hold changes by the same percentage."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Staking Calculator", "url": "https://zesty-haupia-16a953.netlify.app/staking-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free staking rewards calculator. Enter your amount, reward rate and time to see rewards with daily, weekly or monthly compounding, monthly top-ups, validator commission and a price-change scenario."}</script>
 </head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a></nav>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a></nav>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
 <div class="ticker" id="ticker" aria-label="Live coin prices"></div>
@@ -130,7 +131,7 @@
 <div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
 <div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=7"></script>
+<script src="/js/app.js?v=8"></script>
 <script>
 (function () {
   var $ = CC.$, f = CC.fmt, lastSig = '';

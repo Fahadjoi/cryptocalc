@@ -13,7 +13,7 @@ window.CC = (function () {
     ['binancecoin', 'BNB', 'BNB'], ['solana', 'SOL', 'Solana'], ['ripple', 'XRP', 'XRP'],
     ['usd-coin', 'USDC', 'USDC', 1], ['dogecoin', 'DOGE', 'Dogecoin'], ['cardano', 'ADA', 'Cardano'],
     ['tron', 'TRX', 'TRON'], ['avalanche-2', 'AVAX', 'Avalanche'], ['chainlink', 'LINK', 'Chainlink'],
-    ['the-open-network', 'TON', 'Toncoin'], ['sui', 'SUI', 'Sui'], ['polkadot', 'DOT', 'Polkadot'],
+    ['the-open-network', 'GRAM', 'Gram'], ['sui', 'SUI', 'Sui'], ['polkadot', 'DOT', 'Polkadot'],
     ['litecoin', 'LTC', 'Litecoin'], ['uniswap', 'UNI', 'Uniswap'], ['near', 'NEAR', 'NEAR Protocol'],
     ['arbitrum', 'ARB', 'Arbitrum'], ['polygon-ecosystem-token', 'POL', 'Polygon']
   ];
@@ -25,7 +25,7 @@ window.CC = (function () {
 
   // Binance spot symbols (against USDT) used for the backup price feed and price history
   var BN = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE', cardano: 'ADA', tron: 'TRX', 'avalanche-2': 'AVAX', chainlink: 'LINK',
-    'the-open-network': 'TON', sui: 'SUI', polkadot: 'DOT', litecoin: 'LTC', uniswap: 'UNI', near: 'NEAR', arbitrum: 'ARB', 'polygon-ecosystem-token': 'POL', 'usd-coin': 'USDC' };
+    'the-open-network': 'GRAM', sui: 'SUI', polkadot: 'DOT', litecoin: 'LTC', uniswap: 'UNI', near: 'NEAR', arbitrum: 'ARB', 'polygon-ecosystem-token': 'POL', 'usd-coin': 'USDC' };
   var BHOST = 'https://data-api.binance.vision/api/v3';
   var lastTry = 0;
 
@@ -386,6 +386,13 @@ window.CC = (function () {
   function boot() {
     var path = location.pathname;
     document.querySelectorAll('.nav-links a').forEach(function (a) { if (path.indexOf(a.getAttribute('href')) === 0) a.setAttribute('aria-current', 'page'); });
+    var mb = $('menuBtn'), hd = document.querySelector('.nav');
+    if (mb && hd) {
+      var setMenu = function (open) { hd.classList.toggle('open', open); mb.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+      mb.addEventListener('click', function () { setMenu(!hd.classList.contains('open')); });
+      document.addEventListener('click', function (e) { if (!hd.contains(e.target)) setMenu(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+    }
     var tb = $('themeBtn');
     if (tb) tb.addEventListener('click', function () {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';

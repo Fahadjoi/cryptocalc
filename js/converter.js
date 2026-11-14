@@ -20,6 +20,14 @@
   function code(k) { if (isFiat(k)) return k; var c = CC.coin(k); return c ? c.sym : k; }
   function label(k) { if (isFiat(k)) return F[k]; var c = CC.coin(k); return c ? c.name : k; }
   function usd(k) { if (isFiat(k)) { var r = CC.fx(k); return r ? 1 / r : NaN; } var c = CC.coin(k); return c && c.price != null ? c.price : NaN; }
+  // Reference amounts sized to what people actually move in each currency
+  var STEPS = {
+    PKR: [1000, 5000, 10000, 25000, 50000, 100000, 500000], INR: [500, 1000, 5000, 10000, 25000, 50000, 100000],
+    JPY: [1000, 5000, 10000, 50000, 100000, 500000, 1000000], NGN: [5000, 10000, 50000, 100000, 250000, 500000, 1000000],
+    TRY: [100, 500, 1000, 5000, 10000, 50000, 100000], AED: [50, 100, 500, 1000, 5000, 10000, 50000],
+    SAR: [50, 100, 500, 1000, 5000, 10000, 50000], BRL: [50, 100, 500, 1000, 5000, 10000, 50000]
+  };
+  function fiatSteps(k) { return STEPS[k] || [10, 50, 100, 500, 1000, 5000, 10000]; }
   function show(n, k) { return isFiat(k) ? f.fiat(n, k) : f.amt(n) + ' ' + code(k); }
   function tidy(x) { return isFinite(x) ? Number(x.toPrecision(8)) : ''; }
 
@@ -46,11 +54,11 @@
     var has = amt > 0;
     $('lead').textContent = has ? show(amt, a) + ' equals' : '1 ' + code(a) + ' equals';
     CC.count($('big'), (has ? amt : 1) * rate, function (v) { return show(v, b); });
-    var c = CC.coin(a) || CC.coin(b), ch = c && c.ch24 != null ? ' ' + c.sym + ' is ' + (c.ch24 >= 0 ? 'up ' : 'down ') + Math.abs(c.ch24).toFixed(2) + '% in 24 hours.' : '';
+    var c = CC.coin(a) || CC.coin(b), ch = c && !c.stable && c.ch24 != null ? ' ' + c.sym + ' is ' + (c.ch24 >= 0 ? 'up ' : 'down ') + Math.abs(c.ch24).toFixed(2) + '% in 24 hours.' : '';
     $('sub').textContent = '1 ' + code(a) + ' = ' + show(rate, b) + '. 1 ' + code(b) + ' = ' + show(1 / rate, a) + '.' + ch;
 
-    var la = isFiat(a) ? [10, 50, 100, 500, 1000, 5000, 10000] : ra > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : ra > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
-    var lb = isFiat(b) ? [10, 50, 100, 500, 1000, 5000, 10000] : rb > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : rb > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
+    var la = isFiat(a) ? fiatSteps(a) : ra > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : ra > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
+    var lb = isFiat(b) ? fiatSteps(b) : rb > 1000 ? [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5] : rb > 5 ? [0.1, 0.5, 1, 5, 10, 50, 100] : [1, 10, 50, 100, 500, 1000, 10000];
     if ($('refTitle')) $('refTitle').textContent = code(a) + ' and ' + code(b) + ' quick reference';
     $('refA1').textContent = label(a); $('refA2').textContent = label(b); $('refB1').textContent = label(b); $('refB2').textContent = label(a);
     $('refA').innerHTML = la.map(function (x) { return '<tr><td>' + show(x, a) + '</td><td class="r"><b>' + show(x * rate, b) + '</b></td></tr>'; }).join('');
@@ -58,7 +66,7 @@
     $('quick').innerHTML = la.slice(0, 6).map(function (x) { return '<button type="button" class="chip" data-q="' + x + '">' + f.num(x, 3) + ' ' + code(a) + '</button>'; }).join('');
 
     var rl = $('rateLine'), cc = CC.coin(a) || CC.coin(b);
-    if (rl) rl.textContent = '1 ' + code(a) + ' is worth ' + show(rate, b) + ' right now, and 1 ' + code(b) + ' buys ' + show(1 / rate, a) + '.' + (cc && cc.ch24 != null ? ' Over the past 24 hours ' + cc.name + ' has ' + (cc.ch24 >= 0 ? 'risen ' : 'fallen ') + Math.abs(cc.ch24).toFixed(2) + '% against the US dollar, trading between ' + f.usd(cc.low) + ' and ' + f.usd(cc.high) + '.' : '');
+    if (rl) rl.textContent = '1 ' + code(a) + ' is worth ' + show(rate, b) + ' right now, and 1 ' + code(b) + ' buys ' + show(1 / rate, a) + '.' + (cc && cc.stable && cc.low ? ' ' + cc.name + ' is a stablecoin built to track the US dollar, so its price barely moves. Over the past 24 hours it traded between ' + f.usd(cc.low) + ' and ' + f.usd(cc.high) + '.' : cc && cc.ch24 != null ? ' Over the past 24 hours ' + cc.name + ' has ' + (cc.ch24 >= 0 ? 'risen ' : 'fallen ') + Math.abs(cc.ch24).toFixed(2) + '% against the US dollar, trading between ' + f.usd(cc.low) + ' and ' + f.usd(cc.high) + '.' : '');
     pairChart(a, b);
     if (!$('market')) return;
     var fc = isFiat(b) ? b : isFiat(a) ? a : 'USD';

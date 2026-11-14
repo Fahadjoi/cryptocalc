@@ -93,16 +93,17 @@ def render(raw):
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFE04A">
 <link rel="icon" href="{FAVICON}">
-<script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}}})()</script>
+<script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=7">
+<link rel="stylesheet" href="/css/style.css?v=8">
 {ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" aria-label="Calculators">{nav}</nav>
+<nav class="nav-links" id="navLinks" aria-label="Calculators">{nav}</nav>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
 <div class="ticker" id="ticker" aria-label="Live coin prices"></div>
@@ -112,7 +113,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=7"></script>
+<script src="/js/app.js?v=8"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -120,7 +121,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=7"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=8"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     out = OUT / (path.strip('/') + '/index.html' if path.endswith('/') else path.strip('/'))
     if path == '/': out = OUT / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
