@@ -1,0 +1,57 @@
+title: Funding rates explained | What perpetual futures cost to hold
+desc: What funding rates are on perpetual futures, who pays whom, how to work out the cost per day and per month, and why funding matters more with leverage.
+path: /guides/funding-rates-explained/
+kind: guide
+tool: /profit-calculator/
+h1: Funding rates on perpetual futures
+lede: A perpetual future never expires, so something has to keep its price close to the real coin. That something is funding, a payment that passes between longs and shorts several times a day.
+date: 14 November 2026
+iso: 2026-11-14
+order: 9
+---
+<h2>Who pays whom</h2>
+<p>Funding is paid between traders. The exchange passes it along and does not keep it.</p>
+<ul>
+  <li><strong>Positive rate:</strong> longs pay shorts. This happens when the future trades above the coin's spot price, usually because more traders want to be long.</li>
+  <li><strong>Negative rate:</strong> shorts pay longs. This happens when the future trades below spot.</li>
+</ul>
+<p>Most exchanges settle funding every eight hours. Some use four hours or one hour, especially on volatile markets. You pay or receive only if you hold a position at the moment of settlement.</p>
+
+<h2>Working out the payment</h2>
+<div class="formula">Funding payment = position value × funding rate<small>Position value is the full leveraged size, not your margin</small></div>
+<div class="example">
+  <p>You hold a <b>$10,000</b> long and the rate is <b>0.01%</b> per eight hours.</p>
+  <p>Each payment: 10,000 × 0.0001 = <b>$1</b></p>
+  <p>Three payments a day: <b>$3</b>. Over 30 days: <b>$90</b></p>
+</div>
+<p>Kept up for a year, 0.01% every eight hours comes to about 10.95% of the position.</p>
+
+<h2>Why leverage makes it bite</h2>
+<p>Funding is charged on the position but paid out of your margin. The higher the leverage, the bigger the share of your own money each payment takes.</p>
+<table>
+  <thead><tr><th>Your margin</th><th>Leverage</th><th>Position</th><th>Cost per day at 0.01%</th><th>Share of margin per day</th></tr></thead>
+  <tbody>
+    <tr><td>$10,000</td><td>1×</td><td>$10,000</td><td>$3</td><td><b>0.03%</b></td></tr>
+    <tr><td>$2,000</td><td>5×</td><td>$10,000</td><td>$3</td><td><b>0.15%</b></td></tr>
+    <tr><td>$1,000</td><td>10×</td><td>$10,000</td><td>$3</td><td><b>0.3%</b></td></tr>
+    <tr><td>$500</td><td>20×</td><td>$10,000</td><td>$3</td><td><b>0.6%</b></td></tr>
+  </tbody>
+</table>
+<p>Rates also rise in strong markets. At 0.05% per eight hours, the same $10,000 long pays $15 a day. Because the payments come out of margin, they slowly move the <a href="/guides/liquidation-price-explained/">liquidation price</a> closer.</p>
+
+<h2>What to do with this</h2>
+<ul>
+  <li><strong>Check the rate before a trade you plan to hold.</strong> For a trade lasting an hour it hardly matters. For one lasting weeks it can exceed the trading fees many times over.</li>
+  <li><strong>Check which side is paying.</strong> When the rate is negative, a long position is paid to stay open.</li>
+  <li><strong>Do not treat the current rate as fixed.</strong> It resets each period and can change sign.</li>
+  <li><strong>Include it in the sum.</strong> The <a href="/profit-calculator/">profit calculator</a> has a funding rate and days-held field for this.</li>
+</ul>
+
+@faq
+Q: Do I pay funding on spot trades?
+A: No. Funding exists only on perpetual futures. Buying and holding the coin itself has no funding cost.
+Q: If I close before the funding time, do I pay?
+A: No. Funding is charged only on positions open at the settlement moment.
+Q: Can funding make a profitable trade lose money?
+A: Yes. A long held for weeks at a high positive rate can pay more in funding than the price move earns, especially at high leverage.
+@end

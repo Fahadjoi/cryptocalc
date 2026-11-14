@@ -37,6 +37,7 @@ kind: tool
         </div>
         {{f fee|Fee per buy|0.1|%|max=10}}
       </div>
+      <p class="fine">This backtest works in US dollars, because it replays dollar prices from past years.</p>
       <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this plan</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
     </div>
   </section>
@@ -189,6 +190,7 @@ A: Yes. The fee percentage you enter is taken off every buy before the coins are
   CC.page({
     ids: ['coin', 'amount', 'every', 'days', 'fee'],
     keep: ['amount', 'fee'],
+    usdOnly: true,   // the backtest replays dollar prices, so local currencies would need past exchange rates too
     coinOpt: { stables: false },
     calc: function () {
       var id = $('coin').value, amount = CC.n('amount'), step = parseInt(CC.radio('every'), 10) || 7, days = parseInt(CC.radio('days'), 10) || 365;

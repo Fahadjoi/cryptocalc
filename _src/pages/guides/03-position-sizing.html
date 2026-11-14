@@ -1,0 +1,65 @@
+title: Position sizing in crypto | How much to buy on each trade
+desc: How to size a crypto position from your account balance, the percentage you are willing to risk and your stop-loss, with worked examples and a table of losing streaks.
+path: /guides/position-sizing/
+kind: guide
+tool: /position-size-calculator/
+h1: Position sizing: how much to buy on each trade
+lede: Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.
+date: 14 November 2026
+iso: 2026-11-14
+order: 3
+---
+<h2>Start from the loss, not the size</h2>
+<p>Position sizing answers one question: if this trade hits its stop-loss, how much do I lose? You choose that amount first, as a percentage of your account. The size of the position then follows from how far away the stop is.</p>
+<div class="formula">Coins to buy = (account balance × risk %) ÷ (entry price − stop price)<small>Position size = coins × entry price</small></div>
+
+<h2>A worked example</h2>
+<div class="example">
+  <p>Your account holds <b>$10,000</b> and you risk <b>1%</b> per trade, which is <b>$100</b>.</p>
+  <p>You plan to buy Bitcoin at <b>$60,000</b> with a stop at <b>$58,200</b>, which is $1,800 or 3% below.</p>
+  <p>Coins: 100 ÷ 1,800 = <b>0.05556 BTC</b></p>
+  <p>Position size: 0.05556 × 60,000 = <b>$3,333</b></p>
+</div>
+<p>Check it: a 3% fall on a $3,333 position loses $100. A third of the account is in the trade, but only 1% of it is at risk.</p>
+
+<h2>The stop decides the size</h2>
+<p>Keep the same $100 of risk and move the stop, and the position changes a lot.</p>
+<table>
+  <thead><tr><th>Stop distance</th><th>Position for a $100 loss</th><th>Share of a $10,000 account</th></tr></thead>
+  <tbody>
+    <tr><td>5%</td><td><b>$2,000</b></td><td>20%</td></tr>
+    <tr><td>3%</td><td><b>$3,333</b></td><td>33%</td></tr>
+    <tr><td>1%</td><td><b>$10,000</b></td><td>100%</td></tr>
+    <tr><td>0.5%</td><td><b>$20,000</b></td><td>200%, needs 2× leverage</td></tr>
+  </tbody>
+</table>
+<p>This is the sensible use of leverage: it is what a tight stop requires, and the loss at the stop is still $100. Choosing 20× first and working out the stop afterwards gets it backwards. Before using leverage, check that your <a href="/guides/liquidation-price-explained/">liquidation price</a> sits beyond your stop, or the exchange will close the trade before your stop does.</p>
+
+<h2>Why 1% or 2% and not 10%</h2>
+<p>Losing streaks happen to every strategy. The table shows what ten losses in a row do to an account at different risk levels.</p>
+<table>
+  <thead><tr><th>Risk per trade</th><th>Account after 10 losses</th><th>Gain needed to recover</th></tr></thead>
+  <tbody>
+    <tr><td>1%</td><td><b>down 9.6%</b></td><td>10.6%</td></tr>
+    <tr><td>2%</td><td><b>down 18.3%</b></td><td>22.4%</td></tr>
+    <tr><td>5%</td><td><b>down 40.1%</b></td><td>67.0%</td></tr>
+    <tr><td>10%</td><td><b>down 65.1%</b></td><td>186.8%</td></tr>
+  </tbody>
+</table>
+<p>Losses compound against you. A 50% loss needs a 100% gain to get back to where you started, which is why small, fixed risk matters more than any single entry.</p>
+
+<h2>Remember the fees and the gap</h2>
+<ul>
+  <li><strong>Fees add to the loss.</strong> On the $3,333 example at 0.1% per trade, the two fees come to about $6.57, so the real loss at the stop is nearer $107.</li>
+  <li><strong>Stops can slip.</strong> In a fast market a stop order may fill below its price. Leave room for that when you choose the risk percentage.</li>
+  <li><strong>Count open trades together.</strong> Three positions in coins that move together are closer to one large position than to three small ones.</li>
+</ul>
+
+@faq
+Q: What percentage should I risk per trade?
+A: Many traders use between 0.5% and 2% of the account. There is no correct figure, but the losing-streak table shows how quickly higher numbers become hard to recover from.
+Q: Does position sizing work without a stop-loss?
+A: Not really. Without a price at which you exit, the amount at risk is the whole position, and the formula has nothing to work with.
+Q: Should I size from my whole balance or only what is on the exchange?
+A: Use the money you have set aside for trading. Sizing from savings you never intend to trade overstates what you can afford to lose.
+@end

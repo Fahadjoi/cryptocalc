@@ -1,0 +1,59 @@
+title: APR vs APY in crypto staking | What the percentage really pays
+desc: The difference between APR and APY in staking and savings products, how compounding changes the return, and why the coin's price matters more than the reward rate.
+path: /guides/apr-vs-apy-staking/
+kind: guide
+tool: /staking-calculator/
+h1: APR vs APY in staking
+lede: Two platforms can advertise 10% and pay different amounts. One is quoting the rate before compounding and the other after it.
+date: 14 November 2026
+iso: 2026-11-14
+order: 11
+---
+<h2>The difference in one line</h2>
+<p><strong>APR</strong> is the yearly rate without compounding. <strong>APY</strong> is the yearly return once rewards are added back and earn rewards themselves.</p>
+<div class="formula">APY = (1 + APR ÷ n)<sup>n</sup> − 1<small>n is how many times a year rewards are added to the stake</small></div>
+<table>
+  <thead><tr><th>APR</th><th>APY, compounded monthly</th><th>APY, compounded daily</th></tr></thead>
+  <tbody>
+    <tr><td>5%</td><td>5.12%</td><td><b>5.13%</b></td></tr>
+    <tr><td>10%</td><td>10.47%</td><td><b>10.52%</b></td></tr>
+    <tr><td>20%</td><td>21.94%</td><td><b>22.13%</b></td></tr>
+  </tbody>
+</table>
+<p>At low rates the gap is small. At high rates it widens, which is why products with large numbers tend to quote APY. When comparing two offers, make sure both figures are the same kind.</p>
+
+<h2>Compounding only counts if it happens</h2>
+<p>An APY figure assumes every reward is restaked. Some networks and platforms do this automatically. On others you have to claim rewards and stake them again by hand, and each claim may cost a network fee. If you never restake, you earn the APR.</p>
+<div class="example">
+  <p>You stake <b>$1,000</b> at <b>10% APR</b> for one year.</p>
+  <p>Without restaking: <b>$100</b> in rewards</p>
+  <p>Restaking daily: about <b>$105.16</b></p>
+</div>
+
+<h2>The price matters more than the rate</h2>
+<p>Rewards are paid in the coin. What they are worth in your own currency depends on the coin's price when you sell.</p>
+<div class="example">
+  <p>You stake $1,000 of a coin at 10% APY. A year later you hold 10% more coins.</p>
+  <p>If the price is unchanged, the holding is worth <b>$1,100</b>.</p>
+  <p>If the price fell 30%, it is worth <b>$770</b>.</p>
+</div>
+<p>A high reward rate does not protect against a falling price. Very high rates are often paid by creating new coins, which adds supply and can push the price down by itself.</p>
+
+<h2>What else to check before staking</h2>
+<ul>
+  <li><strong>Lock-up and unstaking time.</strong> Many networks hold your coins for days or weeks after you ask to withdraw, and you cannot sell during that time.</li>
+  <li><strong>Commission.</strong> Validators and platforms keep a share of the rewards. Check whether the advertised rate is before or after it.</li>
+  <li><strong>Variable rates.</strong> Most staking rates move with how many coins are staked across the network. The rate today is not promised for the year.</li>
+  <li><strong>Penalties.</strong> On some networks a validator that misbehaves or goes offline can lose part of the stake, and that loss is shared with the people who delegated to it.</li>
+  <li><strong>Who holds the coins.</strong> Staking through a platform means trusting it with your coins.</li>
+</ul>
+<p>The <a href="/staking-calculator/">staking calculator</a> shows the result with and without compounding, and lets you add a price change to see both effects together.</p>
+
+@faq
+Q: Is APY always higher than APR?
+A: For the same product, yes, as long as rewards compound more than once a year. If they are never restaked, the two are equal.
+Q: How do I turn APY back into APR?
+A: For daily compounding, APR = 365 × ((1 + APY)^(1/365) − 1). A 10.52% APY works back to a 10% APR.
+Q: Are staking rewards taxed?
+A: In many countries, yes, often as income when they are received. Rules differ a great deal, so check the ones for where you live.
+@end

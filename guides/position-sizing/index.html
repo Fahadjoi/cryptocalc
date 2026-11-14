@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Position sizing in crypto | How much to buy on each trade</title>
+<meta name="description" content="How to size a crypto position from your account balance, the percentage you are willing to risk and your stop-loss, with worked examples and a table of losing streaks.">
+<link rel="canonical" href="https://zesty-haupia-16a953.netlify.app/guides/position-sizing/">
+<meta property="og:title" content="Position sizing in crypto | How much to buy on each trade">
+<meta property="og:description" content="How to size a crypto position from your account balance, the percentage you are willing to risk and your stop-loss, with worked examples and a table of losing streaks.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CryptoCalc">
+<meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/guides/position-sizing/">
+<meta property="og:image" content="https://zesty-haupia-16a953.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=10">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Position sizing: how much to buy on each trade", "description": "How to size a crypto position from your account balance, the percentage you are willing to risk and your stop-loss, with worked examples and a table of losing streaks.", "datePublished": "2026-11-14", "dateModified": "2026-11-14", "author": {"@type": "Organization", "name": "CryptoCalc", "url": "https://zesty-haupia-16a953.netlify.app/"}, "publisher": {"@type": "Organization", "name": "CryptoCalc", "url": "https://zesty-haupia-16a953.netlify.app/"}, "mainEntityOfPage": "https://zesty-haupia-16a953.netlify.app/guides/position-sizing/", "image": "https://zesty-haupia-16a953.netlify.app/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://zesty-haupia-16a953.netlify.app/guides/"}, {"@type": "ListItem", "position": 2, "name": "Position sizing: how much to buy on each trade", "item": "https://zesty-haupia-16a953.netlify.app/guides/position-sizing/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What percentage should I risk per trade?", "acceptedAnswer": {"@type": "Answer", "text": "Many traders use between 0.5% and 2% of the account. There is no correct figure, but the losing-streak table shows how quickly higher numbers become hard to recover from."}}, {"@type": "Question", "name": "Does position sizing work without a stop-loss?", "acceptedAnswer": {"@type": "Answer", "text": "Not really. Without a price at which you exit, the amount at risk is the whole position, and the formula has nothing to work with."}}, {"@type": "Question", "name": "Should I size from my whole balance or only what is on the exchange?", "acceptedAnswer": {"@type": "Answer", "text": "Use the money you have set aside for trading. Sizing from savings you never intend to trade overstates what you can afford to lose."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Position sizing: how much to buy on each trade</h1><p class="rise" style="--d:1">Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>Start from the loss, not the size</h2>
+<p>Position sizing answers one question: if this trade hits its stop-loss, how much do I lose? You choose that amount first, as a percentage of your account. The size of the position then follows from how far away the stop is.</p>
+<div class="formula">Coins to buy = (account balance × risk %) ÷ (entry price − stop price)<small>Position size = coins × entry price</small></div>
+
+<h2>A worked example</h2>
+<div class="example">
+  <p>Your account holds <b>$10,000</b> and you risk <b>1%</b> per trade, which is <b>$100</b>.</p>
+  <p>You plan to buy Bitcoin at <b>$60,000</b> with a stop at <b>$58,200</b>, which is $1,800 or 3% below.</p>
+  <p>Coins: 100 ÷ 1,800 = <b>0.05556 BTC</b></p>
+  <p>Position size: 0.05556 × 60,000 = <b>$3,333</b></p>
+</div>
+<p>Check it: a 3% fall on a $3,333 position loses $100. A third of the account is in the trade, but only 1% of it is at risk.</p>
+
+<h2>The stop decides the size</h2>
+<p>Keep the same $100 of risk and move the stop, and the position changes a lot.</p>
+<table>
+  <thead><tr><th>Stop distance</th><th>Position for a $100 loss</th><th>Share of a $10,000 account</th></tr></thead>
+  <tbody>
+    <tr><td>5%</td><td><b>$2,000</b></td><td>20%</td></tr>
+    <tr><td>3%</td><td><b>$3,333</b></td><td>33%</td></tr>
+    <tr><td>1%</td><td><b>$10,000</b></td><td>100%</td></tr>
+    <tr><td>0.5%</td><td><b>$20,000</b></td><td>200%, needs 2× leverage</td></tr>
+  </tbody>
+</table>
+<p>This is the sensible use of leverage: it is what a tight stop requires, and the loss at the stop is still $100. Choosing 20× first and working out the stop afterwards gets it backwards. Before using leverage, check that your <a href="/guides/liquidation-price-explained/">liquidation price</a> sits beyond your stop, or the exchange will close the trade before your stop does.</p>
+
+<h2>Why 1% or 2% and not 10%</h2>
+<p>Losing streaks happen to every strategy. The table shows what ten losses in a row do to an account at different risk levels.</p>
+<table>
+  <thead><tr><th>Risk per trade</th><th>Account after 10 losses</th><th>Gain needed to recover</th></tr></thead>
+  <tbody>
+    <tr><td>1%</td><td><b>down 9.6%</b></td><td>10.6%</td></tr>
+    <tr><td>2%</td><td><b>down 18.3%</b></td><td>22.4%</td></tr>
+    <tr><td>5%</td><td><b>down 40.1%</b></td><td>67.0%</td></tr>
+    <tr><td>10%</td><td><b>down 65.1%</b></td><td>186.8%</td></tr>
+  </tbody>
+</table>
+<p>Losses compound against you. A 50% loss needs a 100% gain to get back to where you started, which is why small, fixed risk matters more than any single entry.</p>
+
+<h2>Remember the fees and the gap</h2>
+<ul>
+  <li><strong>Fees add to the loss.</strong> On the $3,333 example at 0.1% per trade, the two fees come to about $6.57, so the real loss at the stop is nearer $107.</li>
+  <li><strong>Stops can slip.</strong> In a fast market a stop order may fill below its price. Leave room for that when you choose the risk percentage.</li>
+  <li><strong>Count open trades together.</strong> Three positions in coins that move together are closer to one large position than to three small ones.</li>
+</ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>What percentage should I risk per trade?</summary><p>Many traders use between 0.5% and 2% of the account. There is no correct figure, but the losing-streak table shows how quickly higher numbers become hard to recover from.</p></details><details><summary>Does position sizing work without a stop-loss?</summary><p>Not really. Without a price at which you exit, the amount at risk is the whole position, and the formula has nothing to work with.</p></details><details><summary>Should I size from my whole balance or only what is on the exchange?</summary><p>Use the money you have set aside for trading. Sizing from savings you never intend to trade overstates what you can afford to lose.</p></details></section>
+<p class="cta"><a class="btn solid" href="/position-size-calculator/">Open the position size calculator</a></p>
+<p class="fine">Updated 14 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li><li><a href="/guides/isolated-vs-cross-margin/"><strong>Isolated vs cross margin</strong><span>The margin mode is one switch on the order form, and it decides whether a bad trade can lose only its own stake or the whole futures balance.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=10"></script>
+</body>
+</html>

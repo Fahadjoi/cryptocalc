@@ -16,7 +16,7 @@ kind: tool
       <div class="fields">
         <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
         {{f amt|Amount you hold||coins|ph=e.g.&nbsp;0.5}}
-        {{f cost|Average buy price (optional)||USD|live ph=optional}}
+        {{f cost|Average buy price (optional)||USD|live fixed ph=optional}}
       </div>
       <div class="actions"><button type="button" class="btn solid" id="addBtn">Add to portfolio</button></div>
       <p class="field hint" id="addMsg" style="margin-top:10px" aria-live="polite"></p>
@@ -117,9 +117,9 @@ A: Yes. Pick a currency under Show values in. Fifteen currencies are available, 
 
   var cur = $('cur');
   cur.innerHTML = Object.keys(CC.FIATS).map(function (k) { return '<option value="' + k + '">' + k + ' · ' + CC.FIATS[k] + '</option>'; }).join('');
-  try { cur.value = localStorage.getItem('cc_pf_cur') || 'USD'; } catch (e) {}
-  if (!cur.value) cur.value = 'USD';
-  cur.addEventListener('change', function () { try { localStorage.setItem('cc_pf_cur', cur.value); } catch (e) {} render(); });
+  cur.value = 'USD';
+  cur.addEventListener('change', function () { CC.setCur(cur.value); });
+  CC.on(function () { cur.value = CC.cur(); });   // the header currency menu and this one stay in step
 
   function render() {
     var has = items.length > 0;
@@ -141,7 +141,7 @@ A: Yes. Pick a currency under Show values in. Fifteen currencies are available, 
       $('verdict').textContent = (up >= 0 ? 'Up ' : 'Down ') + f.fiat(Math.abs(up) * rate, code) + ' (' + f.pct(prev ? up / prev * 100 : 0, true) + ') in 24 hours';
       $('verdict').className = 'verdict ' + (up >= 0 ? 'up' : 'down');
       CC.count($('total'), total * rate, function (x) { return f.fiat(x, code); });
-      $('sub').textContent = items.length + ' holding' + (items.length > 1 ? 's' : '') + (code !== 'USD' ? ', ' + f.money(total) + ' in US dollars' : '');
+      $('sub').textContent = items.length + ' holding' + (items.length > 1 ? 's' : '') + (code !== 'USD' ? ', ' + f.fiat(total, 'USD') + ' in US dollars' : '');
     }
     $('costRow').hidden = $('plRow').hidden = !costed;
     if (costed) {

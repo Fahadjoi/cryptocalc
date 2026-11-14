@@ -161,18 +161,18 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
       }
 
       var notes = '', cost = r.fees + Math.max(0, funding);
-      if (dead) notes += '<div class="note bad">At ' + f.num(lev) + '× leverage this position is liquidated near $' + f.price(liq) + ', before the price reaches your exit. You would lose your whole ' + f.money(margin) + '.</div>';
-      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but costs of ' + f.money(cost) + ' turn the trade into a loss. Your exit needs to pass $' + f.price(be) + '.</div>';
+      if (dead) notes += '<div class="note bad">At ' + f.num(lev) + '× leverage this position is liquidated near ' + f.usd(liq) + ', before the price reaches your exit. You would lose your whole ' + f.money(margin) + '.</div>';
+      else if (r.gross > 0 && r.net < 0) notes += '<div class="note bad">The price moves your way, but costs of ' + f.money(cost) + ' turn the trade into a loss. Your exit needs to pass ' + f.usd(be) + '.</div>';
       else if (r.gross > 0 && cost / r.gross > 0.2) notes += '<div class="note">Fees' + (funding > 0 ? ' and funding' : '') + ' take ' + Math.round(cost / r.gross * 100) + '% of this trade\'s profit. A wider target or a cheaper exchange would keep more of it.</div>';
       if (lev >= 20 && !dead) notes += '<div class="note">At ' + f.num(lev) + '× a move of only ' + Math.abs((liq - entry) / entry * 100).toFixed(1) + '% against you liquidates the position.</div>';
       if (lev === 1 && fr !== 0 && days > 0) notes += '<div class="note plain">Funding only applies to perpetual futures. Set it to 0 if this is a spot trade.</div>';
       if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
 
-      var live = c.price;
+      var live = CC.px(c);
       $('liveRow').hidden = live == null;
       if (live != null) {
         var ln = pnl(live).net, ld = liq != null && (L ? live <= liq : live >= liq);
-        $('liveLbl').textContent = 'If you closed now at $' + f.price(live);
+        $('liveLbl').textContent = 'If you closed now at ' + f.usd(live);
         $('liveNet').textContent = ld ? 'Liquidated' : f.money(ln, true);
         $('liveNet').className = (ld ? -1 : ln) >= 0 ? 'up' : 'down';
       }
@@ -186,7 +186,7 @@ A: Yes. Pick any coin and type your own entry and exit prices. The coin choice o
         var T = t / 100;
         var x = L ? (T * margin + funding + pos * (1 + fi)) / (qty * (1 - fo)) : (pos * (1 - fi) - funding - T * margin) / (qty * (1 + fo));
         if (!(x > 0)) return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r" colspan="3">Not reachable on a short at this leverage</td></tr>';
-        return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r"><b>$' + f.price(x) + '</b></td><td class="r">' + f.pct((x - entry) / entry * 100, true) + '</td><td class="r"><button type="button" class="chip" data-x="' + CC.round(x) + '">Use</button></td></tr>';
+        return '<tr><td>+' + t + '% (' + f.money(T * margin, true) + ')</td><td class="r"><b>' + f.usd(x) + '</b></td><td class="r">' + f.pct((x - entry) / entry * 100, true) + '</td><td class="r"><button type="button" class="chip" data-x="' + CC.round(x) + '">Use</button></td></tr>';
       }).join('');
     }
   });

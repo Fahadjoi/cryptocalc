@@ -1,0 +1,66 @@
+title: Risk-reward ratio and the win rate you need | Crypto trading
+desc: What a risk-reward ratio is, the win rate each ratio needs to break even, how to work out a strategy's expectancy and how fees quietly lower the ratio.
+path: /guides/risk-reward-ratio/
+kind: guide
+tool: /position-size-calculator/
+h1: Risk-reward ratio and the win rate you need
+lede: A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.
+date: 14 November 2026
+iso: 2026-11-14
+order: 4
+---
+<h2>What the ratio measures</h2>
+<p>Risk is the distance from your entry to your stop-loss. Reward is the distance from your entry to your target. Divide reward by risk and you have the ratio, often written as 2R or 1:2.</p>
+<div class="example">
+  <p>Entry <b>$60,000</b>, stop <b>$58,200</b>, target <b>$63,600</b>.</p>
+  <p>Risk: $1,800 per coin. Reward: $3,600 per coin.</p>
+  <p>Ratio: 3,600 ÷ 1,800 = <b>2</b>. You stand to make twice what you stand to lose.</p>
+</div>
+
+<h2>The win rate that breaks even</h2>
+<div class="formula">Break-even win rate = 1 ÷ (1 + ratio)</div>
+<table>
+  <thead><tr><th>Reward ÷ risk</th><th>Wins needed to break even</th></tr></thead>
+  <tbody>
+    <tr><td>0.5</td><td><b>66.7%</b></td></tr>
+    <tr><td>1</td><td><b>50%</b></td></tr>
+    <tr><td>1.5</td><td><b>40%</b></td></tr>
+    <tr><td>2</td><td><b>33.3%</b></td></tr>
+    <tr><td>3</td><td><b>25%</b></td></tr>
+  </tbody>
+</table>
+<p>A high ratio does not make a trade good on its own. Distant targets are hit less often, so a 5R setup that wins one time in ten still loses money. The ratio and the win rate have to be judged together.</p>
+
+<h2>Expectancy: the average result per trade</h2>
+<div class="formula">Expectancy = (win rate × ratio) − loss rate<small>Measured in units of risk. Multiply by the money you risk per trade to get an amount.</small></div>
+<div class="example">
+  <p>A strategy wins <b>40%</b> of the time at a ratio of <b>2</b>.</p>
+  <p>Expectancy: (0.40 × 2) − 0.60 = <b>+0.2</b></p>
+  <p>Risking $100 per trade, the average trade makes about <b>$20</b>, although any single trade is either +$200 or −$100.</p>
+</div>
+<p>A positive expectancy only shows up over many trades. Twenty trades is a small sample, and a run of six or seven losses is ordinary at a 40% win rate.</p>
+
+<h2>Fees lower the ratio</h2>
+<p>Fees make every win smaller and every loss bigger. Take the example above with a position of $3,333 and a 0.1% fee per trade.</p>
+<div class="example">
+  <p>Win at the target: $200 minus about $6.87 in fees = <b>$193.13</b></p>
+  <p>Loss at the stop: $100 plus about $6.57 in fees = <b>$106.57</b></p>
+  <p>Real ratio: 193.13 ÷ 106.57 = <b>1.81</b>, and the break-even win rate rises from 33.3% to 35.6%</p>
+</div>
+<p>The effect grows as targets get smaller. On a trade aiming for a 0.5% move, the fees can take a third of the reward.</p>
+
+<h2>Using it in practice</h2>
+<ul>
+  <li><strong>Set the stop where the idea is wrong,</strong> not where the ratio looks best. A stop moved closer to improve the ratio gets hit more often.</li>
+  <li><strong>Record your real results.</strong> Your own win rate and average win and loss are the only numbers that tell you whether a strategy works.</li>
+  <li><strong>Size every trade the same way.</strong> The sums above assume each trade risks the same amount. See <a href="/guides/position-sizing/">position sizing</a> for how.</li>
+</ul>
+
+@faq
+Q: Is a 1:2 risk-reward ratio good?
+A: It is a common target because it breaks even at a 33% win rate. Whether it is good depends on how often your setups actually reach the target.
+Q: Can I be profitable with a ratio below 1?
+A: Yes, if you win often enough. At a ratio of 0.5 you need to win more than two trades in three, after fees.
+Q: Does the ratio include fees?
+A: The simple version does not. For short-term trades, subtract fees from the reward and add them to the risk before you divide.
+@end

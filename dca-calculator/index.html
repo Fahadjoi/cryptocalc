@@ -9,23 +9,25 @@
 <meta property="og:title" content="Crypto DCA Calculator | Backtest up to 5 years of real prices">
 <meta property="og:description" content="Free DCA calculator that replays real daily prices from the past five years. See what regular buys of Bitcoin, Ethereum and 16 other coins would be worth today, with average cost and a lump-sum comparison.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="CryptoCalc">
 <meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/dca-calculator/">
 <meta property="og:image" content="https://zesty-haupia-16a953.netlify.app/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFE04A">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=10">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is DCA in crypto?", "acceptedAnswer": {"@type": "Answer", "text": "DCA stands for dollar-cost averaging. You buy the same amount of money's worth of a coin at regular intervals, such as $50 every week, instead of investing everything at once. It spreads your buys across many prices."}}, {"@type": "Question", "name": "Is DCA better than investing a lump sum?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on what the price does next. In a rising market a lump sum usually ends ahead, and in a falling or choppy market DCA usually does. The calculator shows both results for the period you pick."}}, {"@type": "Question", "name": "How often should I buy?", "acceptedAnswer": {"@type": "Answer", "text": "Weekly or monthly suits most people. Over long periods the average cost is similar for any frequency, so pick the one that matches when you get paid and keeps fixed fees small relative to each buy."}}, {"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "Daily closing prices come from Binance's public spot market data for each coin against USDT, and live prices come from CoinGecko. If the Binance history cannot be reached, the backtest falls back to one year of CoinGecko data and tells you."}}, {"@type": "Question", "name": "Does the result include fees?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The fee percentage you enter is taken off every buy before the coins are counted, and the same fee is applied to the lump-sum comparison."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto DCA Calculator", "url": "https://zesty-haupia-16a953.netlify.app/dca-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free DCA calculator that replays real daily prices from the past five years. See what regular buys of Bitcoin, Ethereum and 16 other coins would be worth today, with average cost and a lump-sum comparison."}</script>
 </head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a></nav>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
 <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
@@ -42,7 +44,7 @@
     <div class="card-body">
       <div class="fields" style="grid-template-columns:1fr">
         <div class="field"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
-        <div class="field"><div class="field"><label for="amount">Amount per buy</label><div class="inp"><input id="amount" type="number" inputmode="decimal" step="any" value="50" min="0"><span class="unit">USD</span></div></div>
+        <div class="field"><div class="field"><label for="amount">Amount per buy</label><div class="inp"><input id="amount" type="number" inputmode="decimal" step="any" value="50" min="0" data-money><span class="unit" data-cur>USD</span></div></div>
           <div class="chips"><button type="button" class="chip" data-set="amount:10">$10</button><button type="button" class="chip" data-set="amount:50">$50</button><button type="button" class="chip" data-set="amount:100">$100</button><button type="button" class="chip" data-set="amount:500">$500</button></div>
         </div>
         <div class="field"><span class="lbl">Buy every</span>
@@ -64,6 +66,7 @@
         </div>
         <div class="field"><label for="fee">Fee per buy</label><div class="inp"><input id="fee" type="number" inputmode="decimal" step="any" value="0.1" max="10" min="0"><span class="unit">%</span></div></div>
       </div>
+      <p class="fine">This backtest works in US dollars, because it replays dollar prices from past years.</p>
       <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this plan</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
     </div>
   </section>
@@ -137,15 +140,15 @@
 
 <section class="faq"><h2>Common questions</h2><details><summary>What is DCA in crypto?</summary><p>DCA stands for dollar-cost averaging. You buy the same amount of money's worth of a coin at regular intervals, such as $50 every week, instead of investing everything at once. It spreads your buys across many prices.</p></details><details><summary>Is DCA better than investing a lump sum?</summary><p>It depends on what the price does next. In a rising market a lump sum usually ends ahead, and in a falling or choppy market DCA usually does. The calculator shows both results for the period you pick.</p></details><details><summary>How often should I buy?</summary><p>Weekly or monthly suits most people. Over long periods the average cost is similar for any frequency, so pick the one that matches when you get paid and keeps fixed fees small relative to each buy.</p></details><details><summary>Where do the prices come from?</summary><p>Daily closing prices come from Binance's public spot market data for each coin against USDT, and live prices come from CoinGecko. If the Binance history cannot be reached, the backtest falls back to one year of CoinGecko data and tells you.</p></details><details><summary>Does the result include fees?</summary><p>Yes. The fee percentage you enter is taken off every buy before the coins are counted, and the same fee is applied to the lump-sum comparison.</p></details></section>
 </article>
-<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul><h2 style="margin-top:32px">Guides for this calculator</h2><ul class="linklist"><li><a href="/guides/dca-vs-lump-sum/"><strong>Dollar-cost averaging vs lump sum</strong><span>Buying a fixed amount on a schedule takes the timing decision away. Whether it also earns more than buying all at once depends on what the price did next.</span></a></li></ul></aside>
 </div>
 </main>
 <footer><div class="foot">
 <div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
 <div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
-<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=8"></script>
+<script src="/js/app.js?v=10"></script>
 <script>
 (function () {
   var $ = CC.$, f = CC.fmt, mem = {}, pending = {}, req = 0, lastSig = '';
@@ -211,6 +214,7 @@
   CC.page({
     ids: ['coin', 'amount', 'every', 'days', 'fee'],
     keep: ['amount', 'fee'],
+    usdOnly: true,   // the backtest replays dollar prices, so local currencies would need past exchange rates too
     coinOpt: { stables: false },
     calc: function () {
       var id = $('coin').value, amount = CC.n('amount'), step = parseInt(CC.radio('every'), 10) || 7, days = parseInt(CC.radio('days'), 10) || 365;

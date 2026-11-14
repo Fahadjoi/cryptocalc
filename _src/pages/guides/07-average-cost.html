@@ -1,0 +1,56 @@
+title: Average cost and averaging down in crypto | How the sums work
+desc: How to work out your average buy price across several crypto purchases, why the simple average is usually wrong, and what buying more at a lower price does to your break-even.
+path: /guides/average-cost-and-averaging-down/
+kind: guide
+tool: /average-cost-calculator/
+h1: Average cost and averaging down
+lede: After a few buys at different prices, the number that matters is the one price at which the whole holding breaks even. It is rarely the middle of the prices you paid.
+date: 14 November 2026
+iso: 2026-11-14
+order: 7
+---
+<h2>The right way to average</h2>
+<div class="formula">Average cost = total money spent ÷ total coins bought</div>
+<p>Adding the prices together and dividing by the number of buys only works when every buy was for the same number of coins. If you spent the same amount of money each time, the cheaper buys collected more coins and pull the average down.</p>
+<div class="example">
+  <p>You spend <b>$500</b> on Bitcoin at <b>$60,000</b> and another <b>$500</b> at <b>$40,000</b>.</p>
+  <p>Coins: 0.008333 + 0.0125 = <b>0.020833 BTC</b></p>
+  <p>Average cost: 1,000 ÷ 0.020833 = <b>$48,000</b>, not $50,000</p>
+</div>
+<p>If instead you had bought 0.01 BTC each time, you would have spent $600 and then $400, and the average would be exactly $50,000. Same prices, different answer, because the amounts differ.</p>
+
+<h2>What averaging down does</h2>
+<p>Averaging down means buying more after the price has fallen. It lowers the average cost, so the price needs to recover less before the whole position breaks even.</p>
+<div class="example">
+  <p>You hold <b>0.02 BTC</b> bought at <b>$60,000</b>, a cost of $1,200. The price is now <b>$45,000</b>.</p>
+  <p>You buy another <b>$900</b>, which is 0.02 BTC.</p>
+  <p>New average: 2,100 ÷ 0.04 = <b>$52,500</b></p>
+</div>
+<p>Before the second buy, the price had to climb 33% to get back to break-even. After it, the climb is 16.7%.</p>
+
+<h2>How much to buy for a target average</h2>
+<div class="formula">Extra coins = coins held × (current average − target) ÷ (target − price now)</div>
+<div class="example">
+  <p>Same holding: 0.02 BTC at an average of $60,000, with the price at $45,000. You want an average of <b>$50,000</b>.</p>
+  <p>Extra coins: 0.02 × (60,000 − 50,000) ÷ (50,000 − 45,000) = <b>0.04 BTC</b>, costing <b>$1,800</b></p>
+</div>
+<p>The closer the target is to the current price, the more it costs. An average equal to the current price can never be reached, because every coin you already hold cost more than that.</p>
+
+<h2>What it does not do</h2>
+<ul>
+  <li><strong>It does not reduce the loss you already have.</strong> The first 0.02 BTC is still worth $300 less than you paid for it.</li>
+  <li><strong>It increases what is at risk.</strong> In the example the money in the coin went from $1,200 to $2,100. If the price keeps falling, the loss now grows faster.</li>
+  <li><strong>It does not make a weak coin recover.</strong> Averaging down helps only if the price comes back, so the question to settle first is whether you would buy this coin today with fresh money.</li>
+</ul>
+
+<h2>Getting an accurate figure</h2>
+<p>Include fees in the money spent, and use the coins that actually arrived after the fee. For buys made on a schedule, the same weighted sum applies. That is the mechanism behind <a href="/guides/dca-vs-lump-sum/">dollar-cost averaging</a>.</p>
+
+@faq
+Q: Is my average cost the same as my break-even price?
+A: Before selling fees, yes. Add the fee for selling to get the price at which you truly get all your money back.
+Q: Does selling part of my holding change the average cost?
+A: Under the simple average method, no. The coins you keep still have the same average cost. Tax rules in some countries use other methods, such as first in, first out.
+Q: Can I average up?
+A: Yes. Buying more at a higher price raises your average cost. Traders do it to add to a position that is already in profit.
+@end

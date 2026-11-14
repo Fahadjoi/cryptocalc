@@ -4,13 +4,8 @@
   var q = new URLSearchParams(location.search);
 
   function localFiat() {
-    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-    var m = { 'Asia/Karachi': 'PKR', 'Asia/Kolkata': 'INR', 'Asia/Calcutta': 'INR', 'Asia/Dubai': 'AED', 'Asia/Riyadh': 'SAR', 'Asia/Tokyo': 'JPY', 'Europe/London': 'GBP',
-      'Europe/Istanbul': 'TRY', 'Africa/Lagos': 'NGN', 'America/Sao_Paulo': 'BRL', 'Asia/Singapore': 'SGD', 'Europe/Zurich': 'CHF', 'America/Toronto': 'CAD', 'America/Vancouver': 'CAD' };
-    if (m[tz]) return m[tz];
-    if (tz.indexOf('Australia/') === 0) return 'AUD';
-    if (tz.indexOf('Europe/') === 0) return 'EUR';
-    return 'USD';
+    try { var saved = localStorage.getItem('cc_ccy'); if (F[saved]) return saved; } catch (e) {}
+    return CC.detectCur();
   }
   var CONV = window.CONV || {};
   var want = { from: q.get('from') || CONV.from || 'bitcoin', to: q.get('to') || CONV.to || localFiat() };
@@ -21,13 +16,20 @@
   function label(k) { if (isFiat(k)) return F[k]; var c = CC.coin(k); return c ? c.name : k; }
   function usd(k) { if (isFiat(k)) { var r = CC.fx(k); return r ? 1 / r : NaN; } var c = CC.coin(k); return c && c.price != null ? c.price : NaN; }
   // Reference amounts sized to what people actually move in each currency
-  var STEPS = {
-    PKR: [1000, 5000, 10000, 25000, 50000, 100000, 500000], INR: [500, 1000, 5000, 10000, 25000, 50000, 100000],
-    JPY: [1000, 5000, 10000, 50000, 100000, 500000, 1000000], NGN: [5000, 10000, 50000, 100000, 250000, 500000, 1000000],
-    TRY: [100, 500, 1000, 5000, 10000, 50000, 100000], AED: [50, 100, 500, 1000, 5000, 10000, 50000],
-    SAR: [50, 100, 500, 1000, 5000, 10000, 50000], BRL: [50, 100, 500, 1000, 5000, 10000, 50000]
+  var S = {
+    tens: [10, 50, 100, 500, 1000, 5000, 10000], fifties: [50, 100, 500, 1000, 5000, 10000, 50000],
+    hundreds: [100, 500, 1000, 5000, 10000, 50000, 100000], fiveHundreds: [500, 1000, 5000, 10000, 25000, 50000, 100000],
+    thousands: [1000, 5000, 10000, 25000, 50000, 100000, 500000], tenThousands: [10000, 50000, 100000, 500000, 1000000, 5000000, 10000000],
+    hundredThousands: [100000, 500000, 1000000, 5000000, 10000000, 50000000, 100000000]
   };
-  function fiatSteps(k) { return STEPS[k] || [10, 50, 100, 500, 1000, 5000, 10000]; }
+  var STEPS = {
+    AED: S.fifties, SAR: S.fifties, BRL: S.fifties, MYR: S.fifties, PLN: S.fifties, ILS: S.fifties, CNY: S.fifties, HKD: S.fifties,
+    TRY: S.hundreds, MXN: S.hundreds, ZAR: S.hundreds, SEK: S.hundreds, NOK: S.hundreds, DKK: S.hundreds, CZK: S.hundreds, UAH: S.hundreds, TWD: S.hundreds, THB: S.hundreds,
+    INR: S.fiveHundreds, PHP: S.fiveHundreds, BDT: S.fiveHundreds, RUB: S.fiveHundreds,
+    PKR: S.thousands, LKR: S.thousands, JPY: S.thousands, HUF: S.thousands, NGN: S.thousands,
+    KRW: S.tenThousands, ARS: S.tenThousands, CLP: S.tenThousands, IDR: S.hundredThousands, VND: S.hundredThousands
+  };
+  function fiatSteps(k) { return STEPS[k] || S.tens; }
   function show(n, k) { return isFiat(k) ? f.fiat(n, k) : f.amt(n) + ' ' + code(k); }
   function tidy(x) { return isFinite(x) ? Number(x.toPrecision(8)) : ''; }
 

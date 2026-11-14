@@ -1,0 +1,58 @@
+title: Liquidation price explained | How leverage gets a position closed
+desc: How exchanges work out the liquidation price of a leveraged crypto position, with the formula, a table from 2× to 100× and the things that move liquidation closer.
+path: /guides/liquidation-price-explained/
+kind: guide
+tool: /liquidation-calculator/
+h1: How liquidation price works on leveraged trades
+lede: With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.
+date: 14 November 2026
+iso: 2026-11-14
+order: 5
+---
+<h2>What happens at liquidation</h2>
+<p>When you open a 10× position with $1,000, you control $10,000 of a coin. A 10% move against you would wipe out your $1,000. The exchange does not wait for that. It closes the position a little earlier, once your remaining margin falls to a minimum called the maintenance margin.</p>
+<p>After liquidation on an isolated position, the margin you posted for that trade is gone. Some exchanges also charge a liquidation fee.</p>
+
+<h2>The formula</h2>
+<div class="formula">Liquidation price (long) = entry × (1 − 1 ÷ leverage + maintenance margin rate)<small>Liquidation price (short) = entry × (1 + 1 ÷ leverage − maintenance margin rate)</small></div>
+<p>This is the standard estimate for an isolated position on a contract settled in USDT or another stablecoin. The maintenance margin rate is set by the exchange. It is often around 0.5% for smaller positions and rises for very large ones.</p>
+<div class="example">
+  <p>You go long Bitcoin at <b>$60,000</b> with <b>10×</b> leverage and a 0.5% maintenance rate.</p>
+  <p>Liquidation: 60,000 × (1 − 0.10 + 0.005) = <b>$54,300</b></p>
+  <p>That is 9.5% below your entry. A short from the same price would be liquidated at $65,700.</p>
+</div>
+
+<h2>How much room each leverage level leaves</h2>
+<table>
+  <thead><tr><th>Leverage</th><th>Fall that liquidates a long</th><th>From a $60,000 entry</th></tr></thead>
+  <tbody>
+    <tr><td>2×</td><td><b>49.5%</b></td><td>$30,300</td></tr>
+    <tr><td>3×</td><td><b>32.8%</b></td><td>$40,300</td></tr>
+    <tr><td>5×</td><td><b>19.5%</b></td><td>$48,300</td></tr>
+    <tr><td>10×</td><td><b>9.5%</b></td><td>$54,300</td></tr>
+    <tr><td>20×</td><td><b>4.5%</b></td><td>$57,300</td></tr>
+    <tr><td>50×</td><td><b>1.5%</b></td><td>$59,100</td></tr>
+    <tr><td>100×</td><td><b>0.5%</b></td><td>$59,700</td></tr>
+  </tbody>
+</table>
+<p>Large coins often move several percent in a day, and small ones far more. At 20× and above, an ordinary day's swing is enough to end the trade, even if the price later goes where you expected.</p>
+
+<h2>What moves liquidation closer than the formula says</h2>
+<ul>
+  <li><strong>Fees and funding.</strong> Opening fees and <a href="/guides/funding-rates-explained/">funding payments</a> come out of your margin, leaving less to absorb a move.</li>
+  <li><strong>Mark price.</strong> Exchanges liquidate on a mark price built from several markets, not the last trade on your screen. The two can differ in a fast market.</li>
+  <li><strong>Position tiers.</strong> Bigger positions carry a higher maintenance rate, which pulls the liquidation price toward the entry.</li>
+  <li><strong>Margin mode.</strong> Cross margin works differently from isolated. See <a href="/guides/isolated-vs-cross-margin/">isolated and cross margin</a>.</li>
+</ul>
+
+<h2>How traders keep away from it</h2>
+<p>The usual approach is to treat liquidation as something that should never be reached. Set a stop-loss well before it, and size the position so the loss at the stop is a small, fixed share of the account. If the stop has to sit beyond the liquidation price, the leverage is too high for that trade. Adding margin to an isolated position also moves the liquidation price further away, at the cost of putting more money at risk.</p>
+
+@faq
+Q: Do I lose everything when I am liquidated?
+A: On an isolated position you lose the margin assigned to that trade. On cross margin the loss can reach your whole futures balance.
+Q: Is the liquidation price shown by my exchange exact?
+A: It is the exchange's own figure and the one that counts. It changes as fees and funding are charged and if you add or remove margin.
+Q: Can a position be liquidated by a brief wick?
+A: Yes. If the mark price touches the liquidation level even briefly, the position is closed, and it does not reopen when the price recovers.
+@end

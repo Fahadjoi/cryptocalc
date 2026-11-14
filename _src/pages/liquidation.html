@@ -132,19 +132,19 @@ A: A 1× long would only be liquidated if the price fell almost to zero. A 1× s
       var movePct = (liq - entry) / entry * 100, notes = '';
       var instant = L ? liq >= entry : liq <= entry;
       $('verdict').textContent = (L ? 'Long' : 'Short') + ' closed by the exchange at';
-      CC.count($('liq'), liq, function (v) { return '$' + f.price(v); });
-      $('sub').textContent = instant ? 'At or beyond your entry price' : f.pct(Math.abs(movePct)) + (L ? ' below' : ' above') + ' your entry of $' + f.price(entry);
+      CC.count($('liq'), liq, function (v) { return '' + f.usd(v); });
+      $('sub').textContent = instant ? 'At or beyond your entry price' : f.pct(Math.abs(movePct)) + (L ? ' below' : ' above') + ' your entry of ' + f.usd(entry);
       $('pos').textContent = f.money(pos) + ' (' + f.amt(qty) + ' ' + c.sym + ')';
-      $('dist').textContent = f.pct(movePct, true) + ' ($' + f.price(Math.abs(liq - entry)) + ')';
+      $('dist').textContent = f.pct(movePct, true) + ' (' + f.usd(Math.abs(liq - entry)) + ')';
       $('lost').textContent = f.money(Math.max(0, margin - pos * mmr)) + ' of ' + f.money(margin);
-      $('bank').textContent = '$' + f.price(Math.max(0, bank));
+      $('bank').textContent = '' + f.usd(Math.max(0, bank));
       if (instant) notes += '<div class="note bad">At ' + f.num(lev) + '× the margin is smaller than the maintenance requirement, so this position would be liquidated as soon as it opened. Lower the leverage.</div>';
       else if (Math.abs(movePct) < 3) notes += '<div class="note bad">A move of ' + f.pct(Math.abs(movePct)) + ' is within normal hourly swings for most coins. This position is very likely to be liquidated.</div>';
-      else if (Math.abs(movePct) < 10) notes += '<div class="note">' + f.pct(Math.abs(movePct)) + ' of room is less than many coins move in a day. Consider a stop-loss well before $' + f.price(liq) + '.</div>';
-      var live = c.price; $('liveRow').hidden = live == null;
+      else if (Math.abs(movePct) < 10) notes += '<div class="note">' + f.pct(Math.abs(movePct)) + ' of room is less than many coins move in a day. Consider a stop-loss well before ' + f.usd(liq) + '.</div>';
+      var live = CC.px(c); $('liveRow').hidden = live == null;
       if (live != null) {
         var gap = (liq - live) / live * 100, hit = L ? live <= liq : live >= liq;
-        $('liveLbl').textContent = c.sym + ' live price $' + f.price(live);
+        $('liveLbl').textContent = c.sym + ' live price ' + f.usd(live);
         $('liveGap').textContent = hit ? 'Already past liquidation' : f.pct(Math.abs(gap)) + ' away';
         $('liveGap').className = hit ? 'down' : '';
       }
@@ -154,7 +154,7 @@ A: A 1× long would only be liquidated if the price fell almost to zero. A 1× s
       CC.ladder($('ladder'), rows, entry);
       $('levs').innerHTML = LEVS.map(function (x) {
         var lq = Math.max(0, liqAt(x)), mv = (lq - entry) / entry * 100, bad = L ? lq >= entry : lq <= entry;
-        return '<tr' + (x === lev ? ' style="background:var(--sunken)"' : '') + '><td><b>' + x + '×</b>' + (x === lev ? '<span class="tag-best">Yours</span>' : '') + '</td><td class="r">' + (bad ? 'Instant' : '$' + f.price(lq)) + '</td><td class="r">' + (bad ? '0%' : f.pct(Math.abs(mv))) + '</td><td class="r"><button type="button" class="chip" data-set-lev="' + x + '">Use</button></td></tr>';
+        return '<tr' + (x === lev ? ' style="background:var(--sunken)"' : '') + '><td><b>' + x + '×</b>' + (x === lev ? '<span class="tag-best">Yours</span>' : '') + '</td><td class="r">' + (bad ? 'Instant' : '' + f.usd(lq)) + '</td><td class="r">' + (bad ? '0%' : f.pct(Math.abs(mv))) + '</td><td class="r"><button type="button" class="chip" data-set-lev="' + x + '">Use</button></td></tr>';
       }).join('');
     }
   });

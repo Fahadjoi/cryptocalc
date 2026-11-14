@@ -17,12 +17,12 @@ kind: tool
         <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
         <div class="field full"><span class="lbl">Amounts are in</span>
           <div class="seg" role="radiogroup" aria-label="Amounts are in">
-            <label><input type="radio" name="mode" value="usd" checked><span>Dollars spent</span></label>
+            <label><input type="radio" name="mode" value="usd" checked><span>Money spent</span></label>
             <label><input type="radio" name="mode" value="coin"><span>Coins bought</span></label>
           </div>
         </div>
       </div>
-      <div class="buy buy-head"><span>Price paid, USD</span><span id="amtHead">Amount, USD</span><span></span></div>
+      <div class="buy buy-head"><span>Price paid, <span data-cur>USD</span></span><span id="amtHead">Amount, USD</span><span></span></div>
       <div id="buys"></div>
       <button type="button" class="btn" id="addBuy">Add another buy</button>
       <input type="hidden" id="b" value="">
@@ -125,9 +125,17 @@ A: No. Selling reduces the number of coins you hold, but the coins that remain k
   var pg = CC.page({
     ids: ['coin', 'mode', 'b', 'cur', 'target'],
     coinOpt: { stables: false },
+    onCur: function (k) {
+      var usd = CC.radio('mode') !== 'coin';
+      wrap.querySelectorAll('.buy').forEach(function (r) {
+        var bp = r.querySelector('.bp'), ba = r.querySelector('.ba');
+        if (!(bp.dataset.autolive && !bp.dataset.touched) && bp.value > 0) bp.value = CC.round(bp.value * k);
+        if (usd && ba.value > 0) ba.value = ba.dataset.touched ? CC.round(ba.value * k) : Number((ba.value * k).toPrecision(1));
+      });
+    },
     calc: function () {
       var usd = CC.radio('mode') !== 'coin', c = CC.coin($('coin').value) || { sym: '' }, cur = CC.n('cur'), target = CC.n('target');
-      $('amtHead').textContent = usd ? 'Amount, USD' : 'Amount, ' + (c.sym || 'coins');
+      $('amtHead').textContent = usd ? 'Amount, ' + CC.cur() : 'Amount, ' + (c.sym || 'coins');
       var buys = [], ser = [];
       wrap.querySelectorAll('.buy').forEach(function (r) {
         var p = parseFloat(r.querySelector('.bp').value), a = parseFloat(r.querySelector('.ba').value);
@@ -140,7 +148,7 @@ A: No. Selling reduces the number of coins you hold, but the coins that remain k
       var avg = S / Q, hasCur = cur > 0, value = Q * cur, pl = value - S, notes = '';
       $('verdict').textContent = buys.length + ' buy' + (buys.length > 1 ? 's' : '') + (hasCur ? (pl >= 0 ? ', in profit' : ', under water') : '');
       $('verdict').className = 'verdict ' + (!hasCur ? '' : pl >= 0 ? 'up' : 'down');
-      CC.count($('avg'), avg, function (v) { return '$' + f.price(v); });
+      CC.count($('avg'), avg, function (v) { return '' + f.usd(v); });
       $('sub').textContent = 'per ' + (c.sym || 'coin') + ', and your break-even price before fees';
       $('spent').textContent = f.money(S);
       $('coins').textContent = f.amt(Q) + ' ' + c.sym;
@@ -153,18 +161,18 @@ A: No. Selling reduces the number of coins you hold, but the coins that remain k
         var lo = Math.min(avg, cur), hi = Math.max(avg, cur);
         if (target > lo && target < hi) {
           var q = (S - target * Q) / (target - cur);
-          notes += '<div class="note good">To move your average to $' + f.price(target) + ', buy <b>' + f.money(q * cur) + '</b> more (' + f.amt(q) + ' ' + c.sym + ') at $' + f.price(cur) + '. Your position would grow to ' + f.money(S + q * cur) + '.</div>';
-        } else notes += '<div class="note">A buy at today\'s price can only move your average to somewhere between $' + f.price(lo) + ' and $' + f.price(hi) + '. Pick a target inside that range.</div>';
+          notes += '<div class="note good">To move your average to ' + f.usd(target) + ', buy <b>' + f.money(q * cur) + '</b> more (' + f.amt(q) + ' ' + c.sym + ') at ' + f.usd(cur) + '. Your position would grow to ' + f.money(S + q * cur) + '.</div>';
+        } else notes += '<div class="note">A buy at today\'s price can only move your average to somewhere between ' + f.usd(lo) + ' and ' + f.usd(hi) + '. Pick a target inside that range.</div>';
       }
       if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
 
       $('more').innerHTML = !hasCur ? '<tr><td colspan="4" class="empty">Enter the price now to see this.</td></tr>' : [0.25, 0.5, 1, 2].map(function (m) {
         var add = S * m, na = (S + add) / (Q + add / cur);
-        return '<tr><td>' + f.money(add) + ' <span class="tnote" style="display:inline">(' + (m * 100) + '% more)</span></td><td class="r"><b>$' + f.price(na) + '</b></td><td class="r ' + (na <= avg ? 'up' : 'down') + '">' + f.pct((na - avg) / avg * 100, true) + '</td><td class="r hide-s">' + (cur >= na ? 'None' : f.pct((na - cur) / cur * 100, true)) + '</td></tr>';
+        return '<tr><td>' + f.money(add) + ' <span class="tnote" style="display:inline">(' + (m * 100) + '% more)</span></td><td class="r"><b>' + f.usd(na) + '</b></td><td class="r ' + (na <= avg ? 'up' : 'down') + '">' + f.pct((na - avg) / avg * 100, true) + '</td><td class="r hide-s">' + (cur >= na ? 'None' : f.pct((na - cur) / cur * 100, true)) + '</td></tr>';
       }).join('');
       $('each').innerHTML = buys.map(function (b) {
         var g = hasCur ? b.coins * cur - b.spent : NaN;
-        return '<tr><td>$' + f.price(b.price) + '</td><td class="r">' + f.amt(b.coins) + '</td><td class="r hide-s">' + f.pct(b.coins / Q * 100) + '</td><td class="r ' + (g >= 0 ? 'up' : 'down') + '">' + (hasCur ? f.money(g, true) : '–') + '</td></tr>';
+        return '<tr><td>' + f.usd(b.price) + '</td><td class="r">' + f.amt(b.coins) + '</td><td class="r hide-s">' + f.pct(b.coins / Q * 100) + '</td><td class="r ' + (g >= 0 ? 'up' : 'down') + '">' + (hasCur ? f.money(g, true) : '–') + '</td></tr>';
       }).join('');
     }
   });

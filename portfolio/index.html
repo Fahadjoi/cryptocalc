@@ -9,23 +9,25 @@
 <meta property="og:title" content="Crypto Portfolio Tracker | Live value, no account needed">
 <meta property="og:description" content="Free crypto portfolio tracker with live prices. Add your coins to see total value, 24-hour change, profit and loss and allocation in 15 currencies. Saved in your browser, no signup.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="CryptoCalc">
 <meta property="og:url" content="https://zesty-haupia-16a953.netlify.app/portfolio/">
 <meta property="og:image" content="https://zesty-haupia-16a953.netlify.app/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFE04A">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFE04A' stroke='%2315211C' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=10">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is the portfolio tracker free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. There is no account, no subscription and no limit on the number of holdings."}}, {"@type": "Question", "name": "Where is my portfolio stored?", "acceptedAnswer": {"@type": "Answer", "text": "In your browser's local storage on the device you are using. It is not uploaded anywhere, which also means it will not appear on another device unless you move a backup file across."}}, {"@type": "Question", "name": "How do I move my portfolio to my phone?", "acceptedAnswer": {"@type": "Answer", "text": "Press Download backup on the device that has it, send the file to your phone, then open this page there and press Restore backup."}}, {"@type": "Question", "name": "Why is profit or loss blank for some coins?", "acceptedAnswer": {"@type": "Answer", "text": "Profit and loss needs a buy price. Type one into the Buy price column for that coin and it will appear."}}, {"@type": "Question", "name": "Can I see my portfolio in rupees or another currency?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick a currency under Show values in. Fifteen currencies are available, including PKR, INR, AED, EUR and GBP."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Portfolio Tracker", "url": "https://zesty-haupia-16a953.netlify.app/portfolio/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free crypto portfolio tracker with live prices. Add your coins to see total value, 24-hour change, profit and loss and allocation in 15 currencies. Saved in your browser, no signup."}</script>
 </head>
 <body>
 <header class="nav"><div class="nav-in">
 <a class="logo" href="/" aria-label="CryptoCalc home"><i></i><span>CryptoCalc</span></a>
-<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a></nav>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
 <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
 </div></header>
@@ -120,15 +122,15 @@
 
 <section class="faq"><h2>Common questions</h2><details><summary>Is the portfolio tracker free?</summary><p>Yes. There is no account, no subscription and no limit on the number of holdings.</p></details><details><summary>Where is my portfolio stored?</summary><p>In your browser's local storage on the device you are using. It is not uploaded anywhere, which also means it will not appear on another device unless you move a backup file across.</p></details><details><summary>How do I move my portfolio to my phone?</summary><p>Press Download backup on the device that has it, send the file to your phone, then open this page there and press Restore backup.</p></details><details><summary>Why is profit or loss blank for some coins?</summary><p>Profit and loss needs a buy price. Type one into the Buy price column for that coin and it will appear.</p></details><details><summary>Can I see my portfolio in rupees or another currency?</summary><p>Yes. Pick a currency under Show values in. Fifteen currencies are available, including PKR, INR, AED, EUR and GBP.</p></details></section>
 </article>
-<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 15 currencies</span></a></li></ul></aside>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li></ul></aside>
 </div>
 </main>
 <footer><div class="foot">
 <div><a class="logo" href="/"><i></i>CryptoCalc</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
 <div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
-<div><h2>Site</h2><ul><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=8"></script>
+<script src="/js/app.js?v=10"></script>
 <script>
 (function () {
   var $ = CC.$, f = CC.fmt, KEY = 'cc_portfolio';
@@ -139,9 +141,9 @@
 
   var cur = $('cur');
   cur.innerHTML = Object.keys(CC.FIATS).map(function (k) { return '<option value="' + k + '">' + k + ' · ' + CC.FIATS[k] + '</option>'; }).join('');
-  try { cur.value = localStorage.getItem('cc_pf_cur') || 'USD'; } catch (e) {}
-  if (!cur.value) cur.value = 'USD';
-  cur.addEventListener('change', function () { try { localStorage.setItem('cc_pf_cur', cur.value); } catch (e) {} render(); });
+  cur.value = 'USD';
+  cur.addEventListener('change', function () { CC.setCur(cur.value); });
+  CC.on(function () { cur.value = CC.cur(); });   // the header currency menu and this one stay in step
 
   function render() {
     var has = items.length > 0;
@@ -163,7 +165,7 @@
       $('verdict').textContent = (up >= 0 ? 'Up ' : 'Down ') + f.fiat(Math.abs(up) * rate, code) + ' (' + f.pct(prev ? up / prev * 100 : 0, true) + ') in 24 hours';
       $('verdict').className = 'verdict ' + (up >= 0 ? 'up' : 'down');
       CC.count($('total'), total * rate, function (x) { return f.fiat(x, code); });
-      $('sub').textContent = items.length + ' holding' + (items.length > 1 ? 's' : '') + (code !== 'USD' ? ', ' + f.money(total) + ' in US dollars' : '');
+      $('sub').textContent = items.length + ' holding' + (items.length > 1 ? 's' : '') + (code !== 'USD' ? ', ' + f.fiat(total, 'USD') + ' in US dollars' : '');
     }
     $('costRow').hidden = $('plRow').hidden = !costed;
     if (costed) {

@@ -20,8 +20,28 @@ window.CC = (function () {
   var FIATS = {
     USD: 'US dollar', EUR: 'Euro', GBP: 'British pound', PKR: 'Pakistani rupee', INR: 'Indian rupee',
     AED: 'UAE dirham', SAR: 'Saudi riyal', JPY: 'Japanese yen', CAD: 'Canadian dollar', AUD: 'Australian dollar',
-    CHF: 'Swiss franc', SGD: 'Singapore dollar', TRY: 'Turkish lira', BRL: 'Brazilian real', NGN: 'Nigerian naira'
+    CHF: 'Swiss franc', SGD: 'Singapore dollar', TRY: 'Turkish lira', BRL: 'Brazilian real', NGN: 'Nigerian naira',
+    IDR: 'Indonesian rupiah', PHP: 'Philippine peso', VND: 'Vietnamese dong', THB: 'Thai baht', MYR: 'Malaysian ringgit',
+    KRW: 'South Korean won', CNY: 'Chinese yuan', HKD: 'Hong Kong dollar', TWD: 'Taiwan dollar', BDT: 'Bangladeshi taka',
+    LKR: 'Sri Lankan rupee', MXN: 'Mexican peso', ARS: 'Argentine peso', CLP: 'Chilean peso', ZAR: 'South African rand',
+    PLN: 'Polish zloty', SEK: 'Swedish krona', NOK: 'Norwegian krone', DKK: 'Danish krone', CZK: 'Czech koruna',
+    HUF: 'Hungarian forint', ILS: 'Israeli shekel', NZD: 'New Zealand dollar', UAH: 'Ukrainian hryvnia', RUB: 'Russian rouble'
   };
+  // Currencies normally written without decimals
+  var ZERO = { JPY: 1, KRW: 1, VND: 1, IDR: 1, CLP: 1, HUF: 1 };
+  // Time zone to currency, used once to pick a sensible starting currency
+  var TZ = {
+    'Asia/Karachi': 'PKR', 'Asia/Kolkata': 'INR', 'Asia/Calcutta': 'INR', 'Asia/Dubai': 'AED', 'Asia/Riyadh': 'SAR', 'Asia/Tokyo': 'JPY',
+    'Europe/London': 'GBP', 'Europe/Istanbul': 'TRY', 'Africa/Lagos': 'NGN', 'America/Sao_Paulo': 'BRL', 'Asia/Singapore': 'SGD',
+    'Europe/Zurich': 'CHF', 'America/Toronto': 'CAD', 'America/Vancouver': 'CAD', 'America/Edmonton': 'CAD', 'America/Winnipeg': 'CAD',
+    'Asia/Jakarta': 'IDR', 'Asia/Makassar': 'IDR', 'Asia/Manila': 'PHP', 'Asia/Ho_Chi_Minh': 'VND', 'Asia/Saigon': 'VND', 'Asia/Bangkok': 'THB',
+    'Asia/Kuala_Lumpur': 'MYR', 'Asia/Seoul': 'KRW', 'Asia/Shanghai': 'CNY', 'Asia/Hong_Kong': 'HKD', 'Asia/Taipei': 'TWD', 'Asia/Dhaka': 'BDT',
+    'Asia/Colombo': 'LKR', 'America/Mexico_City': 'MXN', 'America/Argentina/Buenos_Aires': 'ARS', 'America/Buenos_Aires': 'ARS',
+    'America/Santiago': 'CLP', 'Africa/Johannesburg': 'ZAR', 'Europe/Warsaw': 'PLN', 'Europe/Stockholm': 'SEK', 'Europe/Oslo': 'NOK',
+    'Europe/Copenhagen': 'DKK', 'Europe/Prague': 'CZK', 'Europe/Budapest': 'HUF', 'Asia/Jerusalem': 'ILS', 'Asia/Tel_Aviv': 'ILS',
+    'Pacific/Auckland': 'NZD', 'Europe/Kyiv': 'UAH', 'Europe/Kiev': 'UAH', 'Europe/Moscow': 'RUB'
+  };
+  var EURO = ['Berlin', 'Paris', 'Madrid', 'Rome', 'Amsterdam', 'Brussels', 'Vienna', 'Dublin', 'Lisbon', 'Athens', 'Helsinki', 'Luxembourg', 'Malta', 'Riga', 'Tallinn', 'Vilnius', 'Bratislava', 'Ljubljana', 'Zagreb', 'Nicosia'];
 
   // Binance spot symbols (against USDT) used for the backup price feed and price history
   var BN = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE', cardano: 'ADA', tron: 'TRX', 'avalanche-2': 'AVAX', chainlink: 'LINK',
@@ -31,6 +51,23 @@ window.CC = (function () {
 
   var coins = META.map(function (m) { return { id: m[0], sym: m[1], name: m[2], stable: !!m[3] }; });
   var fx = { USD: 1 };
+  var cur = 'USD', wantCur = null, curLock = null;   // cur only becomes wantCur once its exchange rate has loaded
+  function detectCur() {
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    if (TZ[tz]) return TZ[tz];
+    if (tz.indexOf('Australia/') === 0) return 'AUD';
+    if (tz.indexOf('Europe/') === 0 && EURO.indexOf(tz.slice(7)) >= 0) return 'EUR';
+    return 'USD';
+  }
+  function resolveCur() { var w = curLock || wantCur; cur = w && fx[w] ? w : 'USD'; }
+  function rate() { return fx[cur] || 1; }
+  function px(c) { return c && c.price != null ? c.price * rate() : null; }
+  function setCur(code) {
+    if (!FIATS[code] || curLock) return;
+    wantCur = code; try { localStorage.setItem('cc_ccy', code); } catch (e) {}
+    resolveCur(); emit();
+  }
+  function lockCur(code) { curLock = code; resolveCur(); }
   var state = { ts: 0, live: false, error: false, loaded: false };
   var subs = [];
   var prevPrice = {};
@@ -41,18 +78,38 @@ window.CC = (function () {
 
   /* ---------- Formatting ---------- */
   function digits(a) { return a >= 1 ? 2 : a >= 0.01 ? 4 : a >= 0.0001 ? 6 : 8; }
+  var symMode = {};
+  // Currency text. Several currencies share a bare "$", so those keep their longer symbol (CA$, A$, MX$).
+  function cfmt(n, code, minD, maxD) {
+    try {
+      var mode = symMode[code];
+      if (!mode) {
+        mode = 'narrowSymbol';
+        if (code !== 'USD' && new Intl.NumberFormat('en-US', { style: 'currency', currency: code, currencyDisplay: mode, maximumFractionDigits: 0 }).format(1).replace(/[\d\s.,]/g, '') === '$') mode = 'symbol';
+        symMode[code] = mode;
+      }
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: code, currencyDisplay: mode, minimumFractionDigits: minD, maximumFractionDigits: maxD }).format(n);
+    } catch (e) {
+      var t = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: minD, maximumFractionDigits: maxD });
+      return (n < 0 ? '-' : '') + (code === 'USD' ? '$' + t : t + ' ' + code);
+    }
+  }
+  function pd(a, code) { if (a >= 100000 || (ZERO[code] && a >= 100)) return [0, 0]; var d = digits(a); return [a >= 1 ? 2 : Math.min(d, 4), d]; }
+  function csym(code) { return cfmt(0, code, 0, 0).replace(/[\d.,]/g, '').trim(); }
   var fmt = {
     price: function (n) {
       if (!isFinite(n)) return '–';
       var a = Math.abs(n), d = digits(a);
       return n.toLocaleString('en-US', { minimumFractionDigits: a >= 1 ? 2 : Math.min(d, 4), maximumFractionDigits: d });
     },
-    usd: function (n) { return isFinite(n) ? (n < 0 ? '-$' : '$') + fmt.price(Math.abs(n)) : '–'; },
+    // A price in the visitor's currency (the name is kept from when the site was dollars only)
+    usd: function (n) { if (!isFinite(n)) return '–'; var d = pd(Math.abs(n), cur); return cfmt(n, cur, d[0], d[1]); },
     money: function (n, signed) {
       if (!isFinite(n)) return '–';
-      var s = n < 0 ? '-' : (signed && n > 0 ? '+' : '');
-      return s + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var s = n < 0 ? '-' : (signed && n > 0 ? '+' : ''), d = ZERO[cur] || Math.abs(n) >= 100000 ? 0 : 2;
+      return s + cfmt(Math.abs(n), cur, d, d);
     },
+    sym: function (code) { return csym(code || cur); },
     num: function (n, d) { return isFinite(n) ? n.toLocaleString('en-US', { maximumFractionDigits: d == null ? 2 : d }) : '–'; },
     amt: function (n) {
       if (!isFinite(n)) return '–';
@@ -60,19 +117,14 @@ window.CC = (function () {
       return n.toLocaleString('en-US', { maximumFractionDigits: a >= 1000 ? 2 : a >= 1 ? 4 : a >= 0.001 ? 6 : 8 });
     },
     pct: function (n, signed) { return isFinite(n) ? (signed && n > 0 ? '+' : '') + n.toFixed(2) + '%' : '–'; },
-    compact: function (n) {
+    compact: function (n, code) {
       if (!isFinite(n)) return '–';
+      var sy = csym(code || cur); if (/[A-Za-z]$/.test(sy)) sy += ' ';
       var u = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
-      for (var i = 0; i < u.length; i++) if (Math.abs(n) >= u[i][0]) return '$' + (n / u[i][0]).toFixed(2) + u[i][1];
-      return '$' + n.toFixed(0);
+      for (var i = 0; i < u.length; i++) if (Math.abs(n) >= u[i][0]) return sy + (n / u[i][0]).toFixed(2) + u[i][1];
+      return sy + n.toFixed(0);
     },
-    fiat: function (n, code) {
-      if (!isFinite(n)) return '–';
-      var a = Math.abs(n), d = digits(a);
-      try {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: code, currencyDisplay: 'narrowSymbol', minimumFractionDigits: a >= 1 ? 2 : Math.min(d, 4), maximumFractionDigits: d }).format(n);
-      } catch (e) { return fmt.price(n) + ' ' + code; }
-    },
+    fiat: function (n, code) { if (!isFinite(n)) return '–'; var d = pd(Math.abs(n), code); return cfmt(n, code, d[0], d[1]); },
     date: function (ts) { return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
   };
   // Isolated-margin liquidation estimate for USDT-margined contracts
@@ -108,10 +160,11 @@ window.CC = (function () {
     });
     coins.sort(function (a, b) { return (b.mcap || 0) - (a.mcap || 0); });
     if (data.fx) { fx = data.fx; fx.USD = 1; }
+    resolveCur();
     state.ts = data.ts; state.loaded = true;
   }
   function emit() {
-    renderTicker(); renderUpdated();
+    renderTicker(); renderUpdated(); renderCur();
     document.querySelectorAll('.live-btn').forEach(function (b) { b.disabled = !state.loaded; });
     subs.forEach(function (f) { try { f(state); } catch (e) { console.error(e); } });
   }
@@ -194,8 +247,8 @@ window.CC = (function () {
     }
     track.querySelectorAll('.tick').forEach(function (t) {
       var c = coin(t.dataset.id), pr = t.querySelector('.pr'), ch = t.querySelector('.ch');
-      var txt = '$' + fmt.price(c.price);
-      if (pr.textContent && pr.textContent !== txt && prevPrice[c.id] != null) {
+      var txt = fmt.usd(px(c));
+      if (pr.textContent && pr.textContent !== txt && prevPrice[c.id] != null && prevPrice[c.id] !== c.price) {
         t.classList.remove('flash-up', 'flash-down'); void t.offsetWidth;
         t.classList.add(c.price >= prevPrice[c.id] ? 'flash-up' : 'flash-down');
       }
@@ -206,6 +259,15 @@ window.CC = (function () {
   function ago(ts) {
     var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
     return s < 60 ? s + 's ago' : s < 3600 ? Math.round(s / 60) + ' min ago' : Math.round(s / 3600) + ' h ago';
+  }
+  function renderCur() {
+    var sel = $('ccySel');
+    if (sel) {
+      if (sel.options.length < 2) sel.innerHTML = Object.keys(FIATS).map(function (k) { return '<option value="' + k + '">' + k + '</option>'; }).join('');
+      sel.value = cur; sel.disabled = !!curLock || !state.loaded;
+      sel.title = curLock ? 'This page works in US dollars' : 'Currency: ' + FIATS[cur];
+    }
+    document.querySelectorAll('[data-cur]').forEach(function (el) { if (el.textContent !== cur) el.textContent = cur; });
   }
   function renderUpdated() {
     document.querySelectorAll('[data-updated]').forEach(function (el) {
@@ -236,7 +298,7 @@ window.CC = (function () {
   function marketRows(tbody, opt) {
     if (!tbody) return;
     opt = opt || {};
-    var code = opt.fiat || 'USD', rate = fx[code] || 1;
+    var code = opt.fiat || cur, rate = fx[code] || 1; if (!fx[code]) code = 'USD';
     var list = coins.filter(function (c) { return c.price != null && (opt.stables || !c.stable); }).slice(0, opt.limit || 99);
     if (!list.length) {
       tbody.innerHTML = '<tr><td colspan="7" class="empty">' + (state.error ? 'Live prices are unavailable right now. Try again in a minute.' : 'Loading prices…') + '</td></tr>';
@@ -250,7 +312,7 @@ window.CC = (function () {
         '<td class="r' + fl + '"><b>' + fmt.fiat(c.price * rate, code) + '</b></td>' +
         '<td class="r ' + chCls(c.ch24) + '">' + fmt.pct(c.ch24, true) + '</td>' +
         '<td class="r hide-s ' + chCls(c.ch7) + '">' + fmt.pct(c.ch7, true) + '</td>' +
-        '<td class="r hide-m">' + fmt.compact(c.mcap) + '</td>' +
+        '<td class="r hide-m">' + fmt.compact(c.mcap * rate, code) + '</td>' +
         '<td class="hide-s">' + spark(c.spark) + '</td></tr>';
     }).join('');
     if (!first) tbody.querySelectorAll('.spark path').forEach(function (p) { p.style.animation = 'none'; p.style.strokeDashoffset = 0; });
@@ -272,7 +334,7 @@ window.CC = (function () {
     var animate = el.dataset.sig !== sig; el.dataset.sig = sig;
     el.innerHTML = rows.map(function (r, i) {
       var d = (r.price - entry) / entry * 100;
-      return '<div class="k-' + r.kind + '" style="--i:' + (animate ? i : 0) + (animate ? '' : ';animation:none') + '"><span class="tag">' + esc(r.label) + '</span><span class="p">$' + fmt.price(r.price) + '</span><span class="d">' + (r.kind === 'entry' ? 'entry' : fmt.pct(d, true)) + '</span></div>';
+      return '<div class="k-' + r.kind + '" style="--i:' + (animate ? i : 0) + (animate ? '' : ';animation:none') + '"><span class="tag">' + esc(r.label) + '</span><span class="p">' + fmt.usd(r.price) + '</span><span class="d">' + (r.kind === 'entry' ? 'entry' : fmt.pct(d, true)) + '</span></div>';
     }).join('');
   }
 
@@ -287,7 +349,7 @@ window.CC = (function () {
     var val = '', inv = '';
     series.forEach(function (s, i) { val += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.val).toFixed(1); if (two) inv += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(s.inv).toFixed(1); });
     var grid = '', axis = '';
-    for (var g = 0; g <= 3; g++) { var v = o.zoom ? min + (max - min) * g / 3.4 : max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + (o.axisFmt ? o.axisFmt(v) : o.zoom && max < 1e5 ? '$' + fmt.num(v, 0) : fmt.compact(v)) + '</text>'; }
+    for (var g = 0; g <= 3; g++) { var v = o.zoom ? min + (max - min) * g / 3.4 : max / 1.08 * g / 3, y = Y(v).toFixed(1); grid += '<line x1="0" x2="' + W + '" y1="' + y + '" y2="' + y + '"/>'; axis += '<text x="' + (W - 2) + '" y="' + (y - 4) + '" text-anchor="end">' + (o.axisFmt ? o.axisFmt(v) : o.zoom && max < 1e5 ? fmt.usd(Math.round(v)).replace(/\.00$/, '') : fmt.compact(v)) + '</text>'; }
     var mid = Math.floor((n - 1) / 2);
     axis += '<text x="0" y="' + (H - 4) + '">' + (o.startLabel || fmt.date(series[0].t)) + '</text><text x="' + W / 2 + '" y="' + (H - 4) + '" text-anchor="middle">' + fmt.date(series[mid].t) + '</text><text x="' + W + '" y="' + (H - 4) + '" text-anchor="end">' + (o.endLabel || fmt.date(series[n - 1].t)) + '</text>';
     var neg = o.gain === false ? ' neg' : '', st = o.still ? ' style="animation:none;stroke-dashoffset:0"' : '', sa = o.still ? ' style="animation:none;opacity:.1"' : '';
@@ -330,6 +392,7 @@ window.CC = (function () {
   function share(ids) {
     var q = new URLSearchParams();
     ids.forEach(function (k) { var v = getVal(k); if (v != null && v !== '') q.set(k, v); });
+    if (cur !== 'USD') q.set('ccy', cur);
     var url = location.origin + location.pathname + '?' + q.toString();
     var done = function () { toast('Link copied. Anyone who opens it sees these numbers.'); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { prompt('Copy this link:', url); });
@@ -337,22 +400,100 @@ window.CC = (function () {
     try { history.replaceState(null, '', url); } catch (e) {}
   }
 
+  /* Result card: draws the headline result as a square image to save or share */
+  function shareCard() {
+    var res = document.querySelector('.result'), big = res && res.querySelector('.big'), out = res && res.querySelector('#out');
+    if (!big || !big.textContent.trim() || (out && out.hidden)) { toast('Fill in the calculator first.'); return; }
+    var vEl = res.querySelector('.verdict'), verdict = vEl ? vEl.textContent.trim() : '';
+    var tone = vEl && /\bdown\b/.test(vEl.className) ? '#C4362C' : vEl && /\bup\b/.test(vEl.className) ? '#0A7F52' : '#15211C';
+    var subEl = res.querySelector('.sub'), sub = subEl ? subEl.textContent.trim() : '';
+    var rows = [];
+    res.querySelectorAll('dl.rows > div').forEach(function (d) {
+      var dt = d.querySelector('dt'), dd = d.querySelector('dd');
+      if (!d.hidden && rows.length < 5 && dt && dd && dd.textContent.trim()) rows.push([dt.textContent.trim(), dd.textContent.trim()]);
+    });
+    var brandEl = document.querySelector('.logo span'), brand = brandEl ? brandEl.textContent : location.hostname;
+    var h1 = document.querySelector('h1'), title = h1 ? h1.textContent.trim() : document.title;
+    function draw() {
+      var W = 1080, H = 1080, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      var g = cv.getContext('2d'), F = function (w, px) { g.font = w + ' ' + px + 'px Archivo, system-ui, sans-serif'; };
+      var fit = function (text, w, px, max, min) { do { F(w, px); if (g.measureText(text).width <= max) break; px -= 2; } while (px > min); return px; };
+      g.fillStyle = '#F1F3EE'; g.fillRect(0, 0, W, H);
+      g.fillStyle = '#FFE04A'; g.fillRect(72, 62, 36, 36); g.lineWidth = 6; g.strokeStyle = '#15211C'; g.strokeRect(72, 62, 36, 36);
+      g.fillStyle = '#15211C'; g.textBaseline = 'alphabetic'; F(800, 42); g.fillText(brand, 126, 95);
+      var top = 150, ch = 496 + rows.length * 68;
+      g.fillStyle = '#15211C'; g.fillRect(84, top + 12, 936, ch);
+      g.fillStyle = '#FFFFFF'; g.fillRect(72, top, 936, ch); g.lineWidth = 4; g.strokeRect(72, top, 936, ch);
+      var x = 124, maxW = 832, y = top + 84;
+      g.fillStyle = '#5E6B65'; fit(title, 600, 34, maxW, 22); g.fillText(title, x, y);
+      y += 76; g.fillStyle = tone; fit(verdict, 700, 38, maxW, 22); g.fillText(verdict, x, y);
+      var bt = big.textContent.trim(), bp = fit(bt, 800, 132, maxW, 48), bw = g.measureText(bt).width;
+      y += bp + 34; g.fillStyle = '#FFE04A'; g.fillRect(x - 10, y - bp * 0.34, bw + 20, bp * 0.4);
+      g.fillStyle = '#15211C'; g.fillText(bt, x, y);
+      y += 64; g.fillStyle = '#5E6B65'; F(500, 30);
+      var words = sub.split(' '), line = '', lines = [];
+      words.forEach(function (w) { var t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+      if (line) lines.push(line);
+      lines.slice(0, 2).forEach(function (l) { g.fillText(l, x, y); y += 40; });
+      y = top + 516;
+      rows.forEach(function (r) {
+        g.strokeStyle = '#D4DAD3'; g.lineWidth = 2; g.beginPath(); g.moveTo(x, y - 44); g.lineTo(x + maxW, y - 44); g.stroke();
+        g.fillStyle = '#15211C'; g.textAlign = 'right'; fit(r[1], 700, 28, maxW * 0.56, 18); g.fillText(r[1], x + maxW, y);
+        g.textAlign = 'left'; g.fillStyle = '#5E6B65'; fit(r[0], 500, 28, maxW * 0.42, 18); g.fillText(r[0], x, y);
+        y += 68;
+      });
+      g.fillStyle = '#15211C'; F(700, 28); g.fillText(location.host, 72, H - 44);
+      g.fillStyle = '#5E6B65'; F(500, 24); g.textAlign = 'right'; g.fillText('An estimate, not financial advice', W - 72, H - 44);
+      cv.toBlob(function (blob) {
+        if (!blob) { toast('Could not make the image.'); return; }
+        var name = (location.pathname.replace(/\//g, '') || 'result') + '.png', file;
+        try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: title }).catch(function () {}); return; }
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000); toast('Image saved.');
+      }, 'image/png');
+    }
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(draw, draw);
+  }
+
   /* Wires up a calculator page: URL restore, live autofill, recalculation on every change */
   function page(cfg) {
     var ids = cfg.ids || [], q = new URLSearchParams(location.search), restored = false, filled = false;
     var sel = $('coin');
     fillCoins(sel, cfg.coinOpt);
-    ids.forEach(function (k) { if (q.has(k)) { setVal(k, q.get(k)); restored = true; } });
+    // Every money field remembers which currency its number is in (el._cur); sync() converts when that differs from the page currency.
+    var qc = (q.get('ccy') || '').toUpperCase(); if (!FIATS[qc]) qc = 'USD';
+    var mark = function (k, code) { var el = $(k); if (el && el.hasAttribute('data-money')) { el._cur = code; el._exact = true; } };
+    ids.forEach(function (k) { if (q.has(k)) { setVal(k, q.get(k)); mark(k, qc); restored = true; } });
+    if (cfg.usdOnly) lockCur('USD'); else if (restored && qc !== 'USD') { wantCur = qc; resolveCur(); }
+    var pageCur = restored ? qc : 'USD';
     var keep = cfg.keep || [], kept = {};
     try { kept = JSON.parse(localStorage.getItem('cc_keep')) || {}; } catch (e) {}
-    keep.forEach(function (k) { if (!q.has(k) && kept[k] != null && kept[k] !== '') setVal(k, kept[k]); });
-    function saveKept() { keep.forEach(function (k) { kept[k] = getVal(k); }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} }
+    keep.forEach(function (k) { if (!q.has(k) && kept[k] != null && kept[k] !== '') { setVal(k, kept[k]); mark(k, kept._c && FIATS[kept._c[k]] ? kept._c[k] : 'USD'); } });
+    function saveKept() { kept._c = kept._c || {}; keep.forEach(function (k) { kept[k] = getVal(k); kept._c[k] = cur; }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} }
     var run = function () { try { cfg.calc(); } catch (e) { console.error(e); } };
     function autofill(force) {
       if (!sel) return; var c = coin(sel.value); if (!c || c.price == null) return;
       document.querySelectorAll('[data-autolive]').forEach(function (el) {
-        if (force || (!restored && !el.dataset.touched)) el.value = round(c.price * parseFloat(el.dataset.autolive));
+        if (force || (!restored && !el.dataset.touched)) { el.value = round(px(c) * parseFloat(el.dataset.autolive)); el._cur = cur; }
       });
+    }
+    function sync() {
+      if (!state.loaded) return;
+      document.querySelectorAll('.inputs input[data-money]').forEach(function (el) {
+        var from = el._cur || 'USD'; if (from === cur) return;
+        el._cur = cur;
+        if (el.dataset.autolive && !restored && !el.dataset.touched) return;   // refilled from the live price below
+        var v = parseFloat(el.value); if (!(v > 0) || !fx[from]) return;
+        var x = v * rate() / fx[from];
+        el.value = el._exact || el.dataset.touched ? round(x) : Number(x.toPrecision(1));
+      });
+      if (pageCur === cur) return;
+      if (cfg.onCur) cfg.onCur(rate() / (fx[pageCur] || 1), cur);
+      pageCur = cur;
+      chips.forEach(function (f) { f(); });
+      if (filled) autofill(false);
+      if (keep.length) saveKept();
     }
     document.querySelectorAll('.inputs input, .inputs select').forEach(function (el) {
       var h = function (e) {
@@ -366,16 +507,25 @@ window.CC = (function () {
       b.disabled = !state.loaded;
       b.addEventListener('click', function () {
         var c = sel && coin(sel.value), el = $(b.dataset.live); if (!c || c.price == null || !el) return;
-        el.value = round(c.price); el.dataset.touched = 1; run();
+        el.value = round(el.hasAttribute('data-money') ? px(c) : c.price); el._cur = cur; el.dataset.touched = 1; run();
       });
     });
+    var chips = [];
     document.querySelectorAll('[data-set]').forEach(function (b) {
-      b.addEventListener('click', function () { var p = b.dataset.set.split(':'), el = $(p[0]); el.value = p[1]; el.dataset.touched = 1; if (keep.length) saveKept(); run(); });
+      var p = b.dataset.set.split(':'), el = $(p[0]), isMoney = el && el.hasAttribute('data-money');
+      // Money presets are written in dollars and shown as a round figure in the page currency
+      var val = function () { return isMoney ? Number((parseFloat(p[1]) * rate()).toPrecision(1)) : p[1]; };
+      if (isMoney) chips.push(function () { b.textContent = fmt.money(val()).replace(/\.00$/, ''); });
+      b.addEventListener('click', function () { el.value = val(); el._cur = cur; el.dataset.touched = 1; if (keep.length) saveKept(); run(); });
     });
     var sb = $('shareBtn'); if (sb) sb.addEventListener('click', function () { share(ids); });
+    if (sb && document.querySelector('.result .big')) {
+      var ib = document.createElement('button'); ib.type = 'button'; ib.className = 'btn'; ib.id = 'imgBtn'; ib.textContent = 'Save result as image';
+      sb.parentNode.insertBefore(ib, sb.nextSibling); ib.addEventListener('click', shareCard);
+    }
     var rb = $('resetBtn'); if (rb) rb.addEventListener('click', function () { keep.forEach(function (k) { delete kept[k]; }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} location.href = location.pathname; });
     on(function () {
-      if (state.loaded) { fillCoins(sel, cfg.coinOpt); if (!filled) { filled = true; autofill(false); } }
+      if (state.loaded) { fillCoins(sel, cfg.coinOpt); sync(); if (!filled) { filled = true; autofill(false); } }
       run();
     });
     run();
@@ -393,6 +543,12 @@ window.CC = (function () {
       document.addEventListener('click', function (e) { if (!hd.contains(e.target)) setMenu(false); });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
     }
+    if (!wantCur) {   // a shared link may already have set the currency for this view
+      try { wantCur = localStorage.getItem('cc_ccy'); } catch (e) {}
+      if (!FIATS[wantCur]) wantCur = detectCur();
+    }
+    var cs = $('ccySel');
+    if (cs) cs.addEventListener('change', function () { setCur(cs.value); });
     var tb = $('themeBtn');
     if (tb) tb.addEventListener('click', function () {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -410,8 +566,8 @@ window.CC = (function () {
 
   return {
     $: $, esc: esc, fmt: fmt, round: round, count: count, on: on, coin: coin, coins: function () { return coins; },
-    fx: function (code) { return fx[code]; }, FIATS: FIATS, state: state, n: n, radio: radio, getVal: getVal, setVal: setVal,
-    fillCoins: fillCoins, marketRows: marketRows, ladder: ladder, spark: spark, icon: icon, toast: toast, share: share, page: page,
+    fx: function (code) { return fx[code]; }, FIATS: FIATS, cur: function () { return cur; }, px: px, rate: rate, setCur: setCur, lockCur: lockCur, detectCur: detectCur, state: state, n: n, radio: radio, getVal: getVal, setVal: setVal,
+    fillCoins: fillCoins, marketRows: marketRows, ladder: ladder, spark: spark, icon: icon, toast: toast, share: share, shareCard: shareCard, page: page,
     getJSON: getJSON, API: API, lineChart: lineChart, liq: liq, BN: BN, BHOST: BHOST, reduced: reduced
   };
 })();

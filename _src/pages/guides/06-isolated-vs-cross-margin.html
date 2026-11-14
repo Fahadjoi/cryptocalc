@@ -1,0 +1,56 @@
+title: Isolated vs cross margin | Which mode puts what at risk
+desc: The difference between isolated and cross margin on crypto futures, what each one risks, how it changes the liquidation price and when traders use each.
+path: /guides/isolated-vs-cross-margin/
+kind: guide
+tool: /liquidation-calculator/
+h1: Isolated vs cross margin
+lede: The margin mode is one switch on the order form, and it decides whether a bad trade can lose only its own stake or the whole futures balance.
+date: 14 November 2026
+iso: 2026-11-14
+order: 6
+---
+<h2>Isolated margin</h2>
+<p>With isolated margin, each position has its own pot of money. If the trade is liquidated, that pot is lost and nothing else in the account is touched.</p>
+<div class="example">
+  <p>Your futures account holds <b>$5,000</b>. You open a <b>$5,000</b> long at <b>10×</b> with <b>$500</b> of isolated margin.</p>
+  <p>The position is liquidated after a fall of about 9.5%.</p>
+  <p>The most you can lose is <b>$500</b>. The other $4,500 stays where it is.</p>
+</div>
+
+<h2>Cross margin</h2>
+<p>With cross margin, the whole futures balance backs every open position. A losing trade draws on the rest of the account to stay open, so it is liquidated much later. When it does happen, far more is lost.</p>
+<div class="example">
+  <p>The same <b>$5,000</b> account and the same <b>$5,000</b> long, this time on cross margin.</p>
+  <p>The full $5,000 supports the position, so in practice it behaves like 1× leverage and a 9.5% fall does not close it.</p>
+  <p>A 9.5% fall still costs <b>$475</b>, and the loss keeps growing for as long as the price falls and the position stays open.</p>
+</div>
+
+<h2>Side by side</h2>
+<table>
+  <thead><tr><th></th><th>Isolated</th><th>Cross</th></tr></thead>
+  <tbody>
+    <tr><td><b>Money at risk</b></td><td>The margin on that position</td><td>The whole futures balance</td></tr>
+    <tr><td><b>Liquidation price</b></td><td>Closer to entry</td><td>Further from entry</td></tr>
+    <tr><td><b>Several positions</b></td><td>Each stands alone</td><td>Gains on one offset losses on another</td></tr>
+    <tr><td><b>Adding margin</b></td><td>Done by hand</td><td>Automatic, from the balance</td></tr>
+  </tbody>
+</table>
+
+<h2>When each is used</h2>
+<ul>
+  <li><strong>Isolated suits single directional trades.</strong> You know the worst case before you enter, and one mistake cannot spread.</li>
+  <li><strong>Cross suits hedged positions.</strong> If you hold a long and a short that offset each other, cross margin lets the gain on one support the loss on the other.</li>
+  <li><strong>Cross needs a stop-loss more, not less.</strong> A far-off liquidation price feels safe, but without a stop a position can lose a large part of the account long before liquidation.</li>
+</ul>
+
+<h2>A common mistake</h2>
+<p>Traders sometimes switch to cross margin because isolated positions keep getting liquidated. That removes the symptom. If trades are being liquidated often, the leverage is too high for the size of the moves, and cross margin only makes the eventual loss larger. Lower leverage and a stop-loss sized with <a href="/guides/position-sizing/">a fixed risk per trade</a> deal with the cause.</p>
+
+@faq
+Q: Which margin mode is safer for beginners?
+A: Isolated, because the loss on any one trade is capped at the margin you gave it.
+Q: Can I change margin mode with a position open?
+A: It depends on the exchange. Many require you to close the position first, so check before you open the trade.
+Q: Does the calculator on this site use isolated or cross?
+A: It estimates isolated margin, where the liquidation price depends only on the entry price, leverage and maintenance rate.
+@end

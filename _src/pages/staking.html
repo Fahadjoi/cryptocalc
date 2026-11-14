@@ -146,8 +146,8 @@ A: Rewards and your original stake are both held in the coin. If the coin's pric
       }
       $('apy').textContent = f.pct(apy) + (comm > 0 ? ' after the fee' : '');
       $('daily').textContent = f.money(amount * r / 365);
-      $('coinRow').hidden = c.price == null;
-      if (c.price != null) $('coins').textContent = f.amt(amount / c.price) + ' → ' + f.amt(total / c.price) + ' ' + c.sym + (topup ? ', top-ups included' : '');
+      $('coinRow').hidden = CC.px(c) == null;
+      if (CC.px(c) != null) $('coins').textContent = f.amt(amount / CC.px(c)) + ' → ' + f.amt(total / CC.px(c)) + ' ' + c.sym + (topup ? ', top-ups included' : '');
       var notes = '';
       if (move < 0 && total * (1 + move / 100) < put) notes += '<div class="note bad">With a ' + f.pct(Math.abs(move)).replace('.00', '') + ' price fall the rewards do not cover the loss. You would end ' + f.money(put - total * (1 + move / 100)) + ' below what you put in.</div>';
       if (apr >= 30) notes += '<div class="note">Rates this high usually come from fast-growing coin supply or short promotions, and rarely hold for long. Treat the result as a best case.</div>';
