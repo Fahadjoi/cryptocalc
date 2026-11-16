@@ -1,3 +1,10 @@
+# Send the old Netlify address to the real domain
+[[redirects]]
+  from = "https://zesty-haupia-16a953.netlify.app/*"
+  to = "https://coinabacus.com/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/_src/*"
   to = "/404.html"
@@ -23,10 +30,3 @@
   for = "/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-# Send the old Netlify address to the real domain
-[[redirects]]
-  from = "https://zesty-haupia-16a953.netlify.app/*"
-  to = "https://coinabacus.com/:splat"
-  status = 301
-  force = true
