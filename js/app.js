@@ -1,4 +1,4 @@
-/* CryptoCalc shared script: live prices, ticker, theme, formatting, small UI helpers */
+/* CoinAbacus shared script: live prices, ticker, theme, formatting, small UI helpers */
 window.CC = (function () {
   'use strict';
 

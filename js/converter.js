@@ -1,4 +1,4 @@
-/* CryptoCalc converter (shared by /converter/ and the /convert/x-to-y/ pages) */
+/* CoinAbacus converter (shared by /converter/ and the /convert/x-to-y/ pages) */
 (function () {
   var $ = CC.$, f = CC.fmt, F = CC.FIATS, ready = false, lastEdited = 'amount';
   var q = new URLSearchParams(location.search);

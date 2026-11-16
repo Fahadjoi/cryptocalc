@@ -1,6 +1,6 @@
 {
- "name": "CryptoCalc",
- "short_name": "CryptoCalc",
+ "name": "CoinAbacus",
+ "short_name": "CoinAbacus",
  "description": "Free crypto calculators with live prices",
  "start_url": "/",
  "display": "standalone",

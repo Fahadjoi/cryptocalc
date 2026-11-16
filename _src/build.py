@@ -5,7 +5,7 @@ SRC = pathlib.Path(__file__).parent / 'pages'
 OUT = pathlib.Path(sys.argv[1])
 # ---------- Launch settings: everything that changes when the domain is bought ----------
 SITE = 'https://zesty-haupia-16a953.netlify.app'   # the address visitors use, without a trailing slash
-BRAND = 'CryptoCalc'                               # site name shown in the header, footer, titles and share images
+BRAND = 'CoinAbacus'                               # site name shown in the header, footer, titles and share images
 GA_ID = ''                                         # Google Analytics 4 measurement ID, e.g. G-XXXXXXXXXX. Empty = no analytics
 ADSENSE_ID = ''                                    # AdSense publisher ID, e.g. pub-1234567890123456. Empty = no adverts
 UPDATED = '14 November 2026'                       # date shown on the privacy page
@@ -159,7 +159,7 @@ def render(raw):
 <link rel="manifest" href="/site.webmanifest">
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=10">
+<link rel="stylesheet" href="/css/style.css?v=11">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -176,7 +176,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=10"></script>
+<script src="/js/app.js?v=11"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -184,7 +184,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=10"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=11"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     out = OUT / (path.strip('/') + '/index.html' if path.endswith('/') else path.strip('/'))
     if path == '/': out = OUT / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
