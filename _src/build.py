@@ -4,7 +4,7 @@ import re, json, html, sys, pathlib
 SRC = pathlib.Path(__file__).parent / 'pages'
 OUT = pathlib.Path(sys.argv[1])
 # ---------- Launch settings: everything that changes when the domain is bought ----------
-SITE = 'https://zesty-haupia-16a953.netlify.app'   # the address visitors use, without a trailing slash
+SITE = 'https://coinabacus.com'   # the address visitors use, without a trailing slash
 BRAND = 'CoinAbacus'                               # site name shown in the header, footer, titles and share images
 GA_ID = ''                                         # Google Analytics 4 measurement ID, e.g. G-XXXXXXXXXX. Empty = no analytics
 ADSENSE_ID = ''                                    # AdSense publisher ID, e.g. pub-1234567890123456. Empty = no adverts
