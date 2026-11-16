@@ -5,7 +5,7 @@
 
   function localFiat() {
     try { var saved = localStorage.getItem('cc_ccy'); if (F[saved]) return saved; } catch (e) {}
-    return CC.detectCur();
+    return 'USD';
   }
   var CONV = window.CONV || {};
   var want = { from: q.get('from') || CONV.from || 'bitcoin', to: q.get('to') || CONV.to || localFiat() };

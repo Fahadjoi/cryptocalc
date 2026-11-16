@@ -545,7 +545,7 @@ window.CC = (function () {
     }
     if (!wantCur) {   // a shared link may already have set the currency for this view
       try { wantCur = localStorage.getItem('cc_ccy'); } catch (e) {}
-      if (!FIATS[wantCur]) wantCur = detectCur();
+      if (!FIATS[wantCur]) wantCur = 'USD';   // dollars for everyone until they pick another currency
     }
     var cs = $('ccySel');
     if (cs) cs.addEventListener('change', function () { setCur(cs.value); });
