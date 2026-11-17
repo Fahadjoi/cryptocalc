@@ -1,0 +1,52 @@
+title: Market cap maths: what price a coin needs for a given market cap
+desc: How market cap, circulating supply and price fit together, how to check whether a price target is realistic, and why fully diluted value and token unlocks matter.
+path: /guides/market-cap-maths/
+kind: guide
+tool: /converter/
+h1: Market cap maths: what price a coin needs for a given market cap
+lede: "Can this coin reach $100?" has an answer you can work out in one line. The answer depends on how many coins exist, not just on the price.
+date: 18 November 2026
+iso: 2026-11-18
+order: 15
+---
+<h2>The one formula</h2>
+<div class="formula">Market cap = price × circulating supply</div>
+<p>Circulating supply is the number of coins that exist and can be traded today. Rearrange the formula and you get the price a coin would need for any market cap you have in mind.</p>
+<div class="formula">Price needed = target market cap ÷ circulating supply</div>
+
+<h2>Checking a price target</h2>
+<div class="example">
+  <p>A coin trades at <b>$2</b> with <b>500 million</b> coins in circulation.</p>
+  <p>Market cap today: 2 × 500,000,000 = <b>$1 billion</b>.</p>
+  <p>For the coin to reach <b>$100</b>, its market cap would need to be 100 × 500,000,000 = <b>$50 billion</b>, fifty times its current size.</p>
+</div>
+<p>The second number is the useful one. A price of $100 sounds similar for every coin, but a coin with ten times the supply needs a market cap ten times larger to get there. Comparing the market cap a target implies with the largest coins in the market is a quick way to tell an ambitious target from an impossible one.</p>
+
+<h2>Circulating supply versus fully diluted value</h2>
+<p>Many coins have more tokens to come: team and investor allocations that unlock over time, or rewards paid out to stakers and miners.</p>
+<div class="formula">Fully diluted value = price × maximum supply<small>Where there is no maximum supply, the total supply that exists or is scheduled is used instead.</small></div>
+<div class="example">
+  <p>The same coin has a maximum supply of <b>2 billion</b>.</p>
+  <p>Fully diluted value: 2 × 2,000,000,000 = <b>$4 billion</b>, four times its market cap.</p>
+  <p>If circulating supply grows to <b>1 billion</b> while the market cap stays at $1 billion, the price falls to <b>$1</b>.</p>
+</div>
+<p>A large gap between market cap and fully diluted value means new supply will keep arriving. Demand has to grow just to hold the price steady.</p>
+
+<h2>What market cap does not tell you</h2>
+<ul>
+  <li><strong>It is not money invested.</strong> Market cap multiplies the last trade price by every coin in circulation. Far less money actually went in, and far less could come out if everyone sold.</li>
+  <li><strong>Thin coins are easy to move.</strong> A coin with little trading volume can show a large market cap from a small amount of buying.</li>
+  <li><strong>Supply figures differ between sites.</strong> Data providers sometimes count circulating supply differently, especially for locked or burned tokens, so the same coin can show different market caps.</li>
+</ul>
+
+<h2>Turning a target into your own numbers</h2>
+<p>Once you have a price target, you can see what it would mean for a position in your own currency with the <a href="/converter/">converter</a>, or test the trade with fees included in the <a href="/profit-calculator/">profit calculator</a>.</p>
+
+@faq
+Q: How do I work out what price a coin needs to reach a market cap?
+A: Divide the target market cap by the coin's circulating supply. A $10 billion target for a coin with 200 million coins in circulation means a price of $50.
+Q: Which is more useful, market cap or fully diluted value?
+A: Market cap shows the coin's size today. Fully diluted value shows its size once all planned tokens exist. Looking at both shows how much new supply is still to come.
+Q: Why can't a low-priced coin easily reach $1?
+A: If it has hundreds of billions of coins in circulation, a $1 price would mean a market cap of hundreds of billions of dollars. The supply decides how realistic a price is.
+@end

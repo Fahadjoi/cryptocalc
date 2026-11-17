@@ -1,0 +1,57 @@
+title: Crypto cost basis: FIFO, specific ID and average cost explained
+desc: How the cost basis method changes the gain on the same crypto sale, with one worked example under FIFO, highest-cost and average cost, plus how the US and UK apply them.
+path: /guides/crypto-cost-basis-methods/
+kind: guide
+tool: /average-cost-calculator/
+h1: Crypto cost basis: FIFO, specific ID and average cost
+lede: Sell one coin out of several you bought at different prices and the gain depends on which purchase that coin is said to come from. The method decides, and in some countries the law decides the method.
+date: 18 November 2026
+iso: 2026-11-18
+order: 16
+---
+<div class="note"><p>This guide explains how the methods work so you can follow your own records. It is not tax advice, and the rules for your situation depend on where you live. Check with your tax authority or an adviser before you file.</p></div>
+
+<h2>What cost basis is</h2>
+<p>Cost basis is what you paid for the coins you sell, including the fee to buy them. The taxable gain or loss is the sale proceeds, after the selling fee, minus that cost.</p>
+<div class="formula">Gain = proceeds − cost basis<small>Proceeds after the selling fee. Cost basis includes the buying fee.</small></div>
+
+<h2>One sale, three answers</h2>
+<div class="example">
+  <p>January: buy <b>1 BTC at $30,000</b>.</p>
+  <p>June: buy <b>1 BTC at $60,000</b>.</p>
+  <p>October: sell <b>1 BTC at $50,000</b>. Fees are left out to keep the sums simple.</p>
+</div>
+<table>
+  <thead><tr><th>Method</th><th>Coin treated as sold</th><th>Cost basis</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>First in, first out (FIFO)</td><td>The January coin</td><td>$30,000</td><td><b>$20,000 gain</b></td></tr>
+    <tr><td>Highest cost first (a form of specific ID)</td><td>The June coin</td><td>$60,000</td><td><b>$10,000 loss</b></td></tr>
+    <tr><td>Average cost</td><td>Half of each</td><td>$45,000</td><td><b>$5,000 gain</b></td></tr>
+  </tbody>
+</table>
+<p>The same trade produces a $20,000 gain, a $10,000 loss or a $5,000 gain depending on the method. The method does not change your total gain over time, because whatever cost is not used now stays with the coin you still hold. It changes when the gain or loss is counted.</p>
+
+<h2>How the US applies it</h2>
+<p>Since 1 January 2025, cost basis has to be tracked per wallet or per exchange account rather than pooled across everything you own. Within each wallet or account, FIFO is the default. You can use specific identification instead, choosing which units you sell, as long as you identify them at or before the sale and keep records that prove it. For coins held at an exchange, that means following the exchange's process for choosing lots.</p>
+
+<h2>How the UK applies it</h2>
+<p>UK individuals do not choose a method. Each sale is matched in a fixed order: first against coins of the same type bought on the same day, then against coins bought in the following 30 days, and only then against the Section 104 pool, which holds everything else at its average cost. The 30-day rule stops a sale and quick rebuy from creating a loss at the old pooled price.</p>
+
+<h2>Other countries</h2>
+<p>Many countries use either FIFO or an average cost, and some exempt coins held for longer than a set period. The method that applies to you is set by your country's rules, not by the method your exchange or tracking app shows by default.</p>
+
+<h2>Keeping records that work under any method</h2>
+<ul>
+  <li><strong>Record every buy and sell:</strong> date and time, amount, price in your own currency, fee, and the wallet or exchange it happened in.</li>
+  <li><strong>Record transfers between wallets.</strong> A transfer is not a sale, but under per-wallet rules the coins carry their cost with them.</li>
+  <li><strong>Check your average entry as you go.</strong> The <a href="/average-cost-calculator/">average cost calculator</a> shows the pooled cost of several buys, the figure the UK pool and average-cost methods start from.</li>
+</ul>
+
+@faq
+Q: Which cost basis method gives the lowest tax?
+A: Choosing the highest-cost coins first usually gives the smallest gain on each sale, where the rules let you choose. It leaves cheaper coins behind, so later sales show bigger gains.
+Q: Can I use average cost in the US?
+A: For crypto, the US rules name FIFO and specific identification, applied per wallet or account. Average cost is how the UK pool works, not a US option for crypto.
+Q: Do fees count in the cost basis?
+A: Buying fees are generally added to the cost and selling fees taken off the proceeds, which lowers the gain. Check how your country treats fees paid in crypto, since paying a fee in a coin can itself count as a sale.
+@end

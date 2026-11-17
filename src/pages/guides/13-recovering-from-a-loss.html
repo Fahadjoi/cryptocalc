@@ -1,0 +1,59 @@
+title: How much you need to gain to recover from a loss | Crypto maths
+desc: Why a 50% loss needs a 100% gain to get back to even, the recovery table for every size of drawdown, and what fees and time do to the climb back.
+path: /guides/recovering-from-a-loss/
+kind: guide
+tool: /profit-calculator/
+h1: How much you need to gain to recover from a loss
+lede: Losses and gains are not symmetrical. Lose half of a portfolio and the half that is left has to double just to get back to where you started.
+date: 18 November 2026
+iso: 2026-11-18
+order: 13
+---
+<h2>Why the climb back is steeper</h2>
+<p>A loss is measured against the amount you started with. The recovery is measured against the smaller amount that is left, so the same distance in dollars is a bigger percentage on the way up.</p>
+<div class="example">
+  <p>You hold <b>$1,000</b> and it falls <b>40%</b> to <b>$600</b>.</p>
+  <p>To get back to $1,000 you need to make $400 on $600.</p>
+  <p>400 ÷ 600 = <b>66.7%</b>, not 40%.</p>
+</div>
+
+<h2>The formula</h2>
+<div class="formula">Gain needed = loss ÷ (1 − loss)<small>Write the loss as a decimal: a 40% loss is 0.40, and 0.40 ÷ 0.60 = 0.667, a 66.7% gain.</small></div>
+
+<h2>The recovery table</h2>
+<table>
+  <thead><tr><th>Loss</th><th>Gain needed to break even</th></tr></thead>
+  <tbody>
+    <tr><td>10%</td><td><b>11.1%</b></td></tr>
+    <tr><td>20%</td><td><b>25%</b></td></tr>
+    <tr><td>25%</td><td><b>33.3%</b></td></tr>
+    <tr><td>30%</td><td><b>42.9%</b></td></tr>
+    <tr><td>40%</td><td><b>66.7%</b></td></tr>
+    <tr><td>50%</td><td><b>100%</b></td></tr>
+    <tr><td>75%</td><td><b>300%</b></td></tr>
+    <tr><td>90%</td><td><b>900%</b></td></tr>
+  </tbody>
+</table>
+<p>Small losses are cheap to recover from. Past about 30% the required gain starts to run away, and a 90% drawdown needs the asset to go up ten times just to get back to even.</p>
+
+<h2>Fees make it a little steeper again</h2>
+<p>If you sell after the fall and buy back in later, each trade costs a fee. At 0.1% a side, getting out and back in costs about 0.2% of the position, so a 50% loss needs roughly a 100.4% gain instead of 100%. The difference is small for one round trip and adds up for traders who sell and rebuy often.</p>
+
+<h2>Averaging down changes the break-even, not the loss</h2>
+<p>Buying more after a fall lowers your average entry, so the price does not need to climb all the way back for the whole position to break even. It also puts more money into the same asset that just fell. See <a href="/guides/average-cost-and-averaging-down/">average cost and averaging down</a> for how the new break-even is worked out.</p>
+
+<h2>What this means for risk</h2>
+<ul>
+  <li><strong>Keep single losses small.</strong> A trader who loses 2% on a bad trade needs about 2% to recover. One who loses 30% needs almost 43%.</li>
+  <li><strong>Leverage makes deep drawdowns quick.</strong> At 10x, a 5% move against you is a 50% loss of margin. See <a href="/guides/how-leverage-works/">how leverage works</a>.</li>
+  <li><strong>Size positions on purpose.</strong> Risking a fixed small share of the account per trade keeps any one loss in the cheap part of the table. See <a href="/guides/position-sizing/">position sizing</a>.</li>
+</ul>
+
+@faq
+Q: Why does a 50% loss need a 100% gain?
+A: After a 50% loss you have half of what you started with. Getting back to the original amount means doubling that half, which is a 100% gain.
+Q: Is the recovery maths different for crypto than for stocks?
+A: No. The formula is the same for any asset. Crypto just has larger and more frequent drawdowns, so the steep end of the table comes up more often.
+Q: Does averaging down help me recover faster?
+A: It lowers the price the asset needs to reach for your whole position to break even, but it adds more money at risk in the same asset.
+@end
