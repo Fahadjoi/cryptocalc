@@ -1,0 +1,58 @@
+title: Spot vs futures trading in crypto: the differences that matter
+desc: What you actually own on spot and on futures, how leverage, shorting, funding and liquidation change the trade, and which costs apply to each.
+path: /guides/spot-vs-futures/
+kind: guide
+tool: /liquidation-calculator/
+h1: Spot vs futures trading in crypto
+lede: On spot you buy the coin. On futures you hold a contract that tracks the coin's price. That difference decides whether you can be liquidated, what you pay to hold, and whether you can profit from a fall.
+date: 18 November 2026
+iso: 2026-11-18
+order: 19
+---
+<h2>The short version</h2>
+<table>
+  <thead><tr><th></th><th>Spot</th><th>Perpetual futures</th></tr></thead>
+  <tbody>
+    <tr><td>What you hold</td><td>The coin itself</td><td>A contract that tracks the coin's price</td></tr>
+    <tr><td>Leverage</td><td>None</td><td>Yes, set by you</td></tr>
+    <tr><td>Profit when the price falls</td><td>No</td><td>Yes, by going short</td></tr>
+    <tr><td>Can be liquidated</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Cost to hold</td><td>None</td><td>Funding, paid or received every few hours</td></tr>
+    <tr><td>Withdraw to your own wallet</td><td>Yes</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<h2>Spot: you own the coin</h2>
+<p>Buy 0.1 BTC on spot and you have 0.1 BTC. If the price halves, you still have 0.1 BTC, worth half as much. Nothing forces you to sell, and you can move the coins to your own wallet. Your costs are the trading fees to buy and sell. See <a href="/guides/crypto-profit-after-fees/">crypto profit after fees</a>.</p>
+
+<h2>Futures: you hold a position, not the coin</h2>
+<p>A perpetual futures position gains and loses like the coin, but you only put up margin, and leverage multiplies the size. The position can be long, which profits when the price rises, or short, which profits when it falls.</p>
+<div class="example">
+  <p>You open a <b>$5,000 short</b> with <b>$500</b> of margin, which is 10x.</p>
+  <p>Price falls <b>4%</b>: the short makes <b>$200</b>, which is <b>+40%</b> on your margin.</p>
+  <p>Price rises <b>4%</b>: the short loses <b>$200</b>, which is <b>−40%</b> on your margin.</p>
+</div>
+<p>See <a href="/guides/how-leverage-works/">how leverage works</a> for the full picture.</p>
+
+<h2>The costs only futures have</h2>
+<ul>
+  <li><strong>Liquidation.</strong> If losses use up your margin, the exchange closes the position. On spot, a falling price never forces a sale. See <a href="/guides/liquidation-price-explained/">liquidation price explained</a>.</li>
+  <li><strong>Funding.</strong> Perpetuals have no expiry, so longs and shorts pay each other a funding rate to keep the contract near the spot price. Holding for weeks can add up. See <a href="/guides/funding-rates-explained/">funding rates explained</a>.</li>
+  <li><strong>Fees on the full position.</strong> Futures fees are often lower per trade than spot, but they are charged on the leveraged size, not on your margin.</li>
+</ul>
+
+<h2>Which one fits what you are doing</h2>
+<ul>
+  <li><strong>Holding for months or years:</strong> spot. No funding to pay and no liquidation price to watch.</li>
+  <li><strong>Short-term trades with a clear stop:</strong> futures can work, with leverage kept low enough that liquidation sits well beyond the stop. See <a href="/guides/how-to-set-a-stop-loss/">how to set a stop loss</a>.</li>
+  <li><strong>Hedging coins you already hold:</strong> a short on futures can offset a fall in your spot coins without selling them.</li>
+</ul>
+
+@faq
+Q: Is futures trading riskier than spot?
+A: Leverage and liquidation make it easier to lose a large share of your money quickly. A futures position at 1x with no liquidation risk behaves much like spot, but most losses on futures come from high leverage.
+Q: Can I lose more than I put in on futures?
+A: On most crypto exchanges with isolated margin, the most you can lose on a position is the margin in it. With cross margin, losses can draw on the rest of your futures balance. See isolated vs cross margin.
+Q: Do I pay funding on spot?
+A: No. Funding only applies to perpetual futures. Spot trades only pay the trading fee to buy and to sell.
+@end

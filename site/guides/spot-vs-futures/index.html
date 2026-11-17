@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spot vs futures trading in crypto: the differences that matter</title>
+<meta name="description" content="What you actually own on spot and on futures, how leverage, shorting, funding and liquidation change the trade, and which costs apply to each.">
+<link rel="canonical" href="https://coinabacus.com/guides/spot-vs-futures/">
+<meta property="og:title" content="Spot vs futures trading in crypto: the differences that matter">
+<meta property="og:description" content="What you actually own on spot and on futures, how leverage, shorting, funding and liquidation change the trade, and which costs apply to each.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/guides/spot-vs-futures/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=19">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Spot vs futures trading in crypto", "description": "What you actually own on spot and on futures, how leverage, shorting, funding and liquidation change the trade, and which costs apply to each.", "datePublished": "2026-11-18", "dateModified": "2026-11-18", "author": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "publisher": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "mainEntityOfPage": "https://coinabacus.com/guides/spot-vs-futures/", "image": "https://coinabacus.com/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://coinabacus.com/guides/"}, {"@type": "ListItem", "position": 2, "name": "Spot vs futures trading in crypto", "item": "https://coinabacus.com/guides/spot-vs-futures/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is futures trading riskier than spot?", "acceptedAnswer": {"@type": "Answer", "text": "Leverage and liquidation make it easier to lose a large share of your money quickly. A futures position at 1x with no liquidation risk behaves much like spot, but most losses on futures come from high leverage."}}, {"@type": "Question", "name": "Can I lose more than I put in on futures?", "acceptedAnswer": {"@type": "Answer", "text": "On most crypto exchanges with isolated margin, the most you can lose on a position is the margin in it. With cross margin, losses can draw on the rest of your futures balance. See isolated vs cross margin."}}, {"@type": "Question", "name": "Do I pay funding on spot?", "acceptedAnswer": {"@type": "Answer", "text": "No. Funding only applies to perpetual futures. Spot trades only pay the trading fee to buy and to sell."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Spot vs futures trading in crypto</h1><p class="rise" style="--d:1">On spot you buy the coin. On futures you hold a contract that tracks the coin's price. That difference decides whether you can be liquidated, what you pay to hold, and whether you can profit from a fall.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>The short version</h2>
+<table>
+  <thead><tr><th></th><th>Spot</th><th>Perpetual futures</th></tr></thead>
+  <tbody>
+    <tr><td>What you hold</td><td>The coin itself</td><td>A contract that tracks the coin's price</td></tr>
+    <tr><td>Leverage</td><td>None</td><td>Yes, set by you</td></tr>
+    <tr><td>Profit when the price falls</td><td>No</td><td>Yes, by going short</td></tr>
+    <tr><td>Can be liquidated</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Cost to hold</td><td>None</td><td>Funding, paid or received every few hours</td></tr>
+    <tr><td>Withdraw to your own wallet</td><td>Yes</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<h2>Spot: you own the coin</h2>
+<p>Buy 0.1 BTC on spot and you have 0.1 BTC. If the price halves, you still have 0.1 BTC, worth half as much. Nothing forces you to sell, and you can move the coins to your own wallet. Your costs are the trading fees to buy and sell. See <a href="/guides/crypto-profit-after-fees/">crypto profit after fees</a>.</p>
+
+<h2>Futures: you hold a position, not the coin</h2>
+<p>A perpetual futures position gains and loses like the coin, but you only put up margin, and leverage multiplies the size. The position can be long, which profits when the price rises, or short, which profits when it falls.</p>
+<div class="example">
+  <p>You open a <b>$5,000 short</b> with <b>$500</b> of margin, which is 10x.</p>
+  <p>Price falls <b>4%</b>: the short makes <b>$200</b>, which is <b>+40%</b> on your margin.</p>
+  <p>Price rises <b>4%</b>: the short loses <b>$200</b>, which is <b>−40%</b> on your margin.</p>
+</div>
+<p>See <a href="/guides/how-leverage-works/">how leverage works</a> for the full picture.</p>
+
+<h2>The costs only futures have</h2>
+<ul>
+  <li><strong>Liquidation.</strong> If losses use up your margin, the exchange closes the position. On spot, a falling price never forces a sale. See <a href="/guides/liquidation-price-explained/">liquidation price explained</a>.</li>
+  <li><strong>Funding.</strong> Perpetuals have no expiry, so longs and shorts pay each other a funding rate to keep the contract near the spot price. Holding for weeks can add up. See <a href="/guides/funding-rates-explained/">funding rates explained</a>.</li>
+  <li><strong>Fees on the full position.</strong> Futures fees are often lower per trade than spot, but they are charged on the leveraged size, not on your margin.</li>
+</ul>
+
+<h2>Which one fits what you are doing</h2>
+<ul>
+  <li><strong>Holding for months or years:</strong> spot. No funding to pay and no liquidation price to watch.</li>
+  <li><strong>Short-term trades with a clear stop:</strong> futures can work, with leverage kept low enough that liquidation sits well beyond the stop. See <a href="/guides/how-to-set-a-stop-loss/">how to set a stop loss</a>.</li>
+  <li><strong>Hedging coins you already hold:</strong> a short on futures can offset a fall in your spot coins without selling them.</li>
+</ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>Is futures trading riskier than spot?</summary><p>Leverage and liquidation make it easier to lose a large share of your money quickly. A futures position at 1x with no liquidation risk behaves much like spot, but most losses on futures come from high leverage.</p></details><details><summary>Can I lose more than I put in on futures?</summary><p>On most crypto exchanges with isolated margin, the most you can lose on a position is the margin in it. With cross margin, losses can draw on the rest of your futures balance. See isolated vs cross margin.</p></details><details><summary>Do I pay funding on spot?</summary><p>No. Funding only applies to perpetual futures. Spot trades only pay the trading fee to buy and to sell.</p></details></section>
+<p class="cta"><a class="btn solid" href="/liquidation-calculator/">Open the liquidation price calculator</a></p>
+<p class="fine">Updated 18 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/position-sizing/"><strong>Position sizing: how much to buy on each trade</strong><span>Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=19"></script>
+</body>
+</html>

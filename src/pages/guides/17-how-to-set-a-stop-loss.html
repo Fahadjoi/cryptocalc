@@ -1,0 +1,58 @@
+title: How to set a stop loss in crypto trading | Placement and sizing
+desc: Where to put a stop loss so it marks the point your trade idea is wrong, how to size the position from the stop, and the common mistakes that get stops hit for no reason.
+path: /guides/how-to-set-a-stop-loss/
+kind: guide
+tool: /position-size-calculator/
+h1: How to set a stop loss
+lede: A stop loss is the price where you accept the trade was wrong. Set it from the chart first, then size the position to fit it, never the other way round.
+date: 18 November 2026
+iso: 2026-11-18
+order: 17
+---
+<h2>What a stop loss does</h2>
+<p>A stop loss is an order that sells (or buys back, on a short) once the price reaches a level you choose. It caps how much one trade can cost you, and it makes the decision before the trade opens, when you are thinking clearly.</p>
+
+<h2>Start from where the idea is wrong</h2>
+<p>The stop belongs at the price that would prove the reason for the trade wrong, not at a round percentage that feels comfortable.</p>
+<ul>
+  <li><strong>Below a recent low, for a long.</strong> If you are buying because the price is holding above a level, the stop goes a little under that level. If it breaks, the reason for the trade is gone.</li>
+  <li><strong>Above a recent high, for a short.</strong> The same idea in reverse.</li>
+  <li><strong>Outside normal noise.</strong> Crypto often moves a few percent in a day without meaning anything. A stop inside that everyday range gets hit by noise rather than by the trade failing.</li>
+</ul>
+
+<h2>Then size the position from the stop</h2>
+<p>Once the stop is set, the distance to it tells you how large the position can be for the amount you are willing to lose.</p>
+<div class="formula">Position size = amount you will risk ÷ distance to the stop</div>
+<div class="example">
+  <p>Account: <b>$5,000</b>. You risk <b>1%</b> on the trade: <b>$50</b>.</p>
+  <p>Entry <b>$60,000</b>, stop <b>$57,000</b>: the stop is <b>5%</b> away.</p>
+  <p>Position size: 50 ÷ 0.05 = <b>$1,000</b>, about <b>0.0167 BTC</b>.</p>
+  <p>If the stop is hit, you lose about $50 plus fees, whatever happens next.</p>
+</div>
+<p>A wider stop means a smaller position, and a tighter stop allows a larger one. The dollar risk stays the same. The <a href="/position-size-calculator/">position size calculator</a> does this with fees included, and <a href="/guides/position-sizing/">position sizing</a> explains the method in full.</p>
+
+<h2>Check the reward against the risk</h2>
+<p>With the stop in place you know exactly what the trade risks. Compare it with where you expect to take profit. A trade that risks $50 to make $40 needs to win far more often than one that risks $50 to make $150. See <a href="/guides/risk-reward-ratio/">the risk-reward ratio</a>.</p>
+
+<h2>Stop-market or stop-limit</h2>
+<ul>
+  <li><strong>Stop-market</strong> sells at the market once the stop price is reached. It always gets you out, but in a fast drop the fill can be worse than the stop price. That gap is slippage, explained in <a href="/guides/slippage-and-spread/">slippage and spread</a>.</li>
+  <li><strong>Stop-limit</strong> places a limit order at your price once the stop is reached. You control the price, but if the market jumps past it the order may not fill at all and you stay in the losing trade.</li>
+</ul>
+<p>For protecting against a large loss, most traders prefer the certainty of a stop-market order.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+  <li><strong>Moving the stop further away</strong> once the price gets close. That turns a planned small loss into an unplanned large one.</li>
+  <li><strong>Stops exactly on round numbers</strong> such as $60,000, where many other orders sit. Many traders place stops a little beyond them instead.</li>
+  <li><strong>Leverage with a stop beyond liquidation.</strong> On a leveraged trade, the exchange closes the position at the liquidation price first, so a stop past it never triggers. See <a href="/guides/how-leverage-works/">how leverage works</a>.</li>
+</ul>
+
+@faq
+Q: How far away should a stop loss be?
+A: Far enough that normal daily price swings do not hit it, and at the level where your reason for the trade no longer holds. Then size the position so that distance only risks what you are willing to lose.
+Q: What percentage of my account should I risk per trade?
+A: Many traders risk between 0.5% and 2% of the account on a single trade, so a run of losses does not do lasting damage.
+Q: Should I use a stop-market or stop-limit order?
+A: A stop-market order always exits, possibly at a worse price in a fast move. A stop-limit controls the price but may not fill. For protection against large losses, stop-market is the usual choice.
+@end

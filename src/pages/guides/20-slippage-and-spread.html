@@ -1,0 +1,50 @@
+title: Slippage and spread in crypto trading, with examples
+desc: Why a market order fills at a worse price than the one on screen, how to work out the spread and slippage on a trade, and how to keep both small.
+path: /guides/slippage-and-spread/
+kind: guide
+tool: /fee-calculator/
+h1: Slippage and spread
+lede: The price on the screen is not quite the price you get. The spread and slippage are costs on every market order, on top of the trading fee.
+date: 18 November 2026
+iso: 2026-11-18
+order: 20
+---
+<h2>The spread</h2>
+<p>Every market has two prices: the highest price a buyer is offering (the bid) and the lowest price a seller is asking (the ask). The gap between them is the spread.</p>
+<div class="example">
+  <p>Bid <b>$59,990</b>, ask <b>$60,010</b>.</p>
+  <p>Spread: 60,010 − 59,990 = <b>$20</b>, about <b>0.033%</b> of the price.</p>
+  <p>Buy at the ask and sell straight back at the bid, and you lose that $20 per coin before any fees.</p>
+</div>
+<p>On large coins at busy exchanges the spread is usually tiny. On small coins, quiet hours or thin exchanges it can be many times wider.</p>
+
+<h2>Slippage</h2>
+<p>A market order takes whatever is on offer, starting from the best price. If there is not enough at the best price to fill your order, the rest fills at the next prices up. The difference between the price you expected and the average price you got is slippage.</p>
+<div class="example">
+  <p>You market buy <b>$10,000</b> of BTC. Sellers are offering:</p>
+  <p>0.05 BTC at $60,000 · 0.05 BTC at $60,050 · 0.1 BTC at $60,120</p>
+  <p>You get <b>0.166492 BTC</b> at an average of <b>$60,062.94</b>.</p>
+  <p>That is <b>0.105%</b> above the $60,000 shown on screen, about <b>$10.48</b> on this order.</p>
+</div>
+<p>For a small order on a busy market, slippage is close to zero. It grows with the size of the order compared with what is on offer, and it jumps during fast moves, when orders are pulled from the book.</p>
+
+<h2>The full cost of a market order</h2>
+<div class="formula">Cost of a trade ≈ trading fee + half the spread + slippage</div>
+<p>The trading fee is the part the exchange shows you. The other two are hidden in the fill price. The <a href="/fee-calculator/">fee calculator</a> covers the fee side, and <a href="/guides/maker-vs-taker-fees/">maker vs taker fees</a> explains why limit orders often pay less.</p>
+
+<h2>Keeping both small</h2>
+<ul>
+  <li><strong>Use limit orders when you are not in a hurry.</strong> A limit order fills at your price or better, so there is no slippage, and it often pays the lower maker fee.</li>
+  <li><strong>Split large orders.</strong> Several smaller orders spread over time take less from each price level.</li>
+  <li><strong>Trade where the volume is.</strong> The busiest pairs on the largest exchanges have the tightest spreads and the most depth.</li>
+  <li><strong>Be careful around big news.</strong> Spreads widen and depth disappears just when everyone wants to trade, so stop-market orders can fill well past their stop price. See <a href="/guides/how-to-set-a-stop-loss/">how to set a stop loss</a>.</li>
+</ul>
+
+@faq
+Q: What is a normal amount of slippage in crypto?
+A: For small orders on major coins at large exchanges, usually a fraction of a tenth of a percent. Large orders, small coins and fast markets can see much more.
+Q: How is slippage different from the spread?
+A: The spread is the gap between the best buy and sell prices before you trade. Slippage is how far your own order pushes the fill price beyond the best price because it is too large for that level.
+Q: Do limit orders have slippage?
+A: No. A limit order only fills at your price or better. The trade-off is that it may fill partly or not at all if the price moves away.
+@end

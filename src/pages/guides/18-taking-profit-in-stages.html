@@ -1,0 +1,54 @@
+title: Taking profit in stages: how scaling out of a crypto trade works
+desc: How selling a position in parts at several targets compares with selling all at once, with a worked example of the profit in each outcome.
+path: /guides/taking-profit-in-stages/
+kind: guide
+tool: /profit-calculator/
+h1: Taking profit in stages
+lede: Selling everything at one target is a single bet on where the price stops. Selling in parts locks some profit in early and keeps some of the position for a bigger move.
+date: 18 November 2026
+iso: 2026-11-18
+order: 18
+---
+<h2>What scaling out means</h2>
+<p>Instead of one take-profit order for the whole position, you set several, each selling part of it at a higher price. A common plan sells a third at each of two targets and keeps the last third running with the stop moved to the entry price.</p>
+
+<h2>A worked example</h2>
+<div class="example">
+  <p>You buy <b>0.1 BTC at $60,000</b>, a <b>$6,000</b> position.</p>
+  <p>Target 1: sell a third at <b>$66,000</b> (+10%). Profit on that third: <b>$200</b>.</p>
+  <p>Target 2: sell a third at <b>$72,000</b> (+20%). Profit on that third: <b>$400</b>.</p>
+  <p>The last third stays open with its stop moved up to <b>$60,000</b>. Fees are left out to keep the sums simple.</p>
+</div>
+
+<h2>How it compares in three outcomes</h2>
+<table>
+  <thead><tr><th>What the price does</th><th>Sell all at $72,000</th><th>Scale out as above</th></tr></thead>
+  <tbody>
+    <tr><td>Reaches $66,000, then falls back to $60,000</td><td><b>$0</b></td><td><b>$200</b></td></tr>
+    <tr><td>Reaches $72,000, then falls back to $60,000</td><td><b>$1,200</b></td><td><b>$600</b></td></tr>
+    <tr><td>Runs on to $84,000</td><td><b>$1,200</b></td><td><b>$1,400</b><small> ($200 + $400 + $800 on the last third)</small></td></tr>
+  </tbody>
+</table>
+<p>Scaling out gives up some profit when the price hits the single target exactly, and in exchange it banks something when the move stalls early and keeps a share of a move that runs further. It does not make a trade more profitable on average. It changes the spread of outcomes.</p>
+
+<h2>Fees count for every part</h2>
+<p>Each partial sale pays its own trading fee. On a percentage fee the total is about the same as one sale of the same size, but some exchanges have a minimum fee per order, which makes many tiny sales expensive. Check the numbers in the <a href="/profit-calculator/">profit calculator</a>, and see <a href="/guides/crypto-profit-after-fees/">crypto profit after fees</a>.</p>
+
+<h2>Setting the targets</h2>
+<ul>
+  <li><strong>Put the first target where it pays for the risk.</strong> If the first sale alone covers what the trade risked, the rest of the position is close to a free ride.</li>
+  <li><strong>Move the stop once the first target fills.</strong> Raising it to the entry price means the remaining position can no longer lose money, apart from fees and slippage.</li>
+  <li><strong>Decide the split in advance.</strong> Thirds and halves are common. What matters is choosing before the trade, not while watching the price.</li>
+</ul>
+
+<h2>Scaling in is the same idea in reverse</h2>
+<p>Buying a position in parts, rather than all at once, spreads the entry price. See <a href="/guides/dca-vs-lump-sum/">DCA vs lump sum</a> and <a href="/guides/average-cost-and-averaging-down/">average cost</a> for how the average entry is worked out.</p>
+
+@faq
+Q: Is scaling out better than selling everything at one target?
+A: Not on average. It trades some profit in the case where your single target is hit exactly for more profit when the move stalls early or runs further. It suits traders who would rather bank something than risk giving it all back.
+Q: How many targets should I use?
+A: Two or three is common. More targets mean more orders and fees, and very small parts can run into an exchange's minimum order size.
+Q: When should I move my stop loss?
+A: Many traders move it to the entry price once the first target fills, so the rest of the trade cannot turn into a loss apart from fees and slippage.
+@end

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slippage and spread in crypto trading, with examples</title>
+<meta name="description" content="Why a market order fills at a worse price than the one on screen, how to work out the spread and slippage on a trade, and how to keep both small.">
+<link rel="canonical" href="https://coinabacus.com/guides/slippage-and-spread/">
+<meta property="og:title" content="Slippage and spread in crypto trading, with examples">
+<meta property="og:description" content="Why a market order fills at a worse price than the one on screen, how to work out the spread and slippage on a trade, and how to keep both small.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/guides/slippage-and-spread/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=19">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Slippage and spread", "description": "Why a market order fills at a worse price than the one on screen, how to work out the spread and slippage on a trade, and how to keep both small.", "datePublished": "2026-11-18", "dateModified": "2026-11-18", "author": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "publisher": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "mainEntityOfPage": "https://coinabacus.com/guides/slippage-and-spread/", "image": "https://coinabacus.com/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://coinabacus.com/guides/"}, {"@type": "ListItem", "position": 2, "name": "Slippage and spread", "item": "https://coinabacus.com/guides/slippage-and-spread/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a normal amount of slippage in crypto?", "acceptedAnswer": {"@type": "Answer", "text": "For small orders on major coins at large exchanges, usually a fraction of a tenth of a percent. Large orders, small coins and fast markets can see much more."}}, {"@type": "Question", "name": "How is slippage different from the spread?", "acceptedAnswer": {"@type": "Answer", "text": "The spread is the gap between the best buy and sell prices before you trade. Slippage is how far your own order pushes the fill price beyond the best price because it is too large for that level."}}, {"@type": "Question", "name": "Do limit orders have slippage?", "acceptedAnswer": {"@type": "Answer", "text": "No. A limit order only fills at your price or better. The trade-off is that it may fill partly or not at all if the price moves away."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Slippage and spread</h1><p class="rise" style="--d:1">The price on the screen is not quite the price you get. The spread and slippage are costs on every market order, on top of the trading fee.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>The spread</h2>
+<p>Every market has two prices: the highest price a buyer is offering (the bid) and the lowest price a seller is asking (the ask). The gap between them is the spread.</p>
+<div class="example">
+  <p>Bid <b>$59,990</b>, ask <b>$60,010</b>.</p>
+  <p>Spread: 60,010 − 59,990 = <b>$20</b>, about <b>0.033%</b> of the price.</p>
+  <p>Buy at the ask and sell straight back at the bid, and you lose that $20 per coin before any fees.</p>
+</div>
+<p>On large coins at busy exchanges the spread is usually tiny. On small coins, quiet hours or thin exchanges it can be many times wider.</p>
+
+<h2>Slippage</h2>
+<p>A market order takes whatever is on offer, starting from the best price. If there is not enough at the best price to fill your order, the rest fills at the next prices up. The difference between the price you expected and the average price you got is slippage.</p>
+<div class="example">
+  <p>You market buy <b>$10,000</b> of BTC. Sellers are offering:</p>
+  <p>0.05 BTC at $60,000 · 0.05 BTC at $60,050 · 0.1 BTC at $60,120</p>
+  <p>You get <b>0.166492 BTC</b> at an average of <b>$60,062.94</b>.</p>
+  <p>That is <b>0.105%</b> above the $60,000 shown on screen, about <b>$10.48</b> on this order.</p>
+</div>
+<p>For a small order on a busy market, slippage is close to zero. It grows with the size of the order compared with what is on offer, and it jumps during fast moves, when orders are pulled from the book.</p>
+
+<h2>The full cost of a market order</h2>
+<div class="formula">Cost of a trade ≈ trading fee + half the spread + slippage</div>
+<p>The trading fee is the part the exchange shows you. The other two are hidden in the fill price. The <a href="/fee-calculator/">fee calculator</a> covers the fee side, and <a href="/guides/maker-vs-taker-fees/">maker vs taker fees</a> explains why limit orders often pay less.</p>
+
+<h2>Keeping both small</h2>
+<ul>
+  <li><strong>Use limit orders when you are not in a hurry.</strong> A limit order fills at your price or better, so there is no slippage, and it often pays the lower maker fee.</li>
+  <li><strong>Split large orders.</strong> Several smaller orders spread over time take less from each price level.</li>
+  <li><strong>Trade where the volume is.</strong> The busiest pairs on the largest exchanges have the tightest spreads and the most depth.</li>
+  <li><strong>Be careful around big news.</strong> Spreads widen and depth disappears just when everyone wants to trade, so stop-market orders can fill well past their stop price. See <a href="/guides/how-to-set-a-stop-loss/">how to set a stop loss</a>.</li>
+</ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>What is a normal amount of slippage in crypto?</summary><p>For small orders on major coins at large exchanges, usually a fraction of a tenth of a percent. Large orders, small coins and fast markets can see much more.</p></details><details><summary>How is slippage different from the spread?</summary><p>The spread is the gap between the best buy and sell prices before you trade. Slippage is how far your own order pushes the fill price beyond the best price because it is too large for that level.</p></details><details><summary>Do limit orders have slippage?</summary><p>No. A limit order only fills at your price or better. The trade-off is that it may fill partly or not at all if the price moves away.</p></details></section>
+<p class="cta"><a class="btn solid" href="/fee-calculator/">Open the exchange fees calculator</a></p>
+<p class="fine">Updated 18 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/position-sizing/"><strong>Position sizing: how much to buy on each trade</strong><span>Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=19"></script>
+</body>
+</html>
