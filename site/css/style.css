@@ -81,8 +81,10 @@ img { max-width: 100%; }
   font-size: 19px; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em;
   text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 9px;
 }
-.logo i { width: 13px; height: 13px; background: var(--mark); border: 2px solid var(--edge); display: block; transition: transform .5s var(--ease); }
-.logo:hover i { transform: rotate(90deg); }
+.logo .mark { width: 24px; height: 24px; display: block; flex: none; }
+.logo .mk-bead { transform-box: fill-box; transform-origin: center; transition: transform .5s var(--spring); }
+.logo:hover .mk-bead { transform: translateX(3px); }
+[data-theme="dark"] .logo .mk-bg { fill: #24302A; }
 .nav-links { display: flex; gap: 2px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
 .nav-links::-webkit-scrollbar { display: none; }
 .nav-links a {
@@ -479,7 +481,6 @@ html:has(dialog[open]) { overflow: hidden; }
 /* Nav: frosted bar that gains a shadow once the page scrolls */
 .nav { background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); transition: box-shadow .3s, border-color .3s; }
 .nav.scrolled { box-shadow: 0 8px 28px -18px rgba(0, 0, 0, .45); }
-.logo i { border-radius: 4px; }
 .nav-links a { border-radius: 9px; transition: color .2s, background-color .2s, transform .35s var(--spring); }
 .nav-links a:active, .menu-btn:active, .theme-btn:active, .ccy:active { transform: scale(.94); }
 .menu-btn, .ccy { transition: transform .35s var(--spring), background-color .2s, border-color .2s; }

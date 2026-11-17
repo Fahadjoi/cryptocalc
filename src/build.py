@@ -21,6 +21,11 @@ TOOLS = [
     ('/converter/', 'Converter', 'Converter', 'Live rates between 20 coins and 40 currencies'),
     ('/portfolio/', 'Portfolio', 'Portfolio tracker', 'Your holdings valued at live prices, saved in your browser'),
 ]
+# Logo mark: the letter C as a coin ring, closed by one yellow bead (option 6)
+MARK = ("<rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/>"
+        "<path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/>"
+        "<circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/>")
+MARK_SVG = f'<svg class="mark" viewBox="0 0 64 64" aria-hidden="true">{MARK}</svg>'
 def _ico(d): return f'<svg viewBox="0 0 24 24" aria-hidden="true">{d}</svg>'
 ICONS = {
     '/profit-calculator/': _ico('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'),
@@ -173,11 +178,11 @@ def render(raw):
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.coingecko.com" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=18">
+<link rel="stylesheet" href="/css/style.css?v=19">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
-<a class="logo" href="/" aria-label="{BRAND} home"><i></i><span>{BRAND}</span></a>
+<a class="logo" href="/" aria-label="{BRAND} home">{MARK_SVG}<span>{BRAND}</span></a>
 <nav class="nav-links" id="navLinks" aria-label="Calculators">{nav}</nav>
 <select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
 <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
@@ -186,11 +191,11 @@ def render(raw):
 <div class="ticker" id="ticker" aria-label="Live coin prices"></div>
 {body.strip()}
 <footer><div class="foot">
-<div><a class="logo" href="/"><i></i>{BRAND}</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><a class="logo" href="/">{MARK_SVG}{BRAND}</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=18"></script>
+<script src="/js/app.js?v=19"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -198,7 +203,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=18"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=19"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     rel = path.strip('/')
     if not path.endswith('/') and '.' not in rel.split('/')[-1]: rel += '.html'   # /about is served from about.html
     out = OUT / (rel + '/index.html' if path.endswith('/') else rel)
@@ -236,18 +241,26 @@ urls = ''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p, m in paths if not m.g
 (OUT / 'sitemap.xml').write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n')
 (OUT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n')
 # Icons, web app manifest and ads.txt
-svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='4' width='24' height='24' fill='#FFE04A' stroke='#15211C' stroke-width='4'/></svg>"
+svg = f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'>{MARK}</svg>"
 (OUT / 'favicon.svg').write_text(svg)
 try:
     from PIL import Image, ImageDraw
     for name, size in (('apple-touch-icon.png', 180), ('icon-192.png', 192), ('icon-512.png', 512)):
-        im = Image.new('RGB', (size, size), '#F1F3EE'); d = ImageDraw.Draw(im); m = size * 0.2; w = max(4, round(size * 0.09))
-        d.rectangle([m, m, size - m, size - m], fill='#FFE04A', outline='#15211C', width=w); im.save(OUT / name)
+        S = size * 4; k = S / 64; pad = 0.14 * S   # full-bleed ink square; phones round the corners themselves
+        im = Image.new('RGB', (S, S), '#15211C'); d = ImageDraw.Draw(im)
+        q = (S - 2 * pad) / 64; X = lambda v: pad + v * q
+        r, w = 16 * q, 6 * q
+        d.arc([X(32) - r - w / 2, X(32) - r - w / 2, X(32) + r + w / 2, X(32) + r + w / 2], 40, 320, fill='#F1F3EE', width=round(w))
+        for ang in (40, 320):   # round caps on the C
+            import math; cx, cy = X(32) + r * math.cos(math.radians(ang)), X(32) + r * math.sin(math.radians(ang))
+            d.ellipse([cx - w / 2, cy - w / 2, cx + w / 2, cy + w / 2], fill='#F1F3EE')
+        d.ellipse([X(46) - 6 * q, X(32) - 6 * q, X(46) + 6 * q, X(32) + 6 * q], fill='#FFE04A')
+        im.resize((size, size), Image.LANCZOS).save(OUT / name)
 except ImportError:
     print('Pillow missing: PNG icons not rebuilt')
 (OUT / 'site.webmanifest').write_text(json.dumps({
     "name": BRAND, "short_name": BRAND, "description": "Free crypto calculators with live prices", "start_url": "/", "display": "standalone",
-    "background_color": "#F1F3EE", "theme_color": "#FFE04A",
+    "background_color": "#F1F3EE", "theme_color": "#15211C",
     "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"}]}, indent=1))
 ads = OUT / 'ads.txt'
 if ADSENSE_ID: ads.write_text(f'google.com, {ADSENSE_ID}, DIRECT, f08c47fec0942fa0\n')
@@ -259,14 +272,14 @@ if '--og' in sys.argv:   # redraw the social preview image (needs Chrome); run a
 @font-face {{ font-family: Archivo; font-weight: 100 900; font-stretch: 62% 125%; src: url(file://{OUT.resolve()}/fonts/archivo-latin.woff2); }}
 * {{ margin: 0; box-sizing: border-box; }} body {{ width: 1200px; height: 630px; background: #F1F3EE; color: #15211C; font-family: Archivo, sans-serif; padding: 64px 72px; display: grid; grid-template-columns: 1fr 400px; gap: 56px; align-items: center; }}
 .logo {{ display: flex; align-items: center; gap: 14px; font-size: 34px; font-weight: 800; font-stretch: 118%; position: absolute; top: 56px; left: 72px; }}
-.logo i {{ width: 26px; height: 26px; background: #FFE04A; border: 4px solid #15211C; }}
+.logo svg {{ width: 46px; height: 46px; }}
 h1 {{ font-size: 68px; line-height: 1.02; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin-top: 40px; }}
 p {{ font-size: 27px; color: #5E6B65; margin-top: 22px; line-height: 1.35; }}
 .card {{ background: #fff; border: 3px solid #15211C; box-shadow: 10px 10px 0 #15211C; padding: 30px 32px; }}
 .card small {{ font-size: 22px; font-weight: 700; color: #0A7F52; display: block; }}
 .card b {{ font-size: 70px; font-weight: 800; display: inline-block; margin-top: 6px; background: linear-gradient(transparent 58%, #FFE04A 58%, #FFE04A 94%, transparent 94%); padding: 0 6px; margin-left: -6px; }}
 .row {{ display: flex; justify-content: space-between; font-size: 21px; color: #5E6B65; border-top: 1px solid #D4DAD3; padding: 13px 0; }} .row:first-of-type {{ margin-top: 22px; }} .row span + span {{ color: #15211C; font-weight: 700; }}
-</style></head><body><div class="logo"><i></i>{BRAND}</div>
+</style></head><body><div class="logo">{MARK_SVG}{BRAND}</div>
 <div><h1>Work out the trade before you place it.</h1><p>Free crypto calculators with live prices, in your own currency. Fees counted on both sides.</p></div>
 <div class="card"><small>Net profit</small><b>+$97.90</b><div class="row"><span>Return</span><span>+9.79%</span></div><div class="row"><span>Fees, both trades</span><span>$2.10</span></div><div class="row"><span>Break-even</span><span>$60,120</span></div></div>
 </body></html>'''
