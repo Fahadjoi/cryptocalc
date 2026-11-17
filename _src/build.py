@@ -21,6 +21,19 @@ TOOLS = [
     ('/converter/', 'Converter', 'Converter', 'Live rates between 20 coins and 40 currencies'),
     ('/portfolio/', 'Portfolio', 'Portfolio tracker', 'Your holdings valued at live prices, saved in your browser'),
 ]
+def _ico(d): return f'<svg viewBox="0 0 24 24" aria-hidden="true">{d}</svg>'
+ICONS = {
+    '/profit-calculator/': _ico('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'),
+    '/position-size-calculator/': _ico('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".6"/>'),
+    '/liquidation-calculator/': _ico('<path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><path d="M12 17.2v.1"/>'),
+    '/average-cost-calculator/': _ico('<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>'),
+    '/fee-calculator/': _ico('<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/>'),
+    '/dca-calculator/': _ico('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/>'),
+    '/staking-calculator/': _ico('<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>'),
+    '/converter/': _ico('<path d="M4 8h15"/><path d="M15 4l4 4-4 4"/><path d="M20 16H5"/><path d="M9 12l-4 4 4 4"/>'),
+    '/portfolio/': _ico('<path d="M11 4a8.5 8.5 0 1 0 9 9h-9z"/><path d="M15 3.6A8.5 8.5 0 0 1 20.4 9H15z"/>'),
+}
+CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
 PCOINS = [('bitcoin', 'BTC', 'Bitcoin'), ('ethereum', 'ETH', 'Ethereum'), ('tether', 'USDT', 'Tether'), ('binancecoin', 'BNB', 'BNB'), ('solana', 'SOL', 'Solana'),
           ('ripple', 'XRP', 'XRP'), ('dogecoin', 'DOGE', 'Dogecoin'), ('cardano', 'ADA', 'Cardano'), ('tron', 'TRX', 'TRON'), ('litecoin', 'LTC', 'Litecoin')]
 PFIATS = [('USD', 'US dollar', 'US dollars'), ('EUR', 'euro', 'euros'), ('GBP', 'British pound', 'British pounds'), ('INR', 'Indian rupee', 'Indian rupees'),
@@ -120,7 +133,7 @@ def render(raw):
     body = body.replace('{{pairlinks}}', ''.join(plink(c[1], f[0]) for f in PFIATS[:4] for c in PCOINS[:6]))
     body = body.replace('{{guidelist}}', guide_items(GUIDES[:6])).replace('{{allguides}}', guide_items(GUIDES)).replace('{{adpolicy}}', ad_policy())
     body = body.replace('{{toollist}}', ''.join(
-        f'<li><a href="{p}"><strong>{name}</strong><span>{d}</span></a></li>' for p, _, name, d in TOOLS))
+        f'<li><a class="tool" href="{p}"><i class="tico">{ICONS[p]}</i><span class="ttxt"><strong>{name}</strong><span>{d}</span></span>{CHEV}</a></li>' for p, _, name, d in TOOLS))
     if meta.get('kind') == 'tool':
         lds.append({"@context": "https://schema.org", "@type": "WebApplication", "name": meta['title'].split(' | ')[0],
                     "url": SITE + path, "applicationCategory": "FinanceApplication", "operatingSystem": "Any",
@@ -159,7 +172,8 @@ def render(raw):
 <link rel="manifest" href="/site.webmanifest">
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=15">
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=16">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -176,7 +190,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=15"></script>
+<script src="/js/app.js?v=16"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -184,7 +198,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=15"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=16"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     out = OUT / (path.strip('/') + '/index.html' if path.endswith('/') else path.strip('/'))
     if path == '/': out = OUT / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -141,9 +141,9 @@ window.CC = (function () {
     el._v = to;
     cancelAnimationFrame(el._raf);
     if (reduced || !isFinite(to) || !isFinite(from) || from === to || document.hidden) { el.textContent = f(to); return; }
-    var t0 = performance.now(); dur = dur || 480;
+    var t0 = performance.now(); dur = dur || 620;
     (function step(t) {
-      var k = Math.min(1, (t - t0) / dur); k = 1 - Math.pow(1 - k, 3);
+      var k = Math.min(1, (t - t0) / dur); k = 1 - Math.pow(1 - k, 4);
       el.textContent = f(from + (to - from) * k);
       if (k < 1) el._raf = requestAnimationFrame(step); else el.textContent = f(to);
     })(t0);
@@ -294,6 +294,7 @@ window.CC = (function () {
     sel.innerHTML = coins.filter(function (c) { return opt.stables !== false || !c.stable; })
       .map(function (c) { return '<option value="' + c.id + '">' + esc(c.sym) + (opt.short ? '' : ' · ' + esc(c.name)) + '</option>'; }).join('');
     sel.value = keep; if (!sel.value) sel.selectedIndex = 0;
+    if (sel._paint) sel._paint();
   }
   function marketRows(tbody, opt) {
     if (!tbody) return;
@@ -307,7 +308,7 @@ window.CC = (function () {
     var first = !tbody.dataset.done; tbody.dataset.done = 1;
     tbody.innerHTML = list.map(function (c, i) {
       var fl = !first && prevPrice[c.id] != null && prevPrice[c.id] !== c.price ? (c.price > prevPrice[c.id] ? ' flash-up' : ' flash-down') : '';
-      return '<tr class="click" data-id="' + c.id + '" tabindex="0"><td class="hide-s">' + (i + 1) + '</td>' +
+      return '<tr class="click' + (first ? ' row-in" style="--i:' + i : '') + '" data-id="' + c.id + '" tabindex="0"><td class="hide-s">' + (i + 1) + '</td>' +
         '<td><span class="coin-cell">' + icon(c) + '<span><b>' + esc(c.name) + '</b> <small>' + esc(c.sym) + '</small></span></span></td>' +
         '<td class="r' + fl + '"><b>' + fmt.fiat(c.price * rate, code) + '</b></td>' +
         '<td class="r ' + chCls(c.ch24) + '">' + fmt.pct(c.ch24, true) + '</td>' +
@@ -456,11 +457,72 @@ window.CC = (function () {
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(draw, draw);
   }
 
+
+  /* Coin picker: replaces the plain dropdown with a button that opens a searchable sheet with coin icons */
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+  var dlg, dlgSel;
+  function pickList(q) {
+    q = (q || '').trim().toLowerCase();
+    var html = Array.prototype.map.call(dlgSel.options, function (o) {
+      var c = coin(o.value); if (!c) return '';
+      if (q && c.name.toLowerCase().indexOf(q) < 0 && c.sym.toLowerCase().indexOf(q) < 0) return '';
+      return '<li><button type="button" data-id="' + c.id + '"' + (o.value === dlgSel.value ? ' aria-current="true"' : '') + '>' + icon(c) +
+        '<span><b>' + esc(c.name) + '</b><small>' + esc(c.sym) + '</small></span><span class="pr">' + (c.price != null ? fmt.usd(px(c)) : '') + '</span></button></li>';
+    }).join('');
+    dlg.querySelector('.sheet-list').innerHTML = html;
+    dlg.querySelector('.sheet-none').hidden = !!html;
+  }
+  function openPick(sel) {
+    if (!dlg) {
+      dlg = document.createElement('dialog'); dlg.className = 'sheet'; dlg.setAttribute('aria-label', 'Choose a coin');
+      dlg.innerHTML = '<div class="sheet-in"><div class="sheet-grab"></div><div class="sheet-head"><h2>Choose a coin</h2><button type="button" class="sheet-x" aria-label="Close">×</button></div>' +
+        '<div class="inp"><input type="search" placeholder="Search coins" aria-label="Search coins" autocomplete="off" spellcheck="false"></div><ul class="sheet-list"></ul><p class="sheet-none" hidden>No coin matches that search.</p></div>';
+      document.body.appendChild(dlg);
+      var inp = dlg.querySelector('input'), list = dlg.querySelector('.sheet-list');
+      var choose = function (id) { dlg.close(); if (dlgSel.value !== id) { dlgSel.value = id; dlgSel.dispatchEvent(new Event('change', { bubbles: true })); } };
+      dlg.addEventListener('click', function (e) {
+        if (e.target === dlg) { dlg.close(); return; }
+        var b = e.target.closest('button[data-id]'); if (b) choose(b.dataset.id);
+      });
+      dlg.querySelector('.sheet-x').addEventListener('click', function () { dlg.close(); });
+      inp.addEventListener('input', function () { pickList(inp.value); });
+      dlg.addEventListener('keydown', function (e) {
+        var items = list.querySelectorAll('button'), i = Array.prototype.indexOf.call(items, document.activeElement);
+        if (e.key === 'ArrowDown') { e.preventDefault(); (items[i + 1] || items[0] || inp).focus(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); (i > 0 ? items[i - 1] : inp).focus(); }
+        else if (e.key === 'Enter' && document.activeElement === inp && items[0]) { e.preventDefault(); choose(items[0].dataset.id); }
+      });
+      dlg.addEventListener('close', function () { if (dlgSel && dlgSel._btn) dlgSel._btn.focus(); });
+    }
+    dlgSel = sel;
+    var input = dlg.querySelector('input'); input.value = '';
+    pickList('');
+    dlg.showModal();
+    var curBtn = dlg.querySelector('[aria-current="true"]');
+    if (curBtn) curBtn.scrollIntoView({ block: 'center' });
+    if (matchMedia('(min-width: 641px) and (hover: hover)').matches) input.focus(); else dlg.querySelector('.sheet-x').focus();
+  }
+  function picker(sel) {
+    if (!sel || sel._paint || !window.HTMLDialogElement) return;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'pick-btn'; btn.id = sel.id + 'Btn'; btn.setAttribute('aria-haspopup', 'dialog');
+    var lab = document.querySelector('label[for="' + sel.id + '"]'); if (lab) lab.htmlFor = btn.id;
+    sel._btn = btn;
+    sel._paint = function () {
+      var c = coin(sel.value);
+      btn.innerHTML = (c ? icon(c) : '') + '<span>' + (c ? esc(c.sym) + ' · ' + esc(c.name) : 'Choose a coin') + '</span>' + CHEV;
+    };
+    sel.hidden = true; sel.parentNode.insertBefore(btn, sel);
+    sel.addEventListener('change', sel._paint);
+    btn.addEventListener('click', function () { openPick(sel); });
+    sel._paint();
+  }
+
   /* Wires up a calculator page: URL restore, live autofill, recalculation on every change */
   function page(cfg) {
     var ids = cfg.ids || [], q = new URLSearchParams(location.search), restored = false, filled = false;
     var sel = $('coin');
     fillCoins(sel, cfg.coinOpt);
+    picker(sel);
     // Every money field remembers which currency its number is in (el._cur); sync() converts when that differs from the page currency.
     var qc = (q.get('ccy') || '').toUpperCase(); if (!FIATS[qc]) qc = 'USD';
     var mark = function (k, code) { var el = $(k); if (el && el.hasAttribute('data-money')) { el._cur = code; el._exact = true; } };
@@ -499,6 +561,7 @@ window.CC = (function () {
       var h = function (e) {
         if (el === sel) { autofill(true); if (cfg.onCoin) cfg.onCoin(); }
         else if (e.isTrusted) { el.dataset.touched = 1; if (keep.length) saveKept(); }
+        if (e.isTrusted) track('calculator_used');
         run();
       };
       el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', h);
@@ -518,10 +581,10 @@ window.CC = (function () {
       if (isMoney) chips.push(function () { b.textContent = fmt.money(val()).replace(/\.00$/, ''); });
       b.addEventListener('click', function () { el.value = val(); el._cur = cur; el.dataset.touched = 1; if (keep.length) saveKept(); run(); });
     });
-    var sb = $('shareBtn'); if (sb) sb.addEventListener('click', function () { share(ids); });
+    var sb = $('shareBtn'); if (sb) sb.addEventListener('click', function () { share(ids); track('share_link'); });
     if (sb && document.querySelector('.result .big')) {
       var ib = document.createElement('button'); ib.type = 'button'; ib.className = 'btn'; ib.id = 'imgBtn'; ib.textContent = 'Save result as image';
-      sb.parentNode.insertBefore(ib, sb.nextSibling); ib.addEventListener('click', shareCard);
+      sb.parentNode.insertBefore(ib, sb.nextSibling); ib.addEventListener('click', function () { shareCard(); track('share_image'); });
     }
     var rb = $('resetBtn'); if (rb) rb.addEventListener('click', function () { keep.forEach(function (k) { delete kept[k]; }); try { localStorage.setItem('cc_keep', JSON.stringify(kept)); } catch (e) {} location.href = location.pathname; });
     on(function () {
@@ -530,6 +593,12 @@ window.CC = (function () {
     });
     run();
     return { run: run, autofill: autofill };
+  }
+
+  var tracked = {};
+  function track(name) {   // one event per page view; sends the page path only, never the numbers typed
+    if (tracked[name] || typeof window.gtag !== 'function') return;
+    tracked[name] = 1; try { window.gtag('event', name, { tool: location.pathname }); } catch (e) {}
   }
 
   /* ---------- Boot ---------- */
@@ -552,13 +621,18 @@ window.CC = (function () {
     var tb = $('themeBtn');
     if (tb) tb.addEventListener('click', function () {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
+      var flip = function () { document.documentElement.dataset.theme = next; };
+      if (document.startViewTransition && !reduced) document.startViewTransition(flip); else flip();
       try { localStorage.setItem('cc_theme', next); } catch (e) {}
     });
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
       document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
     } else document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    if (hd) {
+      var onScroll = function () { hd.classList.toggle('scrolled', window.scrollY > 6); };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    }
     renderTicker(); renderUpdated();
     start();
   }
