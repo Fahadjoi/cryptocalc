@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Liquidation Price Calculator | Long and short, any leverage</title>
+<meta name="description" content="Free liquidation price calculator with live prices. Enter entry price, leverage and maintenance margin to see where a long or short futures position is liquidated and how far the market is from it.">
+<link rel="canonical" href="https://coinabacus.com/liquidation-calculator/">
+<meta property="og:title" content="Crypto Liquidation Price Calculator | Long and short, any leverage">
+<meta property="og:description" content="Free liquidation price calculator with live prices. Enter entry price, leverage and maintenance margin to see where a long or short futures position is liquidated and how far the market is from it.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/liquidation-calculator/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=18">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate my liquidation price?", "acceptedAnswer": {"@type": "Answer", "text": "For an isolated long, multiply the entry price by (1 − 1 ÷ leverage + maintenance margin rate). For a short, multiply by (1 + 1 ÷ leverage − maintenance margin rate). A 10× long at $60,000 with a 0.5% maintenance rate is liquidated at $54,300."}}, {"@type": "Question", "name": "Do I lose all my money when I am liquidated?", "acceptedAnswer": {"@type": "Answer", "text": "With isolated margin you lose the margin assigned to that position, less any small remainder the exchange returns. With cross margin the loss can reach your whole futures balance."}}, {"@type": "Question", "name": "What is maintenance margin?", "acceptedAnswer": {"@type": "Answer", "text": "It is the minimum margin the exchange requires you to keep in a position, set as a percentage of the position size. When your margin falls to that level the position is liquidated. Typical rates start around 0.4% to 0.5% for major coins."}}, {"@type": "Question", "name": "Why is my exchange showing a different liquidation price?", "acceptedAnswer": {"@type": "Answer", "text": "Exchanges include fees, funding already paid, tiered maintenance rates and, under cross margin, your other balances. Treat this figure as a close estimate and always use the price shown on your order screen."}}, {"@type": "Question", "name": "Can a 1× position be liquidated?", "acceptedAnswer": {"@type": "Answer", "text": "A 1× long would only be liquidated if the price fell almost to zero. A 1× short is liquidated if the price roughly doubles, because the loss then equals your margin."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Liquidation Price Calculator", "url": "https://coinabacus.com/liquidation-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free liquidation price calculator with live prices. Enter entry price, leverage and maintenance margin to see where a long or short futures position is liquidated and how far the market is from it."}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><i></i><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Liquidation price calculator</h1>
+  <p class="rise" style="--d:1">Find the price at which the exchange closes your leveraged position, and how much room you have before it.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your position</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field full"><span class="lbl">Direction</span>
+          <div class="seg long-short" role="radiogroup" aria-label="Direction">
+            <label><input type="radio" name="dir" value="long" checked><span>Long</span></label>
+            <label><input type="radio" name="dir" value="short"><span>Short</span></label>
+          </div>
+        </div>
+        <div class="field"><label for="entry">Entry price</label><div class="inp"><input id="entry" type="number" inputmode="decimal" step="any" value="60000" data-autolive="1" min="0" data-money><span class="unit" data-cur>USD</span><button type="button" class="live-btn" data-live="entry" disabled title="Use the live price">Live</button></div></div>
+        <div class="field"><label for="margin">Margin (your money in)</label><div class="inp"><input id="margin" type="number" inputmode="decimal" step="any" value="1000" min="0" data-money><span class="unit" data-cur>USD</span></div></div>
+        <div class="field full"><label for="lev">Leverage</label><div class="inp"><input id="lev" type="number" inputmode="decimal" step="any" min="1" max="125" value="10"><span class="unit">×</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="lev:2">2×</button><button type="button" class="chip" data-set="lev:3">3×</button><button type="button" class="chip" data-set="lev:5">5×</button><button type="button" class="chip" data-set="lev:10">10×</button><button type="button" class="chip" data-set="lev:20">20×</button><button type="button" class="chip" data-set="lev:50">50×</button><button type="button" class="chip" data-set="lev:100">100×</button></div>
+        </div>
+        <div class="field full"><div class="field"><label for="mmr">Maintenance margin rate</label><div class="inp"><input id="mmr" type="number" inputmode="decimal" step="any" value="0.5" max="50" min="0"><span class="unit">%</span></div></div><p class="hint">The share of the position the exchange keeps back. 0.5% is typical for large coins at small sizes, and it rises for big positions and small coins. Your exchange lists it per contract.</p></div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this position</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Liquidation price</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter an entry price, your margin and a leverage of 1 or more.</p>
+      <div id="out">
+        <div class="verdict down" id="verdict"></div>
+        <div class="big" id="liq"></div>
+        <div class="sub" id="sub"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Position size</dt><dd id="pos"></dd></div>
+          <div><dt>Price move that liquidates you</dt><dd id="dist"></dd></div>
+          <div><dt>Lost at liquidation</dt><dd id="lost" class="down"></dd></div>
+          <div><dt>Price where margin is fully gone</dt><dd id="bank"></dd></div>
+          <div id="liveRow" hidden><dt id="liveLbl"></dt><dd id="liveGap"></dd></div>
+        </dl>
+        <h3 class="subhead">Price levels</h3>
+        <div class="ladder" id="ladder"></div>
+        <h3 class="subhead">Same entry at other leverage</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Leverage</th><th class="r">Liquidation price</th><th class="r">Room to move</th><th></th></tr></thead><tbody id="levs"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>What liquidation is</h2>
+  <p>When you trade with leverage, the exchange lends you most of the position and holds your own money, the margin, as security. If the price moves against you far enough that your margin can no longer cover the loss, the exchange closes the position itself to get its loan back. That forced close is liquidation, and it usually costs you the whole margin for that position.</p>
+
+  <h2>The formula</h2>
+  <div class="formula">Liquidation (long) = entry × (1 − 1 ÷ leverage + maintenance margin rate)<small>Liquidation (short) = entry × (1 + 1 ÷ leverage − maintenance margin rate). For isolated margin on USDT-margined contracts.</small></div>
+  <p>The term 1 ÷ leverage is how far the price can move before your margin is entirely used up. At 10× that is 10%. The exchange does not wait that long. It keeps a safety buffer called the maintenance margin and liquidates when your remaining margin falls to that level, which is why the maintenance rate is added back for a long and subtracted for a short.</p>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You open a <b>10× long</b> at <b>$60,000</b> with <b>$1,000</b> of margin, so the position is $10,000. The maintenance margin rate is <b>0.5%</b>.</p>
+    <p>Liquidation: 60,000 × (1 − 0.10 + 0.005) = 60,000 × 0.905 = <b>$54,300</b>.</p>
+    <p>A fall of 9.5% closes the position. Without the maintenance buffer it would have taken the full 10%, down to $54,000.</p>
+  </div>
+
+  <h2>How leverage changes the room you have</h2>
+  <p>The table in the calculator shows the same entry at different leverage. The pattern is simple: doubling the leverage roughly halves the distance to liquidation. At 5× a coin has to move nearly 20% against you. At 50× it takes less than 2%, a move that large coins make in an ordinary hour.</p>
+  <p>Leverage does not make a trade more profitable in dollar terms for the same position size. It only lowers the margin you post, and brings the liquidation price closer. If your stop-loss sits beyond the liquidation price, the stop will never trigger. The <a href="/position-size-calculator/">position size calculator</a> checks that for you.</p>
+
+  <h2>Isolated and cross margin</h2>
+  <p><strong>Isolated margin</strong> ties a fixed amount to one position. The most you can lose is that amount, and the liquidation price is the one calculated here. <strong>Cross margin</strong> lets the position draw on your whole futures balance, which pushes liquidation further away but puts the entire balance at risk. Under cross margin the liquidation price also moves as your other positions gain or lose, so no simple calculator can pin it down.</p>
+
+  <h2>Ways to keep liquidation away</h2>
+  <ul>
+    <li><strong>Lower the leverage.</strong> The most direct fix, and it costs nothing but margin.</li>
+    <li><strong>Add margin</strong> to an open isolated position. This moves the liquidation price further from the market.</li>
+    <li><strong>Set a stop-loss before liquidation.</strong> A stop closes the trade at a loss you chose, and you keep the remaining margin.</li>
+    <li><strong>Size the position smaller.</strong> A smaller position with the same margin is the same thing as lower leverage.</li>
+  </ul>
+
+  <h2>What this calculator leaves out</h2>
+  <ul>
+    <li><strong>Funding payments,</strong> which are taken from margin every few hours on perpetual contracts and slowly pull liquidation closer on a losing side.</li>
+    <li><strong>Tiered maintenance rates.</strong> Exchanges raise the rate for larger positions. Use the rate for your size.</li>
+    <li><strong>Liquidation fees and the mark price.</strong> Exchanges liquidate on a mark price, an average across markets, which can differ slightly from the last traded price you see.</li>
+    <li><strong>Coin-margined contracts,</strong> which use a different formula.</li>
+  </ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How do I calculate my liquidation price?</summary><p>For an isolated long, multiply the entry price by (1 − 1 ÷ leverage + maintenance margin rate). For a short, multiply by (1 + 1 ÷ leverage − maintenance margin rate). A 10× long at $60,000 with a 0.5% maintenance rate is liquidated at $54,300.</p></details><details><summary>Do I lose all my money when I am liquidated?</summary><p>With isolated margin you lose the margin assigned to that position, less any small remainder the exchange returns. With cross margin the loss can reach your whole futures balance.</p></details><details><summary>What is maintenance margin?</summary><p>It is the minimum margin the exchange requires you to keep in a position, set as a percentage of the position size. When your margin falls to that level the position is liquidated. Typical rates start around 0.4% to 0.5% for major coins.</p></details><details><summary>Why is my exchange showing a different liquidation price?</summary><p>Exchanges include fees, funding already paid, tiered maintenance rates and, under cross margin, your other balances. Treat this figure as a close estimate and always use the price shown on your order screen.</p></details><details><summary>Can a 1× position be liquidated?</summary><p>A 1× long would only be liquidated if the price fell almost to zero. A 1× short is liquidated if the price roughly doubles, because the loss then equals your margin.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul><h2 style="margin-top:32px">Guides for this calculator</h2><ul class="linklist"><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li><li><a href="/guides/isolated-vs-cross-margin/"><strong>Isolated vs cross margin</strong><span>The margin mode is one switch on the order form, and it decides whether a bad trade can lose only its own stake or the whole futures balance.</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=18"></script>
+<script>
+(function () {
+  var $ = CC.$, f = CC.fmt, LEVS = [2, 3, 5, 10, 20, 50, 100];
+  CC.page({
+    ids: ['coin', 'dir', 'entry', 'margin', 'lev', 'mmr'],
+    keep: ['mmr'],
+    coinOpt: { stables: false },
+    calc: function () {
+      var L = CC.radio('dir') !== 'short', entry = CC.n('entry'), margin = CC.n('margin'), lev = CC.n('lev');
+      var mmr = Math.max(0, CC.n('mmr') || 0) / 100;
+      var ok = entry > 0 && margin > 0 && lev >= 1 && lev <= 125;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var c = CC.coin($('coin').value) || { sym: '' };
+      function liqAt(x) { return L ? entry * (1 - 1 / x + mmr) : entry * (1 + 1 / x - mmr); }
+      var liq = Math.max(0, liqAt(lev)), pos = margin * lev, qty = pos / entry;
+      var bank = L ? entry * (1 - 1 / lev) : entry * (1 + 1 / lev);
+      var movePct = (liq - entry) / entry * 100, notes = '';
+      var instant = L ? liq >= entry : liq <= entry;
+      $('verdict').textContent = (L ? 'Long' : 'Short') + ' closed by the exchange at';
+      CC.count($('liq'), liq, function (v) { return '' + f.usd(v); });
+      $('sub').textContent = instant ? 'At or beyond your entry price' : f.pct(Math.abs(movePct)) + (L ? ' below' : ' above') + ' your entry of ' + f.usd(entry);
+      $('pos').textContent = f.money(pos) + ' (' + f.amt(qty) + ' ' + c.sym + ')';
+      $('dist').textContent = f.pct(movePct, true) + ' (' + f.usd(Math.abs(liq - entry)) + ')';
+      $('lost').textContent = f.money(Math.max(0, margin - pos * mmr)) + ' of ' + f.money(margin);
+      $('bank').textContent = '' + f.usd(Math.max(0, bank));
+      if (instant) notes += '<div class="note bad">At ' + f.num(lev) + '× the margin is smaller than the maintenance requirement, so this position would be liquidated as soon as it opened. Lower the leverage.</div>';
+      else if (Math.abs(movePct) < 3) notes += '<div class="note bad">A move of ' + f.pct(Math.abs(movePct)) + ' is within normal hourly swings for most coins. This position is very likely to be liquidated.</div>';
+      else if (Math.abs(movePct) < 10) notes += '<div class="note">' + f.pct(Math.abs(movePct)) + ' of room is less than many coins move in a day. Consider a stop-loss well before ' + f.usd(liq) + '.</div>';
+      var live = CC.px(c); $('liveRow').hidden = live == null;
+      if (live != null) {
+        var gap = (liq - live) / live * 100, hit = L ? live <= liq : live >= liq;
+        $('liveLbl').textContent = c.sym + ' live price ' + f.usd(live);
+        $('liveGap').textContent = hit ? 'Already past liquidation' : f.pct(Math.abs(gap)) + ' away';
+        $('liveGap').className = hit ? 'down' : '';
+      }
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+      var rows = [{ label: 'Entry', price: entry, kind: 'entry' }, { label: 'Liquidation', price: liq, kind: 'bad' }, { label: 'Margin fully gone', price: bank, kind: 'warn' }];
+      if (live != null) rows.push({ label: c.sym + ' live price', price: live, kind: 'live' });
+      CC.ladder($('ladder'), rows, entry);
+      $('levs').innerHTML = LEVS.map(function (x) {
+        var lq = Math.max(0, liqAt(x)), mv = (lq - entry) / entry * 100, bad = L ? lq >= entry : lq <= entry;
+        return '<tr' + (x === lev ? ' style="background:var(--sunken)"' : '') + '><td><b>' + x + '×</b>' + (x === lev ? '<span class="tag-best">Yours</span>' : '') + '</td><td class="r">' + (bad ? 'Instant' : '' + f.usd(lq)) + '</td><td class="r">' + (bad ? '0%' : f.pct(Math.abs(mv))) + '</td><td class="r"><button type="button" class="chip" data-set-lev="' + x + '">Use</button></td></tr>';
+      }).join('');
+    }
+  });
+  $('levs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-set-lev]'); if (!b) return;
+    $('lev').value = b.dataset.setLev; $('lev').dispatchEvent(new Event('input', { bubbles: true }));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,4 +1,7 @@
-# Send the old Netlify address to the real domain
+# The site now builds into site/. Cloudflare Pages serves it; this file only matters if Netlify publishes again.
+[build]
+  publish = "site"
+
 [[redirects]]
   from = "https://zesty-haupia-16a953.netlify.app/*"
   to = "https://coinabacus.com/:splat"
@@ -6,27 +9,6 @@
   force = true
 
 [[redirects]]
-  from = "/_src/*"
-  to = "/404.html"
-  status = 404
-  force = true
-
-[[redirects]]
   from = "/*"
   to = "/404.html"
   status = 404
-
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/fonts/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"

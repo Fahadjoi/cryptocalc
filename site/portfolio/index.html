@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Portfolio Tracker | Live value, no account needed</title>
+<meta name="description" content="Free crypto portfolio tracker with live prices. Add your coins to see total value, 24-hour change, profit and loss and allocation in 15 currencies. Saved in your browser, no signup.">
+<link rel="canonical" href="https://coinabacus.com/portfolio/">
+<meta property="og:title" content="Crypto Portfolio Tracker | Live value, no account needed">
+<meta property="og:description" content="Free crypto portfolio tracker with live prices. Add your coins to see total value, 24-hour change, profit and loss and allocation in 15 currencies. Saved in your browser, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/portfolio/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=18">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is the portfolio tracker free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. There is no account, no subscription and no limit on the number of holdings."}}, {"@type": "Question", "name": "Where is my portfolio stored?", "acceptedAnswer": {"@type": "Answer", "text": "In your browser's local storage on the device you are using. It is not uploaded anywhere, which also means it will not appear on another device unless you move a backup file across."}}, {"@type": "Question", "name": "How do I move my portfolio to my phone?", "acceptedAnswer": {"@type": "Answer", "text": "Press Download backup on the device that has it, send the file to your phone, then open this page there and press Restore backup."}}, {"@type": "Question", "name": "Why is profit or loss blank for some coins?", "acceptedAnswer": {"@type": "Answer", "text": "Profit and loss needs a buy price. Type one into the Buy price column for that coin and it will appear."}}, {"@type": "Question", "name": "Can I see my portfolio in rupees or another currency?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick a currency under Show values in. Fifteen currencies are available, including PKR, INR, AED, EUR and GBP."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Portfolio Tracker", "url": "https://coinabacus.com/portfolio/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free crypto portfolio tracker with live prices. Add your coins to see total value, 24-hour change, profit and loss and allocation in 15 currencies. Saved in your browser, no signup."}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><i></i><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Portfolio tracker</h1>
+  <p class="rise" style="--d:1">Add what you hold and see what it is worth right now. Saved in this browser only, with no account and nothing uploaded.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Add a holding</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field"><label for="amt">Amount you hold</label><div class="inp"><input id="amt" type="number" inputmode="decimal" step="any" value="" min="0" placeholder="e.g.&nbsp;0.5"><span class="unit">coins</span></div></div>
+        <div class="field"><label for="cost">Average buy price (optional)</label><div class="inp"><input id="cost" type="number" inputmode="decimal" step="any" value="" min="0" placeholder="optional"><span class="unit">USD</span><button type="button" class="live-btn" data-live="cost" disabled title="Use the live price">Live</button></div></div>
+      </div>
+      <div class="actions"><button type="button" class="btn solid" id="addBtn">Add to portfolio</button></div>
+      <p class="field hint" id="addMsg" style="margin-top:10px" aria-live="polite"></p>
+      <div class="fields" style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)">
+        <div class="field full"><label for="cur">Show values in</label><div class="inp"><select id="cur"></select></div></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" id="exportBtn">Download backup</button>
+        <label class="btn" style="cursor:pointer">Restore backup<input type="file" id="importFile" accept="application/json,.json" hidden></label>
+        <button type="button" class="btn" id="clearBtn">Clear all</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Total value</h2></div>
+    <div class="card-body">
+      <div id="emptyPf">
+        <p class="empty">No holdings yet. Add your first coin, or load an example to see how it works.</p>
+        <button type="button" class="btn" id="demoBtn">Load an example</button>
+      </div>
+      <div id="out" hidden>
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="total"></div>
+        <div class="sub" id="sub"></div>
+        <div class="alloc" id="alloc" role="img" aria-label="Share of each coin in the portfolio"></div>
+        <div class="legend" id="legend"></div>
+        <dl class="rows">
+          <div id="costRow"><dt>Cost of holdings with a buy price</dt><dd id="costSum"></dd></div>
+          <div id="plRow"><dt>Profit or loss on those</dt><dd id="plSum"></dd></div>
+          <div><dt>Best in the past 24 hours</dt><dd id="best"></dd></div>
+          <div><dt>Worst in the past 24 hours</dt><dd id="worst"></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="section" id="holdSec" hidden style="margin-top:40px">
+  <div class="section-head"><h2>Holdings</h2><p>Edit an amount or buy price directly in the table</p></div>
+  <div class="card"><div class="table-wrap">
+    <table class="t">
+      <thead><tr><th>Coin</th><th class="r">Amount</th><th class="r hide-s">Price</th><th class="r hide-s">24h</th><th class="r">Value</th><th class="r hide-m">Buy price, USD</th><th class="r">Profit / loss</th><th class="r hide-s">Share</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div></div>
+</section>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>How the tracker works</h2>
+  <p>Each holding is the amount of a coin you own and, if you choose to give it, the average price you paid. The tracker multiplies each amount by the live price, adds them up, and converts the total into the currency you pick. Prices refresh once a minute while the page is open.</p>
+  <div class="formula">Value = amount × live price<small>Profit or loss = amount × (live price − average buy price)</small></div>
+  <p>The 24-hour figure shows how much the whole portfolio has moved since this time yesterday, using each coin's own 24-hour change. Profit and loss is only calculated for holdings where you entered a buy price, and the total says which holdings it covers.</p>
+
+  <h2>Where your data is kept</h2>
+  <p>Your holdings are saved in this browser's local storage on this device. They are never sent to a server, and there is no account to sign in to. That has three consequences worth knowing.</p>
+  <ul>
+    <li><strong>It is private.</strong> Nobody else can see what you hold, including the people who run this site.</li>
+    <li><strong>It does not follow you.</strong> A different browser or device starts empty. Use Download backup on one and Restore backup on the other to move it.</li>
+    <li><strong>Clearing browser data erases it.</strong> Download a backup now and then if the list took effort to build.</li>
+  </ul>
+
+  <h2>Getting the buy price right</h2>
+  <p>If you bought a coin in several lots, the number to enter is your average cost: the total you spent divided by the total coins you received. The <a href="/average-cost-calculator/">average cost calculator</a> works it out from your individual buys. When you add more of a coin you already hold, the tracker merges the two and recalculates the average for you.</p>
+
+  <h2>What it does not track</h2>
+  <ul>
+    <li><strong>Coins outside the list.</strong> Twenty major coins are supported.</li>
+    <li><strong>Trades and history.</strong> It shows where you stand now. It does not record past buys and sells or draw a value chart over time.</li>
+    <li><strong>Wallets and exchanges.</strong> Nothing is connected, by design, so balances are whatever you type in.</li>
+    <li><strong>Tax.</strong> Profit shown here is not a tax calculation.</li>
+  </ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>Is the portfolio tracker free?</summary><p>Yes. There is no account, no subscription and no limit on the number of holdings.</p></details><details><summary>Where is my portfolio stored?</summary><p>In your browser's local storage on the device you are using. It is not uploaded anywhere, which also means it will not appear on another device unless you move a backup file across.</p></details><details><summary>How do I move my portfolio to my phone?</summary><p>Press Download backup on the device that has it, send the file to your phone, then open this page there and press Restore backup.</p></details><details><summary>Why is profit or loss blank for some coins?</summary><p>Profit and loss needs a buy price. Type one into the Buy price column for that coin and it will appear.</p></details><details><summary>Can I see my portfolio in rupees or another currency?</summary><p>Yes. Pick a currency under Show values in. Fifteen currencies are available, including PKR, INR, AED, EUR and GBP.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=18"></script>
+<script>
+(function () {
+  var $ = CC.$, f = CC.fmt, KEY = 'cc_portfolio';
+  var PAL = ['#0A7F52', '#FFE04A', '#3B6EA8', '#C4362C', '#7A5AA6', '#D98A1F', '#15A3A3', '#8A8F98'];
+  var items = [];
+  try { items = (JSON.parse(localStorage.getItem(KEY)) || []).filter(function (x) { return x && CC.coin(x.id) && x.amt > 0; }); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {} }
+
+  var cur = $('cur');
+  cur.innerHTML = Object.keys(CC.FIATS).map(function (k) { return '<option value="' + k + '">' + k + ' · ' + CC.FIATS[k] + '</option>'; }).join('');
+  cur.value = 'USD';
+  cur.addEventListener('change', function () { CC.setCur(cur.value); });
+  CC.on(function () { cur.value = CC.cur(); });   // the header currency menu and this one stay in step
+
+  function render() {
+    var has = items.length > 0;
+    $('emptyPf').hidden = has; $('out').hidden = !has; $('holdSec').hidden = !has;
+    if (!has) return;
+    var code = cur.value, rate = CC.fx(code); if (!rate) { code = 'USD'; rate = 1; }
+    var total = 0, prev = 0, costSum = 0, plSum = 0, costed = 0, priced = true;
+    var rows = items.map(function (it) {
+      var c = CC.coin(it.id), p = c.price, v = p != null ? it.amt * p : null;
+      if (v == null) priced = false; else { total += v; prev += c.ch24 != null ? v / (1 + c.ch24 / 100) : v; }
+      var pl = v != null && it.cost > 0 ? v - it.amt * it.cost : null;
+      if (pl != null) { costSum += it.amt * it.cost; plSum += pl; costed++; }
+      return { it: it, c: c, v: v, pl: pl };
+    });
+    rows.sort(function (a, b) { return (b.v || 0) - (a.v || 0); });
+    var up = total - prev;
+    if (!priced && total === 0) { $('verdict').textContent = 'Waiting for live prices'; $('verdict').className = 'verdict'; $('total').textContent = '–'; $('sub').textContent = CC.state.error ? 'Live prices are unavailable right now.' : ''; }
+    else {
+      $('verdict').textContent = (up >= 0 ? 'Up ' : 'Down ') + f.fiat(Math.abs(up) * rate, code) + ' (' + f.pct(prev ? up / prev * 100 : 0, true) + ') in 24 hours';
+      $('verdict').className = 'verdict ' + (up >= 0 ? 'up' : 'down');
+      CC.count($('total'), total * rate, function (x) { return f.fiat(x, code); });
+      $('sub').textContent = items.length + ' holding' + (items.length > 1 ? 's' : '') + (code !== 'USD' ? ', ' + f.fiat(total, 'USD') + ' in US dollars' : '');
+    }
+    $('costRow').hidden = $('plRow').hidden = !costed;
+    if (costed) {
+      $('costSum').textContent = f.fiat(costSum * rate, code) + (costed < items.length ? ' (' + costed + ' of ' + items.length + ')' : '');
+      $('plSum').textContent = (plSum >= 0 ? '+' : '') + f.fiat(plSum * rate, code) + ' (' + f.pct(costSum ? plSum / costSum * 100 : 0, true) + ')';
+      $('plSum').className = plSum >= 0 ? 'up' : 'down';
+    }
+    var movers = rows.filter(function (r) { return r.c.ch24 != null; }).sort(function (a, b) { return b.c.ch24 - a.c.ch24; });
+    $('best').innerHTML = movers.length ? CC.esc(movers[0].c.sym) + ' <span class="' + (movers[0].c.ch24 >= 0 ? 'up' : 'down') + '">' + f.pct(movers[0].c.ch24, true) + '</span>' : '–';
+    var w = movers[movers.length - 1];
+    $('worst').innerHTML = movers.length ? CC.esc(w.c.sym) + ' <span class="' + (w.c.ch24 >= 0 ? 'up' : 'down') + '">' + f.pct(w.c.ch24, true) + '</span>' : '–';
+
+    var sig = rows.map(function (r) { return r.it.id; }).join(',');
+    var segs = rows.filter(function (r) { return r.v > 0; });
+    var top = segs.slice(0, 7), rest = segs.slice(7).reduce(function (s, r) { return s + r.v; }, 0);
+    var parts = top.map(function (r, i) { return { name: r.c.sym, share: r.v / total * 100, col: PAL[i] }; });
+    if (rest > 0) parts.push({ name: 'Other', share: rest / total * 100, col: PAL[7] });
+    var al = $('alloc');
+    if (al.dataset.sig !== sig) { al.dataset.sig = sig; al.innerHTML = parts.map(function (p) { return '<i style="background:' + p.col + ';width:0"></i>'; }).join(''); void al.offsetWidth; }
+    parts.forEach(function (p, i) { if (al.children[i]) al.children[i].style.width = p.share + '%'; });
+    $('legend').innerHTML = parts.map(function (p) { return '<span><i style="border-top:0;width:10px;height:10px;border-radius:2px;background:' + p.col + '"></i>' + CC.esc(p.name) + ' ' + p.share.toFixed(1) + '%</span>'; }).join('');
+
+    var tb = $('rows'), active = document.activeElement && tb.contains(document.activeElement);
+    if (active && tb.dataset.sig === sig) {   // keep focus while typing: only refresh the calculated cells
+      rows.forEach(function (r) { var tr = tb.querySelector('tr[data-id="' + r.it.id + '"]'); if (tr) fillCells(tr, r, total, rate, code); });
+      return;
+    }
+    tb.dataset.sig = sig;
+    tb.innerHTML = rows.map(function (r) {
+      return '<tr data-id="' + r.it.id + '"><td><span class="coin-cell">' + CC.icon(r.c) + '<span><b>' + CC.esc(r.c.name) + '</b> <small>' + CC.esc(r.c.sym) + '</small></span></span></td>' +
+        '<td class="r"><input class="pf-in" data-k="amt" type="number" inputmode="decimal" step="any" min="0" value="' + r.it.amt + '" aria-label="Amount of ' + CC.esc(r.c.sym) + '"></td>' +
+        '<td class="r hide-s" data-c="price"></td><td class="r hide-s" data-c="ch"></td><td class="r" data-c="val"></td>' +
+        '<td class="r hide-m"><input class="pf-in" data-k="cost" type="number" inputmode="decimal" step="any" min="0" value="' + (r.it.cost || '') + '" placeholder="–" aria-label="Buy price of ' + CC.esc(r.c.sym) + '"></td>' +
+        '<td class="r" data-c="pl"></td><td class="r hide-s" data-c="share"></td>' +
+        '<td class="r"><button type="button" class="chip" data-rm aria-label="Remove ' + CC.esc(r.c.sym) + '">Remove</button></td></tr>';
+    }).join('');
+    rows.forEach(function (r) { fillCells(tb.querySelector('tr[data-id="' + r.it.id + '"]'), r, total, rate, code); });
+  }
+  function fillCells(tr, r, total, rate, code) {
+    var q = function (k) { return tr.querySelector('[data-c="' + k + '"]'); };
+    q('price').textContent = r.c.price != null ? f.fiat(r.c.price * rate, code) : '–';
+    q('ch').textContent = f.pct(r.c.ch24, true); q('ch').className = 'r hide-s ' + (r.c.ch24 >= 0 ? 'up' : 'down');
+    q('val').innerHTML = '<b>' + (r.v != null ? f.fiat(r.v * rate, code) : '–') + '</b>';
+    q('pl').textContent = r.pl != null ? (r.pl >= 0 ? '+' : '') + f.fiat(r.pl * rate, code) + ' (' + f.pct(r.pl / (r.it.amt * r.it.cost) * 100, true) + ')' : '–';
+    q('pl').className = 'r ' + (r.pl == null ? '' : r.pl >= 0 ? 'up' : 'down');
+    q('share').textContent = r.v != null && total ? f.pct(r.v / total * 100) : '–';
+  }
+  function add(id, amt, cost) {
+    var ex = items.filter(function (x) { return x.id === id; })[0];
+    if (ex) {
+      if (ex.cost > 0 && cost > 0) ex.cost = (ex.amt * ex.cost + amt * cost) / (ex.amt + amt); else if (cost > 0 && !(ex.cost > 0)) ex.cost = cost;
+      ex.amt += amt;
+    } else items.push({ id: id, amt: amt, cost: cost > 0 ? cost : 0 });
+  }
+
+  CC.page({ ids: [], calc: render });
+
+  $('addBtn').addEventListener('click', function () {
+    var id = $('coin').value, amt = CC.n('amt'), cost = CC.n('cost'), c = CC.coin(id);
+    if (!(amt > 0)) { $('addMsg').textContent = 'Enter the amount you hold, above zero.'; $('amt').focus(); return; }
+    var had = items.some(function (x) { return x.id === id; });
+    add(id, amt, cost); save();
+    $('addMsg').textContent = had ? 'Added to your existing ' + c.sym + ' and updated the average buy price.' : c.sym + ' added.';
+    $('amt').value = ''; $('cost').value = ''; $('rows').dataset.sig = ''; render();
+  });
+  $('rows').addEventListener('input', function (e) {
+    var inp = e.target.closest('.pf-in'); if (!inp) return;
+    var id = inp.closest('tr').dataset.id, it = items.filter(function (x) { return x.id === id; })[0], v = parseFloat(inp.value);
+    if (inp.dataset.k === 'amt') { if (v > 0) it.amt = v; else return; } else it.cost = v > 0 ? v : 0;
+    save(); render();
+  });
+  $('rows').addEventListener('click', function (e) {
+    if (!e.target.closest('[data-rm]')) return;
+    var id = e.target.closest('tr').dataset.id; items = items.filter(function (x) { return x.id !== id; }); save(); render(); CC.toast('Removed');
+  });
+  $('demoBtn').addEventListener('click', function () {
+    var p = function (id) { var c = CC.coin(id); return c && c.price ? c.price : 0; };
+    add('bitcoin', 0.05, CC.round(p('bitcoin') * 0.9)); add('ethereum', 1.2, CC.round(p('ethereum') * 1.15)); add('solana', 15, CC.round(p('solana') * 0.8)); add('tether', 500, 1);
+    save(); render(); CC.toast('Example loaded. Edit or remove anything.');
+  });
+  $('clearBtn').addEventListener('click', function () {
+    if (!items.length || !confirm('Remove every holding from this browser? This cannot be undone unless you have a backup.')) return;
+    items = []; save(); render();
+  });
+  $('exportBtn').addEventListener('click', function () {
+    if (!items.length) { CC.toast('Nothing to back up yet'); return; }
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ app: 'cryptocalc-portfolio', version: 1, saved: new Date().toISOString(), holdings: items }, null, 2)], { type: 'application/json' }));
+    a.download = 'cryptocalc-portfolio.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  $('importFile').addEventListener('change', function () {
+    var file = this.files[0], input = this; if (!file) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var d = JSON.parse(rd.result), list = (d.holdings || d).filter(function (x) { return x && CC.coin(x.id) && x.amt > 0; }).map(function (x) { return { id: x.id, amt: Number(x.amt), cost: x.cost > 0 ? Number(x.cost) : 0 }; });
+        if (!list.length) throw new Error('empty');
+        if (items.length && !confirm('Replace your current ' + items.length + ' holdings with the ' + list.length + ' in this backup?')) return;
+        items = list; save(); $('rows').dataset.sig = ''; render(); CC.toast('Backup restored');
+      } catch (e) { CC.toast('That file is not a CoinAbacus backup'); }
+      input.value = '';
+    };
+    rd.readAsText(file);
+  });
+})();
+</script>
+</body>
+</html>

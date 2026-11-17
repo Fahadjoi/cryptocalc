@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Converter | Live rates for 20 coins and 15 currencies</title>
+<meta name="description" content="Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute.">
+<link rel="canonical" href="https://coinabacus.com/converter/">
+<meta property="og:title" content="Crypto Converter | Live rates for 20 coins and 15 currencies">
+<meta property="og:description" content="Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/converter/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=18">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How often do the rates update?", "acceptedAnswer": {"@type": "Answer", "text": "Once a minute while the page is open. The time of the last update is shown at the top of the converter."}}, {"@type": "Question", "name": "Can I convert one coin directly into another?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other."}}, {"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed."}}, {"@type": "Question", "name": "Is this the rate I will get on my exchange?", "acceptedAnswer": {"@type": "Answer", "text": "It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent."}}, {"@type": "Question", "name": "Does the converter charge anything?", "acceptedAnswer": {"@type": "Answer", "text": "No. It only shows rates. It does not hold, send or trade any money."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Converter", "url": "https://coinabacus.com/converter/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Convert Bitcoin, Ethereum, USDT and 17 other coins to USD, EUR, GBP, PKR, INR, AED and more at live market rates. Coin to coin and currency to coin, refreshed every minute."}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><i></i><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Crypto converter</h1>
+  <p class="rise" style="--d:1">Live rates between 20 coins and 15 currencies. Type in either box and the other follows.</p>
+</header>
+
+<section class="card strong rise" style="--d:1">
+  <div class="card-head"><h2>Convert</h2><span class="meta" data-updated></span></div>
+  <div class="card-body">
+    <div class="conv">
+      <div class="field"><label for="amount">You have</label><div class="inp"><input id="amount" type="number" inputmode="decimal" step="any" min="0" value="1"><select id="from" aria-label="Convert from"></select></div></div>
+      <button type="button" class="swap" id="swap" aria-label="Swap the two currencies"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-4-4M20 16H6l4 4"/></svg></button>
+      <div class="field"><label for="result">You get</label><div class="inp"><input id="result" type="number" inputmode="decimal" step="any" min="0"><select id="to" aria-label="Convert to"></select></div></div>
+    </div>
+    <div class="chips" id="quick"></div>
+    <div aria-live="polite" style="margin-top:22px">
+      <p class="empty" id="state">Loading live rates…</p>
+      <div id="out" hidden>
+        <div class="verdict" id="lead"></div>
+        <div class="big" id="big"></div>
+        <div class="sub" id="sub"></div>
+      </div>
+    </div>
+    <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this conversion</button></div>
+  </div>
+</section>
+
+<section class="section reveal" id="pairChartWrap" hidden style="margin-top:48px">
+  <div class="section-head"><h2 id="pcTitle">Last 30 days</h2><p>Daily closing rate, currencies converted at today's exchange rate</p></div>
+  <div class="card"><div class="card-body">
+    <div class="chart" id="pairChart"></div>
+    <div class="stats">
+      <div><span>30-day high</span><b id="pcHi"></b><small id="pcHiD"></small></div>
+      <div><span>30-day low</span><b id="pcLo"></b><small id="pcLoD"></small></div>
+      <div><span>Change over 30 days</span><b id="pcCh"></b><small>first close to now</small></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="section reveal" style="margin-top:48px">
+  <div class="section-head"><h2 id="refTitle">Quick reference</h2><p>At the current rate</p></div>
+  <div class="tool-grid">
+    <div class="card"><div class="table-wrap"><table class="t"><thead><tr><th id="refA1"></th><th class="r" id="refA2"></th></tr></thead><tbody id="refA"></tbody></table></div></div>
+    <div class="card"><div class="table-wrap"><table class="t"><thead><tr><th id="refB1"></th><th class="r" id="refB2"></th></tr></thead><tbody id="refB"></tbody></table></div></div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-head"><h2>All prices<span id="inCode"></span></h2><p>Select a coin to convert it</p></div>
+  <div class="card"><div class="table-wrap">
+    <table class="t">
+      <thead><tr><th class="hide-s">#</th><th>Coin</th><th class="r">Price</th><th class="r">24h</th><th class="r hide-s">7 days</th><th class="r hide-m">Market cap</th><th class="r hide-s">Last 7 days</th></tr></thead>
+      <tbody id="market"><tr><td colspan="7" class="empty">Loading prices…</td></tr></tbody>
+    </table>
+  </div></div>
+</section>
+
+<section class="section reveal" style="margin-top:56px">
+  <div class="section-head"><h2>Popular conversions</h2><p>Each has its own page with a live rate</p></div>
+  <div class="pairs"><a href="/convert/btc-to-usd/">BTC to USD</a><a href="/convert/eth-to-usd/">ETH to USD</a><a href="/convert/usdt-to-usd/">USDT to USD</a><a href="/convert/bnb-to-usd/">BNB to USD</a><a href="/convert/sol-to-usd/">SOL to USD</a><a href="/convert/xrp-to-usd/">XRP to USD</a><a href="/convert/btc-to-eur/">BTC to EUR</a><a href="/convert/eth-to-eur/">ETH to EUR</a><a href="/convert/usdt-to-eur/">USDT to EUR</a><a href="/convert/bnb-to-eur/">BNB to EUR</a><a href="/convert/sol-to-eur/">SOL to EUR</a><a href="/convert/xrp-to-eur/">XRP to EUR</a><a href="/convert/btc-to-gbp/">BTC to GBP</a><a href="/convert/eth-to-gbp/">ETH to GBP</a><a href="/convert/usdt-to-gbp/">USDT to GBP</a><a href="/convert/bnb-to-gbp/">BNB to GBP</a><a href="/convert/sol-to-gbp/">SOL to GBP</a><a href="/convert/xrp-to-gbp/">XRP to GBP</a><a href="/convert/btc-to-inr/">BTC to INR</a><a href="/convert/eth-to-inr/">ETH to INR</a><a href="/convert/usdt-to-inr/">USDT to INR</a><a href="/convert/bnb-to-inr/">BNB to INR</a><a href="/convert/sol-to-inr/">SOL to INR</a><a href="/convert/xrp-to-inr/">XRP to INR</a></div>
+</section>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>How the conversion is worked out</h2>
+  <p>Every coin and currency in the list has a live price in US dollars. To convert between any two, the converter turns your amount into dollars and then into the target.</p>
+  <div class="formula">Result = amount × (price of what you have in USD) ÷ (price of what you want in USD)</div>
+  <p>That is how one feed of dollar prices covers every pair, including coin to coin pairs like ETH to BTC and currency to coin pairs like PKR to USDT. Rates refresh once a minute while the page is open.</p>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You hold <b>0.5 ETH</b> and want to know its value in Bitcoin.</p>
+    <p>If ETH trades at <b>$2,000</b> and BTC at <b>$70,000</b>, then 0.5 ETH is worth $1,000.</p>
+    <p>$1,000 ÷ $70,000 = <b>0.014286 BTC</b>.</p>
+  </div>
+
+  <h2>Why your exchange shows a different number</h2>
+  <p>The rate here is a market average across many exchanges. The amount you actually receive when you trade will be a little lower, for four reasons.</p>
+  <ul>
+    <li><strong>Trading fees.</strong> Usually 0.1% to 0.8% per order. The <a href="/fee-calculator/">fee calculator</a> shows what ten exchanges charge.</li>
+    <li><strong>Spread.</strong> The price you can sell at is always slightly below the price you can buy at.</li>
+    <li><strong>Local currency premiums.</strong> In countries where banks limit crypto transfers, coins often change hands on peer-to-peer markets above or below the official exchange rate. Rupee, naira and lira prices on those markets can differ from the figure here by several percent.</li>
+    <li><strong>Timing.</strong> Prices move every second, and this page refreshes every minute.</li>
+  </ul>
+
+  <h2>Stablecoins are close to a dollar, not exactly a dollar</h2>
+  <p>USDT and USDC are designed to hold a value of one US dollar, and most of the time they trade within a tenth of a cent of it. The converter uses their real market price, so 1,000 USDT may show as $999.20 or $1,000.40. On large amounts that difference is real money, which is why it is shown and not rounded away.</p>
+
+  <h2>Reading very small and very large numbers</h2>
+  <p>Coins priced below one cent need more decimal places than a normal currency, so the converter shows up to eight. Going the other way, one Bitcoin is worth tens of millions of rupees or naira, so large results are grouped with commas. If a result looks wrong by a factor of a thousand, check that you have not mixed up the two boxes, and use the swap button to flip them.</p>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How often do the rates update?</summary><p>Once a minute while the page is open. The time of the last update is shown at the top of the converter.</p></details><details><summary>Can I convert one coin directly into another?</summary><p>Yes. Pick a coin in both boxes, for example ETH and BTC. The converter prices both in US dollars and divides one by the other.</p></details><details><summary>Where do the prices come from?</summary><p>From CoinGecko's public market data, which averages prices across many exchanges. Currency rates come from the same feed.</p></details><details><summary>Is this the rate I will get on my exchange?</summary><p>It will be close, but not identical. Your exchange applies its own price, a spread and a trading fee, and peer-to-peer rates for some local currencies can differ by several percent.</p></details><details><summary>Does the converter charge anything?</summary><p>No. It only shows rates. It does not hold, send or trade any money.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul><h2 style="margin-top:32px">Guides for this calculator</h2><ul class="linklist"><li><a href="/guides/crypto-to-local-currency-rate/"><strong>Why you get less than the converter shows</strong><span>A converter shows the mid-market rate, the midpoint between what buyers bid and sellers ask. Nobody trades at exactly that price, and four separate costs sit between it and the money that reaches you.</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=18"></script>
+<script src="/js/converter.js?v=18"></script>
+</body>
+</html>

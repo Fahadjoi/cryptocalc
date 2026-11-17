@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Average Cost Calculator | Average down and break-even price</title>
+<meta name="description" content="Free crypto average cost calculator with live prices. Enter each buy to get your average entry price, profit or loss now, and how much more to buy to bring your average down to a target.">
+<link rel="canonical" href="https://coinabacus.com/average-cost-calculator/">
+<meta property="og:title" content="Crypto Average Cost Calculator | Average down and break-even price">
+<meta property="og:description" content="Free crypto average cost calculator with live prices. Enter each buy to get your average entry price, profit or loss now, and how much more to buy to bring your average down to a target.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/average-cost-calculator/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=18">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I calculate my average buy price in crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Add up all the money you spent and divide by the total number of coins you received. Spending $500 at $60,000 and $500 at $40,000 gives 0.020833 coins for $1,000, an average of $48,000."}}, {"@type": "Question", "name": "What does averaging down mean?", "acceptedAnswer": {"@type": "Answer", "text": "It means buying more of a coin after its price has dropped below your average cost. The new, cheaper coins pull your average down, so the price needs a smaller rise for you to break even."}}, {"@type": "Question", "name": "How much do I need to buy to lower my average to a target?", "acceptedAnswer": {"@type": "Answer", "text": "Enter the target in the calculator. The amount is your total spent minus the target times your coins, divided by the target minus the current price. The target has to sit between your present average and the current price."}}, {"@type": "Question", "name": "Is my average cost the same as my break-even price?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, before selling fees. To cover a selling fee as well, the price needs to be slightly higher: divide your average by one minus the fee rate."}}, {"@type": "Question", "name": "Does selling change my average cost?", "acceptedAnswer": {"@type": "Answer", "text": "No. Selling reduces the number of coins you hold, but the coins that remain keep the same average entry price."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Average Cost Calculator", "url": "https://coinabacus.com/average-cost-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free crypto average cost calculator with live prices. Enter each buy to get your average entry price, profit or loss now, and how much more to buy to bring your average down to a target."}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><i></i><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Average cost calculator</h1>
+  <p class="rise" style="--d:1">Add each buy to get your true average entry, where you stand now, and what another buy would do to it.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your buys</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        <div class="field full"><span class="lbl">Amounts are in</span>
+          <div class="seg" role="radiogroup" aria-label="Amounts are in">
+            <label><input type="radio" name="mode" value="usd" checked><span>Money spent</span></label>
+            <label><input type="radio" name="mode" value="coin"><span>Coins bought</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="buy buy-head"><span>Price paid, <span data-cur>USD</span></span><span id="amtHead">Amount, USD</span><span></span></div>
+      <div id="buys"></div>
+      <button type="button" class="btn" id="addBuy">Add another buy</button>
+      <input type="hidden" id="b" value="">
+      <div class="fields" style="margin-top:20px">
+        <div class="field"><label for="cur">Price now</label><div class="inp"><input id="cur" type="number" inputmode="decimal" step="any" value="60000" data-autolive="1" min="0" data-money><span class="unit" data-cur>USD</span><button type="button" class="live-btn" data-live="cur" disabled title="Use the live price">Live</button></div></div>
+        <div class="field"><label for="target">Target average (optional)</label><div class="inp"><input id="target" type="number" inputmode="decimal" step="any" value="" min="0" placeholder="e.g.&nbsp;62000" data-money><span class="unit" data-cur>USD</span></div></div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to these buys</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Average entry price</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter a price and an amount for at least one buy.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="avg"></div>
+        <div class="sub" id="sub"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Total spent</dt><dd id="spent"></dd></div>
+          <div><dt>Coins held</dt><dd id="coins"></dd></div>
+          <div><dt>Worth now</dt><dd id="value"></dd></div>
+          <div><dt>Profit or loss now</dt><dd id="pl"></dd></div>
+          <div><dt>Move needed to break even</dt><dd id="be"></dd></div>
+        </dl>
+        <h3 class="subhead">If you buy more at the current price</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Extra buy</th><th class="r">New average</th><th class="r">Change</th><th class="r hide-s">Break-even move</th></tr></thead><tbody id="more"></tbody></table></div>
+        <h3 class="subhead">Each buy at the current price</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Bought at</th><th class="r">Coins</th><th class="r hide-s">Share</th><th class="r">Now</th></tr></thead><tbody id="each"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>Why the average is not the middle of your prices</h2>
+  <p>If you bought once at $60,000 and once at $40,000, it is tempting to call your average $50,000. That is only right if you bought the same number of coins each time. If you spent the same number of dollars each time, the cheaper buy gave you more coins, so your real average sits below the midpoint.</p>
+  <div class="formula">Average cost = total dollars spent ÷ total coins bought</div>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You spend <b>$500</b> at <b>$60,000</b> and another <b>$500</b> at <b>$40,000</b>.</p>
+    <p>Coins: 500 ÷ 60,000 = 0.008333 and 500 ÷ 40,000 = 0.0125, which is 0.020833 in total.</p>
+    <p>Average cost: 1,000 ÷ 0.020833 = <b>$48,000</b>, not $50,000. Above $48,000 the whole position is in profit.</p>
+  </div>
+  <p>Your average cost is also your break-even price before fees. Selling everything above it makes money, and selling below it loses money, however the individual buys look.</p>
+
+  <h2>Averaging down</h2>
+  <p>Buying more after the price has fallen lowers your average cost, which means the price has less far to climb before you break even. The table of extra buys shows exactly how much each additional amount would move your average.</p>
+  <div class="formula">Coins to buy = (spent − target × coins held) ÷ (target − current price)<small>Works when the target lies between your current average and the current price.</small></div>
+  <p>Two things are worth knowing before you do it. First, the average can only move toward the current price and never past it, so a target below today's price is impossible to reach by buying today. Second, the closer the target is to the current price, the more you have to buy. Moving your average halfway to the current price means doubling the number of coins you hold.</p>
+
+  <h2>When averaging down helps and when it hurts</h2>
+  <p>Averaging down improves your break-even price. It does not improve the coin. You end up with more money in the same asset, so if the price keeps falling the loss in dollars grows faster than before.</p>
+  <ul>
+    <li><strong>It suits</strong> planned buying of an asset you intended to accumulate anyway, with money set aside for that purpose.</li>
+    <li><strong>It is risky</strong> when the reason for buying has changed, when it is done to avoid admitting a loss, or with leverage, where a larger position brings liquidation closer.</li>
+  </ul>
+  <p>A useful check is to ask whether you would buy this coin today at this price if you held none. If the answer is no, a lower average is not a reason to buy more.</p>
+
+  <h2>Fees and coins received</h2>
+  <p>For the most accurate average, enter what each buy really cost and really delivered. In dollar mode, enter the full amount that left your account including the fee. In coin mode, enter the coins that arrived after the fee. The exchange's order history shows both.</p>
+
+  <h2>Selling part of a position</h2>
+  <p>Selling some coins does not change the average cost of the coins you keep. If you sell half at a profit, the remaining half still has the same average entry. Tax rules in your country may use a different method, such as first in, first out, so check those separately.</p>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How do I calculate my average buy price in crypto?</summary><p>Add up all the money you spent and divide by the total number of coins you received. Spending $500 at $60,000 and $500 at $40,000 gives 0.020833 coins for $1,000, an average of $48,000.</p></details><details><summary>What does averaging down mean?</summary><p>It means buying more of a coin after its price has dropped below your average cost. The new, cheaper coins pull your average down, so the price needs a smaller rise for you to break even.</p></details><details><summary>How much do I need to buy to lower my average to a target?</summary><p>Enter the target in the calculator. The amount is your total spent minus the target times your coins, divided by the target minus the current price. The target has to sit between your present average and the current price.</p></details><details><summary>Is my average cost the same as my break-even price?</summary><p>Yes, before selling fees. To cover a selling fee as well, the price needs to be slightly higher: divide your average by one minus the fee rate.</p></details><details><summary>Does selling change my average cost?</summary><p>No. Selling reduces the number of coins you hold, but the coins that remain keep the same average entry price.</p></details></section>
+</article>
+<aside class="aside reveal"><h2>Other calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul><h2 style="margin-top:32px">Guides for this calculator</h2><ul class="linklist"><li><a href="/guides/average-cost-and-averaging-down/"><strong>Average cost and averaging down</strong><span>After a few buys at different prices, the number that matters is the one price at which the whole holding breaks even. It is rarely the middle of the prices you paid.</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><i></i>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=18"></script>
+<script>
+(function () {
+  var $ = CC.$, f = CC.fmt, wrap = $('buys');
+  function row(price, amt, auto) {
+    var d = document.createElement('div'); d.className = 'buy';
+    d.innerHTML = '<div class="inp"><input class="bp" type="number" inputmode="decimal" step="any" min="0" aria-label="Price paid" value="' + (price || '') + '"' + (auto ? ' data-autolive="' + auto + '"' : '') + '></div>' +
+      '<div class="inp"><input class="ba" type="number" inputmode="decimal" step="any" min="0" aria-label="Amount" value="' + (amt || '') + '"></div>' +
+      '<button type="button" class="chip rm" aria-label="Remove this buy">Remove</button>';
+    wrap.appendChild(d); return d;
+  }
+  var saved = new URLSearchParams(location.search).get('b');
+  if (saved) saved.split(',').forEach(function (x) { var p = x.split('x'); if (p.length === 2) row(parseFloat(p[0]) || '', parseFloat(p[1]) || ''); });
+  if (!wrap.children.length) { row(72000, 500, 1.2); row(63000, 500, 1.05); }
+
+  var pg = CC.page({
+    ids: ['coin', 'mode', 'b', 'cur', 'target'],
+    coinOpt: { stables: false },
+    onCur: function (k) {
+      var usd = CC.radio('mode') !== 'coin';
+      wrap.querySelectorAll('.buy').forEach(function (r) {
+        var bp = r.querySelector('.bp'), ba = r.querySelector('.ba');
+        if (!(bp.dataset.autolive && !bp.dataset.touched) && bp.value > 0) bp.value = CC.round(bp.value * k);
+        if (usd && ba.value > 0) ba.value = ba.dataset.touched ? CC.round(ba.value * k) : Number((ba.value * k).toPrecision(1));
+      });
+    },
+    calc: function () {
+      var usd = CC.radio('mode') !== 'coin', c = CC.coin($('coin').value) || { sym: '' }, cur = CC.n('cur'), target = CC.n('target');
+      $('amtHead').textContent = usd ? 'Amount, ' + CC.cur() : 'Amount, ' + (c.sym || 'coins');
+      var buys = [], ser = [];
+      wrap.querySelectorAll('.buy').forEach(function (r) {
+        var p = parseFloat(r.querySelector('.bp').value), a = parseFloat(r.querySelector('.ba').value);
+        if (p > 0 && a > 0) { buys.push({ price: p, coins: usd ? a / p : a, spent: usd ? a : a * p }); ser.push(p + 'x' + a); }
+      });
+      $('b').value = ser.join(',');
+      var ok = buys.length > 0; $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var Q = 0, S = 0; buys.forEach(function (b) { Q += b.coins; S += b.spent; });
+      var avg = S / Q, hasCur = cur > 0, value = Q * cur, pl = value - S, notes = '';
+      $('verdict').textContent = buys.length + ' buy' + (buys.length > 1 ? 's' : '') + (hasCur ? (pl >= 0 ? ', in profit' : ', under water') : '');
+      $('verdict').className = 'verdict ' + (!hasCur ? '' : pl >= 0 ? 'up' : 'down');
+      CC.count($('avg'), avg, function (v) { return '' + f.usd(v); });
+      $('sub').textContent = 'per ' + (c.sym || 'coin') + ', and your break-even price before fees';
+      $('spent').textContent = f.money(S);
+      $('coins').textContent = f.amt(Q) + ' ' + c.sym;
+      $('value').textContent = hasCur ? f.money(value) : '–';
+      $('pl').textContent = hasCur ? f.money(pl, true) + ' (' + f.pct(pl / S * 100, true) + ')' : '–';
+      $('pl').className = hasCur ? (pl >= 0 ? 'up' : 'down') : '';
+      $('be').textContent = !hasCur ? '–' : cur >= avg ? 'None, you are above it' : f.pct((avg - cur) / cur * 100, true);
+
+      if (target > 0 && hasCur) {
+        var lo = Math.min(avg, cur), hi = Math.max(avg, cur);
+        if (target > lo && target < hi) {
+          var q = (S - target * Q) / (target - cur);
+          notes += '<div class="note good">To move your average to ' + f.usd(target) + ', buy <b>' + f.money(q * cur) + '</b> more (' + f.amt(q) + ' ' + c.sym + ') at ' + f.usd(cur) + '. Your position would grow to ' + f.money(S + q * cur) + '.</div>';
+        } else notes += '<div class="note">A buy at today\'s price can only move your average to somewhere between ' + f.usd(lo) + ' and ' + f.usd(hi) + '. Pick a target inside that range.</div>';
+      }
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+
+      $('more').innerHTML = !hasCur ? '<tr><td colspan="4" class="empty">Enter the price now to see this.</td></tr>' : [0.25, 0.5, 1, 2].map(function (m) {
+        var add = S * m, na = (S + add) / (Q + add / cur);
+        return '<tr><td>' + f.money(add) + ' <span class="tnote" style="display:inline">(' + (m * 100) + '% more)</span></td><td class="r"><b>' + f.usd(na) + '</b></td><td class="r ' + (na <= avg ? 'up' : 'down') + '">' + f.pct((na - avg) / avg * 100, true) + '</td><td class="r hide-s">' + (cur >= na ? 'None' : f.pct((na - cur) / cur * 100, true)) + '</td></tr>';
+      }).join('');
+      $('each').innerHTML = buys.map(function (b) {
+        var g = hasCur ? b.coins * cur - b.spent : NaN;
+        return '<tr><td>' + f.usd(b.price) + '</td><td class="r">' + f.amt(b.coins) + '</td><td class="r hide-s">' + f.pct(b.coins / Q * 100) + '</td><td class="r ' + (g >= 0 ? 'up' : 'down') + '">' + (hasCur ? f.money(g, true) : '–') + '</td></tr>';
+      }).join('');
+    }
+  });
+  wrap.addEventListener('input', function (e) { e.target.dataset.touched = 1; pg.run(); });
+  wrap.addEventListener('click', function (e) {
+    var b = e.target.closest('.rm'); if (!b) return;
+    if (wrap.children.length > 1) b.parentNode.remove(); else b.parentNode.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+    pg.run();
+  });
+  $('addBuy').addEventListener('click', function () { row('', '').querySelector('.bp').focus(); });
+})();
+</script>
+</body>
+</html>
