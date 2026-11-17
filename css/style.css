@@ -576,6 +576,10 @@ h1.rise { opacity: 1; transform: none; animation: none; }
   .sheet-head { padding-top: 10px; }
 }
 
+.ccy-btn { display: inline-flex; align-items: center; gap: 4px; padding: 0 8px 0 12px; }
+.ccy-btn .chev { width: 13px; height: 13px; transform: rotate(90deg); }
+.sheet-list .coin-ico { letter-spacing: -.02em; }
+
 /* FAQ: answers slide open where the browser can animate to auto height */
 .faq summary { transition: color .2s; }
 .faq summary::after { transition: transform .45s var(--spring); }

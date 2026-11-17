@@ -266,6 +266,7 @@ window.CC = (function () {
       if (sel.options.length < 2) sel.innerHTML = Object.keys(FIATS).map(function (k) { return '<option value="' + k + '">' + k + '</option>'; }).join('');
       sel.value = cur; sel.disabled = !!curLock || !state.loaded;
       sel.title = curLock ? 'This page works in US dollars' : 'Currency: ' + FIATS[cur];
+      if (sel._paint) sel._paint();
     }
     document.querySelectorAll('[data-cur]').forEach(function (el) { if (el.textContent !== cur) el.textContent = cur; });
   }
@@ -458,25 +459,38 @@ window.CC = (function () {
   }
 
 
-  /* Coin picker: replaces the plain dropdown with a button that opens a searchable sheet with coin icons */
+  /* Picker: replaces a plain dropdown with a button that opens a searchable sheet (coins with icons, currencies with names) */
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
   var dlg, dlgSel;
+  var KINDS = {
+    coin: {
+      title: 'Choose a coin', search: 'Search coins', none: 'No coin matches that search.',
+      item: function (v) { var c = coin(v); return c && { name: c.name, sub: c.sym, ico: icon(c), right: c.price != null ? fmt.usd(px(c)) : '' }; },
+      label: function (v) { var c = coin(v); return c ? icon(c) + '<span>' + esc(c.sym) + ' · ' + esc(c.name) + '</span>' : '<span>Choose a coin</span>'; }
+    },
+    ccy: {
+      title: 'Choose a currency', search: 'Search currencies', none: 'No currency matches that search.',
+      item: function (v) { return FIATS[v] && { name: FIATS[v], sub: v, ico: '<span class="coin-ico">' + esc(v) + '</span>', right: '' }; },
+      label: function (v) { return '<span>' + esc(v) + '</span>'; }
+    }
+  };
   function pickList(q) {
     q = (q || '').trim().toLowerCase();
+    var k = dlgSel._kind;
     var html = Array.prototype.map.call(dlgSel.options, function (o) {
-      var c = coin(o.value); if (!c) return '';
-      if (q && c.name.toLowerCase().indexOf(q) < 0 && c.sym.toLowerCase().indexOf(q) < 0) return '';
-      return '<li><button type="button" data-id="' + c.id + '"' + (o.value === dlgSel.value ? ' aria-current="true"' : '') + '>' + icon(c) +
-        '<span><b>' + esc(c.name) + '</b><small>' + esc(c.sym) + '</small></span><span class="pr">' + (c.price != null ? fmt.usd(px(c)) : '') + '</span></button></li>';
+      var it = k.item(o.value); if (!it) return '';
+      if (q && it.name.toLowerCase().indexOf(q) < 0 && it.sub.toLowerCase().indexOf(q) < 0) return '';
+      return '<li><button type="button" data-id="' + esc(o.value) + '"' + (o.value === dlgSel.value ? ' aria-current="true"' : '') + '>' + it.ico +
+        '<span><b>' + esc(it.name) + '</b><small>' + esc(it.sub) + '</small></span><span class="pr">' + it.right + '</span></button></li>';
     }).join('');
     dlg.querySelector('.sheet-list').innerHTML = html;
     dlg.querySelector('.sheet-none').hidden = !!html;
   }
   function openPick(sel) {
     if (!dlg) {
-      dlg = document.createElement('dialog'); dlg.className = 'sheet'; dlg.setAttribute('aria-label', 'Choose a coin');
-      dlg.innerHTML = '<div class="sheet-in"><div class="sheet-grab"></div><div class="sheet-head"><h2>Choose a coin</h2><button type="button" class="sheet-x" aria-label="Close">×</button></div>' +
-        '<div class="inp"><input type="search" placeholder="Search coins" aria-label="Search coins" autocomplete="off" spellcheck="false"></div><ul class="sheet-list"></ul><p class="sheet-none" hidden>No coin matches that search.</p></div>';
+      dlg = document.createElement('dialog'); dlg.className = 'sheet';
+      dlg.innerHTML = '<div class="sheet-in"><div class="sheet-grab"></div><div class="sheet-head"><h2></h2><button type="button" class="sheet-x" aria-label="Close">×</button></div>' +
+        '<div class="inp"><input type="search" autocomplete="off" spellcheck="false"></div><ul class="sheet-list"></ul><p class="sheet-none" hidden></p></div>';
       document.body.appendChild(dlg);
       var inp = dlg.querySelector('input'), list = dlg.querySelector('.sheet-list');
       var choose = function (id) { dlg.close(); if (dlgSel.value !== id) { dlgSel.value = id; dlgSel.dispatchEvent(new Event('change', { bubbles: true })); } };
@@ -495,22 +509,23 @@ window.CC = (function () {
       dlg.addEventListener('close', function () { if (dlgSel && dlgSel._btn) dlgSel._btn.focus(); });
     }
     dlgSel = sel;
-    var input = dlg.querySelector('input'); input.value = '';
+    var k = sel._kind, input = dlg.querySelector('input');
+    dlg.setAttribute('aria-label', k.title); dlg.querySelector('h2').textContent = k.title;
+    input.value = ''; input.placeholder = k.search; input.setAttribute('aria-label', k.search);
+    dlg.querySelector('.sheet-none').textContent = k.none;
     pickList('');
     dlg.showModal();
     var curBtn = dlg.querySelector('[aria-current="true"]');
     if (curBtn) curBtn.scrollIntoView({ block: 'center' });
     if (matchMedia('(min-width: 641px) and (hover: hover)').matches) input.focus(); else dlg.querySelector('.sheet-x').focus();
   }
-  function picker(sel) {
+  function picker(sel, kind, cls) {
     if (!sel || sel._paint || !window.HTMLDialogElement) return;
-    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'pick-btn'; btn.id = sel.id + 'Btn'; btn.setAttribute('aria-haspopup', 'dialog');
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = cls || 'pick-btn'; btn.id = sel.id + 'Btn'; btn.setAttribute('aria-haspopup', 'dialog');
     var lab = document.querySelector('label[for="' + sel.id + '"]'); if (lab) lab.htmlFor = btn.id;
-    sel._btn = btn;
-    sel._paint = function () {
-      var c = coin(sel.value);
-      btn.innerHTML = (c ? icon(c) : '') + '<span>' + (c ? esc(c.sym) + ' · ' + esc(c.name) : 'Choose a coin') + '</span>' + CHEV;
-    };
+    var al = sel.getAttribute('aria-label'); if (al) btn.setAttribute('aria-label', al);
+    sel._btn = btn; sel._kind = KINDS[kind || 'coin'];
+    sel._paint = function () { btn.innerHTML = sel._kind.label(sel.value) + CHEV; btn.disabled = sel.disabled; btn.title = sel.title || ''; };
     sel.hidden = true; sel.parentNode.insertBefore(btn, sel);
     sel.addEventListener('change', sel._paint);
     btn.addEventListener('click', function () { openPick(sel); });
@@ -618,6 +633,7 @@ window.CC = (function () {
     }
     var cs = $('ccySel');
     if (cs) cs.addEventListener('change', function () { setCur(cs.value); });
+    if (cs) { picker(cs, 'ccy', 'ccy ccy-btn'); renderCur(); }
     var tb = $('themeBtn');
     if (tb) tb.addEventListener('click', function () {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
