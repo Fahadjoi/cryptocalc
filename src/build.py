@@ -178,7 +178,7 @@ def render(raw):
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.coingecko.com" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=19">
+<link rel="stylesheet" href="/css/style.css?v=20">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -195,7 +195,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=19"></script>
+<script src="/js/app.js?v=20"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -203,7 +203,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=19"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=20"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     rel = path.strip('/')
     if not path.endswith('/') and '.' not in rel.split('/')[-1]: rel += '.html'   # /about is served from about.html
     out = OUT / (rel + '/index.html' if path.endswith('/') else rel)
@@ -235,7 +235,10 @@ for cid, sym, name in PCOINS:
                 .replace('{TOPLURAL}', toplural).replace('{SYM}', sym).replace('{NAME}', name).replace('{TONAME}', toname).replace('{TO}', to).replace('{ID}', cid))
         hdr = (f'title: {sym} to {to} | Live {name} to {toname} converter\n'
                f'desc: Convert {name} ({sym}) to {toplural} ({to}) at the live market rate. Includes a {sym} to {to} table for common amounts and the reverse conversion.\n'
-               f'path: {ppath(sym, to)}\nkind: tool\nscripts: /js/converter.js\n---\n')
+               f'path: {ppath(sym, to)}\nkind: tool\nscripts: /js/converter.js\n'
+               # Only the coin-to-USD pages are offered to search engines; the other currency pairs share most of their text,
+               # so they stay usable but are kept out of the index and the sitemap.
+               + ('' if to == 'USD' else 'noindex: 1\n') + '---\n')
         paths.append(render(hdr + body))
 urls = ''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p, m in paths if not m.get('noindex'))
 (OUT / 'sitemap.xml').write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n')

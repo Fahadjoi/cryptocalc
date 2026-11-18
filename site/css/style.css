@@ -581,7 +581,7 @@ h1.rise { opacity: 1; transform: none; animation: none; }
 .ccy-btn .chev { width: 13px; height: 13px; transform: rotate(90deg); }
 .sheet-list .coin-ico { letter-spacing: -.02em; }
 
-.contact-card { max-width: 520px; }
+.contact-card { max-width: 520px; margin-bottom: 36px; }
 .contact-lbl { font-size: 14px; color: var(--muted); }
 .contact-mail { font-size: clamp(18px, 4.9vw, 28px); white-space: nowrap; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 2px 0 10px; }
 .contact-mail a { text-decoration: none; background: linear-gradient(transparent 60%, var(--hl) 60%); }
