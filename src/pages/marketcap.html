@@ -97,12 +97,14 @@ A: The calculator takes the live market cap and price from CoinGecko and divides
 @script
 (function () {
   var $ = CC.$, f = CC.fmt;
-  var supEl = $('supply'), fromUrl = new URLSearchParams(location.search).has('supply');
-  if (fromUrl) supEl.dataset.touched = 1;
+  var qs = new URLSearchParams(location.search), supEl = $('supply'), priceEl = $('price');
+  if (qs.has('supply')) supEl.dataset.touched = 1;
+  if (qs.has('price')) priceEl.dataset.touched = 1;
+  function mx(k) { return (k >= 10 ? f.num(k, 1) : k >= 0.1 ? f.num(k, 2) : String(Number(k.toPrecision(2)))) + '×'; }
   CC.page({
     ids: ['coin', 'price', 'supply', 'target', 'hold'],
     coinOpt: { stables: false },
-    onCoin: function () { delete supEl.dataset.touched; supEl.dataset.for = ''; },
+    onCoin: function () { delete supEl.dataset.touched; supEl.dataset.for = ''; priceEl.dataset.for = ''; },
     onCur: function () {   // keep the market cap presets short (2T, not 2,000,000,000,000) in any currency
       setTimeout(function () {
         document.querySelectorAll('[data-set^="target:"]').forEach(function (b) { b.textContent = f.compact(Number((parseFloat(b.dataset.set.split(':')[1]) * CC.rate()).toPrecision(1))).replace(/\.00(?=[KMBT])/, ''); });
@@ -113,6 +115,9 @@ A: The calculator takes the live market cap and price from CoinGecko and divides
       if (!supEl.dataset.touched && c.mcap > 0 && c.price > 0 && supEl.dataset.for !== c.id) {
         supEl.value = Math.round(c.mcap / c.price); supEl.dataset.for = c.id;
       }
+      if (!priceEl.dataset.touched && c.price > 0 && priceEl.dataset.for !== c.id + CC.cur()) {   // a link that names only the coin still starts from its live price
+        priceEl.value = CC.round(CC.px(c)); priceEl._cur = CC.cur(); priceEl.dataset.for = c.id + CC.cur();
+      }
       var price = CC.n('price'), supply = CC.n('supply'), target = CC.n('target'), hold = CC.n('hold');
       var ok = price > 0 && supply > 0 && target > 0;
       $('empty').hidden = ok; $('out').hidden = !ok;
@@ -122,7 +127,7 @@ A: The calculator takes the live market cap and price from CoinGecko and divides
       $('verdict').textContent = c.sym ? c.sym + ' at a ' + f.compact(target) + ' market cap' : 'At a ' + f.compact(target) + ' market cap';
       $('verdict').className = 'verdict ' + (up ? 'up' : 'down');
       CC.count($('tprice'), tp, function (v) { return f.usd(v); });
-      $('sub').textContent = (mult >= 1 ? f.num(mult, mult < 10 ? 2 : 1) + '× ' : f.num(mult, 3) + '× ') + 'today\'s price (' + f.pct((mult - 1) * 100, true) + ')';
+      $('sub').textContent = mx(mult) + ' today\'s price (' + f.pct((mult - 1) * 100, true) + ')';
       $('mcap').textContent = f.compact(now);
       $('sup').textContent = f.num(supply, 0) + (c.sym ? ' ' + c.sym : '');
       $('chg').textContent = f.pct((mult - 1) * 100, true); $('chg').className = up ? 'up' : 'down';
@@ -138,7 +143,7 @@ A: The calculator takes the live market cap and price from CoinGecko and divides
 
       var rows = big.filter(function (x) { return x.id !== c.id; }).map(function (x) {
         var m = x.mcap * CC.rate(), p = m / supply, k = p / price;
-        return '<tr><td>' + CC.icon(x) + ' ' + CC.esc(x.sym) + '</td><td class="r hide-s">' + f.compact(m) + '</td><td class="r"><b>' + f.usd(p) + '</b></td><td class="r ' + (k >= 1 ? 'up' : 'down') + '">' + f.num(k, k < 10 ? 2 : 1) + '×</td></tr>';
+        return '<tr><td>' + CC.icon(x) + ' ' + CC.esc(x.sym) + '</td><td class="r hide-s">' + f.compact(m) + '</td><td class="r"><b>' + f.usd(p) + '</b></td><td class="r ' + (k >= 1 ? 'up' : 'down') + '">' + mx(k) + '</td></tr>';
       }).join('') || '<tr><td colspan="4">Live market caps are still loading.</td></tr>';
       if ($('cmp').dataset.h !== rows) { $('cmp').innerHTML = rows; $('cmp').dataset.h = rows; }
     }
