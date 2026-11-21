@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to hedge crypto with a short position | Worked example</title>
+<meta name="description" content="How shorting a perpetual future protects coins you hold from a price drop, how much to short, what it costs in fees and funding, and the liquidation risk that can undo the hedge.">
+<link rel="canonical" href="https://coinabacus.com/guides/hedging-with-a-short/">
+<meta property="og:title" content="How to hedge crypto with a short position | Worked example">
+<meta property="og:description" content="How shorting a perpetual future protects coins you hold from a price drop, how much to short, what it costs in fees and funding, and the liquidation risk that can undo the hedge.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/guides/hedging-with-a-short/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=21">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Hedging your coins with a short", "description": "How shorting a perpetual future protects coins you hold from a price drop, how much to short, what it costs in fees and funding, and the liquidation risk that can undo the hedge.", "datePublished": "2026-11-22", "dateModified": "2026-11-22", "author": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "publisher": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "mainEntityOfPage": "https://coinabacus.com/guides/hedging-with-a-short/", "image": "https://coinabacus.com/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://coinabacus.com/guides/"}, {"@type": "ListItem", "position": 2, "name": "Hedging your coins with a short", "item": "https://coinabacus.com/guides/hedging-with-a-short/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much should I short to hedge my crypto?", "acceptedAnswer": {"@type": "Answer", "text": "To remove the price risk completely, short the same number of coins you hold. Shorting less gives a partial hedge that reduces losses but keeps some of the upside."}}, {"@type": "Question", "name": "Can my hedge be liquidated?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. If the price rises far enough, the short is liquidated and the protection disappears. Low leverage and spare margin keep the liquidation price far away."}}, {"@type": "Question", "name": "Does hedging cost money?", "acceptedAnswer": {"@type": "Answer", "text": "It costs trading fees on the short and, when funding is negative, funding payments. When funding is positive, the short receives payments instead."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/market-cap-calculator/" class="nav-x">Market cap</a><a href="/loss-recovery-calculator/" class="nav-x">Recovery</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Hedging your coins with a short</h1><p class="rise" style="--d:1">If you want to keep your coins but not their price risk for a while, you can short the same amount on a futures market. Gains on one side cover losses on the other.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>Why hedge instead of selling</h2>
+<p>Selling coins removes the risk, but it may create a taxable gain, cost you a staking position, or simply mean buying back later at a different price. A hedge keeps the coins where they are and offsets their price moves with an opposite position. It is common before a period of uncertainty, such as a big news event, or when coins are locked and cannot be sold.</p>
+
+<h2>How the hedge works</h2>
+<p>You hold coins, which gain when the price rises. You open a short of the same size on a futures market, which gains when the price falls. While both are open, the two cancel out and your total value barely moves.</p>
+<div class="example">
+  <p>You hold <b>0.5 BTC</b> bought long ago. The price is <b>$60,000</b>, so the coins are worth <b>$30,000</b>.</p>
+  <p>You short 0.5 BTC on a perpetual future, a $30,000 position, using 3× leverage, so it ties up <b>$10,000</b> of margin.</p>
+  <p>The price falls to <b>$50,000</b>. Your coins lose $5,000. The short gains 0.5 × 10,000 = $5,000. Net change: about <b>zero</b>, before costs.</p>
+  <p>If the price had risen to $70,000 instead, the coins would gain $5,000 and the short would lose $5,000. A hedge gives up the upside too.</p>
+</div>
+
+<h2>What it costs</h2>
+<ul>
+  <li><strong>Trading fees</strong> to open and close the short, charged on the full $30,000. At 0.05% each way that is about $30.</li>
+  <li><strong>Funding.</strong> Perpetual futures exchange a funding payment every eight hours. When the rate is positive, which is common in rising markets, shorts receive it, so the hedge can even earn a little. When it is negative, shorts pay. See <a href="/guides/funding-rates-explained/">funding rates explained</a>.</li>
+  <li><strong>The margin</strong> held on the futures exchange, which cannot be used for anything else while the hedge is open.</li>
+</ul>
+
+<h2>The real risk: liquidation of the short</h2>
+<p>The hedge only works while the short stays open. If the price rises sharply, the short loses money and its margin runs down. At the liquidation price the exchange closes it, and you are left with your coins and no protection, having also lost the margin.</p>
+<div class="example">
+  <p>At 3× leverage with a 0.5% maintenance margin, the short is liquidated near 60,000 × (1 + 1/3 − 0.005) = <b>$79,700</b>.</p>
+  <p>Above that price the coins keep gaining, but the $10,000 margin is gone, so your total is lower than if you had never hedged.</p>
+</div>
+<p>To keep the hedge safe, use low leverage and keep extra margin ready to add as the price climbs. The <a href="/liquidation-calculator/">liquidation calculator</a> shows how far away the liquidation price is for any leverage. <a href="/guides/how-leverage-works/">How leverage works</a> explains why lower leverage pushes it further away.</p>
+
+<h2>Partial hedges</h2>
+<p>You do not have to hedge everything. Shorting a quarter or half of your holding reduces the damage from a fall while keeping some of the upside. A half hedge on the example above would turn a $5,000 drop into a $2,500 one.</p>
+
+<h2>Things that make a hedge imperfect</h2>
+<ul>
+  <li><strong>A different coin.</strong> Hedging a small coin with a Bitcoin short only works as far as the two move together, which can break down in a sell-off.</li>
+  <li><strong>Contract price gaps.</strong> A futures price can drift slightly away from the spot price, so the two sides may not match to the dollar.</li>
+  <li><strong>Exchange risk.</strong> The short and its margin depend on the futures exchange staying open and solvent.</li>
+</ul>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How much should I short to hedge my crypto?</summary><p>To remove the price risk completely, short the same number of coins you hold. Shorting less gives a partial hedge that reduces losses but keeps some of the upside.</p></details><details><summary>Can my hedge be liquidated?</summary><p>Yes. If the price rises far enough, the short is liquidated and the protection disappears. Low leverage and spare margin keep the liquidation price far away.</p></details><details><summary>Does hedging cost money?</summary><p>It costs trading fees on the short and, when funding is negative, funding payments. When funding is positive, the short receives payments instead.</p></details></section>
+<p class="cta"><a class="btn solid" href="/liquidation-calculator/">Open the liquidation price calculator</a></p>
+<p class="fine">Updated 22 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/position-sizing/"><strong>Position sizing: how much to buy on each trade</strong><span>Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/market-cap-calculator/"><strong>Market cap</strong><span>The price a coin reaches at any market cap</span></a></li><li><a href="/loss-recovery-calculator/"><strong>Loss recovery</strong><span>The gain needed to get back to even after a loss</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/market-cap-calculator/">Market cap</a></li><li><a href="/loss-recovery-calculator/">Loss recovery</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=21"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+title: Trailing stop loss: how it works and how far to trail
+desc: How a trailing stop follows the price up and locks in profit, how to choose the trailing distance, worked examples, and the situations where a trailing stop does more harm than good.
+path: /guides/trailing-stop-loss/
+kind: guide
+tool: /position-size-calculator/
+h1: Trailing stop loss
+lede: A trailing stop moves up as the price rises and stays put when it falls. It lets a winning trade keep running while making sure most of the gain is kept if the trend turns.
+date: 22 November 2026
+iso: 2026-11-22
+order: 24
+---
+<h2>How a trailing stop works</h2>
+<p>An ordinary stop loss sits at a fixed price. A trailing stop sits a set distance below the highest price reached since you opened the trade, for a long, or above the lowest price, for a short. Each new high pulls the stop up. When the price falls back, the stop stays where it is, and if the price reaches it the position is closed.</p>
+<div class="example">
+  <p>You buy at <b>$60,000</b> with a <b>5%</b> trailing stop, so the stop starts at $57,000.</p>
+  <p>The price climbs to $65,000. The stop rises to 65,000 × 0.95 = <b>$61,750</b>, already above your entry.</p>
+  <p>It reaches $70,000. The stop is now <b>$66,500</b>.</p>
+  <p>The price then drops to $66,500 and the position closes, about <b>10.8%</b> above your entry before fees.</p>
+</div>
+
+<h2>Choosing the trailing distance</h2>
+<p>The distance is the hard part. Too tight and normal day-to-day swings close the trade early. Too wide and you hand back a large part of the gain before the stop is hit.</p>
+<ul>
+  <li><strong>Match it to how much the coin moves.</strong> If a coin regularly swings 4% within a day, a 3% trail will be hit by noise. Larger and more volatile coins need wider trails.</li>
+  <li><strong>Use the average true range.</strong> Many traders set the trail at two to three times the average daily range, a measure called ATR that most charting tools show.</li>
+  <li><strong>Match it to your time frame.</strong> A trade you plan to hold for weeks needs more room than one you plan to close today.</li>
+</ul>
+
+<h2>Percentage or fixed amount</h2>
+<p>Most exchanges let you set the trail as a percentage or as a fixed price distance. A percentage scales with the price, so a 5% trail is $3,000 at $60,000 and $3,500 at $70,000. A fixed distance stays the same, so it gets relatively tighter as the price rises. For trades that may run a long way, a percentage usually behaves more sensibly.</p>
+
+<h2>Starting from your initial stop</h2>
+<p>A common approach is to begin with a normal stop loss placed where the trade idea fails, sized with the <a href="/position-size-calculator/">position size calculator</a>. Once the trade is in profit by about the same distance as the stop, the stop is moved to break even, and from there it trails. The first loss stays planned and the rest of the trade cannot turn into a loss. See <a href="/guides/how-to-set-a-stop-loss/">how to set a stop loss</a>.</p>
+
+<h2>When a trailing stop works badly</h2>
+<ul>
+  <li><strong>Sideways markets.</strong> In a range the price keeps touching the stop and pulling back, so you are stopped out again and again for small losses and fees.</li>
+  <li><strong>Sudden wicks.</strong> A brief spike down can trigger the stop and fill at a poor price, then the price recovers within minutes.</li>
+  <li><strong>Gaps and thin order books.</strong> A trailing stop usually becomes a market order when it triggers, so in a fast fall the fill can be below the stop price.</li>
+</ul>
+
+<h2>Partial exits as an alternative</h2>
+<p>Some traders combine a trailing stop with selling part of the position at fixed targets. That locks in some profit early and leaves the rest to trail. <a href="/guides/taking-profit-in-stages/">Taking profit in stages</a> shows how to plan the split.</p>
+
+@faq
+Q: What is a good trailing stop percentage for crypto?
+A: It depends on the coin and your time frame. Short-term trades on Bitcoin often use 2% to 5%, while smaller, more volatile coins and longer holds may need 10% or more so normal swings do not close the trade.
+Q: Does a trailing stop guarantee my exit price?
+A: No. When it triggers it usually sends a market order, so in a fast move the fill can be worse than the stop price.
+Q: Does a trailing stop ever move down?
+A: No, not on a long position. It only moves up with new highs. On a short it only moves down with new lows.
+@end

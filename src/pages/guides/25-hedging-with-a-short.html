@@ -1,0 +1,56 @@
+title: How to hedge crypto with a short position | Worked example
+desc: How shorting a perpetual future protects coins you hold from a price drop, how much to short, what it costs in fees and funding, and the liquidation risk that can undo the hedge.
+path: /guides/hedging-with-a-short/
+kind: guide
+tool: /liquidation-calculator/
+h1: Hedging your coins with a short
+lede: If you want to keep your coins but not their price risk for a while, you can short the same amount on a futures market. Gains on one side cover losses on the other.
+date: 22 November 2026
+iso: 2026-11-22
+order: 25
+---
+<h2>Why hedge instead of selling</h2>
+<p>Selling coins removes the risk, but it may create a taxable gain, cost you a staking position, or simply mean buying back later at a different price. A hedge keeps the coins where they are and offsets their price moves with an opposite position. It is common before a period of uncertainty, such as a big news event, or when coins are locked and cannot be sold.</p>
+
+<h2>How the hedge works</h2>
+<p>You hold coins, which gain when the price rises. You open a short of the same size on a futures market, which gains when the price falls. While both are open, the two cancel out and your total value barely moves.</p>
+<div class="example">
+  <p>You hold <b>0.5 BTC</b> bought long ago. The price is <b>$60,000</b>, so the coins are worth <b>$30,000</b>.</p>
+  <p>You short 0.5 BTC on a perpetual future, a $30,000 position, using 3× leverage, so it ties up <b>$10,000</b> of margin.</p>
+  <p>The price falls to <b>$50,000</b>. Your coins lose $5,000. The short gains 0.5 × 10,000 = $5,000. Net change: about <b>zero</b>, before costs.</p>
+  <p>If the price had risen to $70,000 instead, the coins would gain $5,000 and the short would lose $5,000. A hedge gives up the upside too.</p>
+</div>
+
+<h2>What it costs</h2>
+<ul>
+  <li><strong>Trading fees</strong> to open and close the short, charged on the full $30,000. At 0.05% each way that is about $30.</li>
+  <li><strong>Funding.</strong> Perpetual futures exchange a funding payment every eight hours. When the rate is positive, which is common in rising markets, shorts receive it, so the hedge can even earn a little. When it is negative, shorts pay. See <a href="/guides/funding-rates-explained/">funding rates explained</a>.</li>
+  <li><strong>The margin</strong> held on the futures exchange, which cannot be used for anything else while the hedge is open.</li>
+</ul>
+
+<h2>The real risk: liquidation of the short</h2>
+<p>The hedge only works while the short stays open. If the price rises sharply, the short loses money and its margin runs down. At the liquidation price the exchange closes it, and you are left with your coins and no protection, having also lost the margin.</p>
+<div class="example">
+  <p>At 3× leverage with a 0.5% maintenance margin, the short is liquidated near 60,000 × (1 + 1/3 − 0.005) = <b>$79,700</b>.</p>
+  <p>Above that price the coins keep gaining, but the $10,000 margin is gone, so your total is lower than if you had never hedged.</p>
+</div>
+<p>To keep the hedge safe, use low leverage and keep extra margin ready to add as the price climbs. The <a href="/liquidation-calculator/">liquidation calculator</a> shows how far away the liquidation price is for any leverage. <a href="/guides/how-leverage-works/">How leverage works</a> explains why lower leverage pushes it further away.</p>
+
+<h2>Partial hedges</h2>
+<p>You do not have to hedge everything. Shorting a quarter or half of your holding reduces the damage from a fall while keeping some of the upside. A half hedge on the example above would turn a $5,000 drop into a $2,500 one.</p>
+
+<h2>Things that make a hedge imperfect</h2>
+<ul>
+  <li><strong>A different coin.</strong> Hedging a small coin with a Bitcoin short only works as far as the two move together, which can break down in a sell-off.</li>
+  <li><strong>Contract price gaps.</strong> A futures price can drift slightly away from the spot price, so the two sides may not match to the dollar.</li>
+  <li><strong>Exchange risk.</strong> The short and its margin depend on the futures exchange staying open and solvent.</li>
+</ul>
+
+@faq
+Q: How much should I short to hedge my crypto?
+A: To remove the price risk completely, short the same number of coins you hold. Shorting less gives a partial hedge that reduces losses but keeps some of the upside.
+Q: Can my hedge be liquidated?
+A: Yes. If the price rises far enough, the short is liquidated and the protection disappears. Low leverage and spare margin keep the liquidation price far away.
+Q: Does hedging cost money?
+A: It costs trading fees on the short and, when funding is negative, funding payments. When funding is positive, the short receives payments instead.
+@end

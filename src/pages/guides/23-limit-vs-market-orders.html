@@ -1,0 +1,59 @@
+title: Limit vs market orders in crypto: fees, slippage and when to use each
+desc: How market and limit orders work, why limit orders usually pay the lower maker fee, what slippage costs on a market order, and when each order type makes sense.
+path: /guides/limit-vs-market-orders/
+kind: guide
+tool: /fee-calculator/
+h1: Limit vs market orders
+lede: A market order buys now at whatever price is available. A limit order waits for your price. The choice changes the fee you pay, the price you get and whether you get filled at all.
+date: 22 November 2026
+iso: 2026-11-22
+order: 23
+---
+<h2>Market orders</h2>
+<p>A market order fills straight away against the orders already waiting on the exchange's order book. You are certain to get in or out, but not certain of the price. The order takes the best price on offer, then the next best, and so on until it is filled.</p>
+<ul>
+  <li><strong>Fee:</strong> a market order removes liquidity from the book, so it pays the <b>taker</b> fee, which is usually the higher of the two.</li>
+  <li><strong>Price:</strong> you pay the spread, the gap between the best buy and sell prices, and on larger orders some slippage as the order eats into worse prices.</li>
+</ul>
+
+<h2>Limit orders</h2>
+<p>A limit order sets the worst price you will accept. A buy limit at $59,500 fills only at $59,500 or lower. If the market never gets there, nothing happens.</p>
+<ul>
+  <li><strong>Fee:</strong> a limit order that waits on the book adds liquidity, so it usually pays the lower <b>maker</b> fee. On some exchanges the maker fee is half the taker fee or less.</li>
+  <li><strong>Price:</strong> you get your price or better, with no slippage.</li>
+  <li><strong>Risk:</strong> the order may never fill, and the price can run away without you.</li>
+</ul>
+<p>A limit order placed at a price that is already available, for example a buy limit above the current price, fills at once and is charged as a taker. Many exchanges offer a <b>post-only</b> option that cancels the order instead, so it can only ever pay the maker fee.</p>
+
+<h2>What the difference costs</h2>
+<div class="example">
+  <p>Take an exchange that charges <b>0.10%</b> for takers and <b>0.08%</b> for makers.</p>
+  <p>A $5,000 trade costs $5.00 as a taker and $4.00 as a maker, a $1 saving on each side.</p>
+  <p>Add a typical spread of 0.02% that a market order pays, about $1, and buying and selling with limit orders saves around $3 on the round trip.</p>
+  <p>At 200 trades a year that is about $600, money that comes straight off your results.</p>
+</div>
+<p>The <a href="/fee-calculator/">exchange fee calculator</a> shows maker and taker costs side by side for the same order on ten exchanges, and <a href="/guides/maker-vs-taker-fees/">maker vs taker fees</a> explains the fee tiers.</p>
+
+<h2>When a market order is the right choice</h2>
+<ul>
+  <li><strong>Getting out of a losing trade.</strong> When the reason for the trade is gone, being out matters more than saving a few dollars. Most stop-loss orders execute as market orders for this reason.</li>
+  <li><strong>Fast markets.</strong> In a sharp move a limit order can be left behind, and chasing it with new limits often costs more than the taker fee would have.</li>
+  <li><strong>Small orders on busy pairs.</strong> On BTC or ETH against USDT the spread is tiny, so the difference is mostly the fee.</li>
+</ul>
+
+<h2>When a limit order is the better choice</h2>
+<ul>
+  <li><strong>Planned entries</strong> at a level you chose in advance.</li>
+  <li><strong>Large orders</strong> where a market order would push through several price levels. See <a href="/guides/slippage-and-spread/">slippage and spread</a>.</li>
+  <li><strong>Thin markets</strong>, small coins with few orders on the book, where the spread can be 1% or more.</li>
+  <li><strong>Taking profit</strong> at a target, where there is usually no rush.</li>
+</ul>
+
+@faq
+Q: Is a limit order cheaper than a market order?
+A: Usually. A limit order that waits on the order book pays the maker fee, which is normally lower than the taker fee, and it avoids paying the spread and slippage.
+Q: Why did my limit order pay the taker fee?
+A: Because it matched an order that was already on the book as soon as you placed it. Only orders that rest on the book before they fill pay the maker fee. Use the post-only option to prevent this.
+Q: Can a limit order fail to fill?
+A: Yes. If the price never reaches your limit, the order stays open until you cancel it or it expires, and you miss the trade.
+@end

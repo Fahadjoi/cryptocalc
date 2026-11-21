@@ -1,0 +1,61 @@
+title: How to calculate crypto percentage gain, ROI and annual return
+desc: The formulas for percentage change, return on investment after fees and annualised return (CAGR), with worked examples and the mistakes that make gains look bigger than they are.
+path: /guides/percentage-gain-and-roi/
+kind: guide
+tool: /profit-calculator/
+h1: Percentage gain, ROI and annual return
+lede: "Up 200%" can mean very different things depending on fees, time and where you started counting. Three short formulas cover almost every case.
+date: 22 November 2026
+iso: 2026-11-22
+order: 21
+---
+<h2>Percentage change</h2>
+<p>The basic question is how far a price or a balance has moved compared with where it started.</p>
+<div class="formula">Percentage change = (new value − old value) ÷ old value × 100</div>
+<div class="example">
+  <p>You bought a coin at <b>$2.00</b> and it now trades at <b>$2.60</b>.</p>
+  <p>(2.60 − 2.00) ÷ 2.00 × 100 = <b>+30%</b>.</p>
+  <p>If it fell to $1.40 instead: (1.40 − 2.00) ÷ 2.00 × 100 = <b>−30%</b>.</p>
+</div>
+<p>Always divide by the starting value. Dividing by the new value is the most common slip, and it makes gains look smaller and losses look larger than they really are.</p>
+
+<h2>Return on investment, after fees</h2>
+<p>A price move is not the same as what you made. Return on investment, or ROI, compares the money you got back with the money you put in, after every cost.</p>
+<div class="formula">ROI = (money out − money in) ÷ money in × 100<small>Money in includes the buying fee. Money out is what reaches your balance after the selling fee.</small></div>
+<div class="example">
+  <p>You spend <b>$1,000</b> plus a $1 fee, so money in is <b>$1,001</b>.</p>
+  <p>The coin rises 30% and the position is worth $1,300. Selling costs a 0.1% fee of $1.30, so money out is <b>$1,298.70</b>.</p>
+  <p>ROI: (1,298.70 − 1,001) ÷ 1,001 × 100 = <b>29.74%</b>, a little under the 30% price move.</p>
+</div>
+<p>On one trade the difference is small. Across hundreds of trades it adds up, which is why the <a href="/profit-calculator/">profit calculator</a> counts the fee at both ends.</p>
+
+<h2>Annualised return</h2>
+<p>A 50% gain in three months and a 50% gain in three years are not equally good. To compare returns over different lengths of time, convert them to a yearly rate. This is called the compound annual growth rate, or CAGR.</p>
+<div class="formula">Annual return = (end value ÷ start value)<sup>1 ÷ years</sup> − 1</div>
+<div class="example">
+  <p>$1,000 grew to <b>$3,000</b> over <b>3 years</b>.</p>
+  <p>(3,000 ÷ 1,000)<sup>1/3</sup> − 1 = 3<sup>0.333</sup> − 1 = <b>44.2% a year</b>.</p>
+  <p>Not 66.7% a year, which is what you get by simply dividing the 200% total by three. Compounding means each year's gain builds on the last.</p>
+</div>
+
+<h2>Gains and losses do not cancel out</h2>
+<p>A coin that rises 50% and then falls 50% does not end where it started. $100 becomes $150, then $75, a 25% loss overall. Percentages are always measured from the current value, so a loss after a gain hits a bigger number. The <a href="/loss-recovery-calculator/">loss recovery calculator</a> shows how steep the climb back is after a fall.</p>
+
+<h2>Percent and percentage points</h2>
+<p>If a staking rate goes from 4% to 6%, it has risen by <b>2 percentage points</b>, or by <b>50%</b>. Both are correct, but they describe different things, and headlines often pick whichever sounds bigger.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+  <li><strong>Leaving out fees and funding.</strong> On leveraged trades, fees are charged on the full position and funding is paid every eight hours.</li>
+  <li><strong>Ignoring deposits.</strong> If you added money during the period, the balance grew partly because of your deposits. Measure the return on each deposit separately, or use the money-in and money-out totals.</li>
+  <li><strong>Mixing currencies.</strong> A 20% gain in dollars can be a different number in rupees or euros if the exchange rate moved over the same period.</li>
+</ul>
+
+@faq
+Q: How do I calculate my percentage gain on a crypto trade?
+A: Subtract what you paid from what it is worth now, divide by what you paid, and multiply by 100. Bought at $50 and now worth $65: (65 − 50) ÷ 50 × 100 = 30%.
+Q: What is the difference between ROI and percentage change?
+A: Percentage change measures the price move. ROI measures what you actually made on the money you put in, after fees and any other costs.
+Q: How do I compare returns over different time periods?
+A: Convert each to an annual rate with the CAGR formula: (end ÷ start) raised to the power of 1 ÷ years, minus 1.
+@end

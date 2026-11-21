@@ -1,0 +1,53 @@
+title: Losing streaks and risk of ruin in trading | How much to risk
+desc: How long losing streaks get even for good strategies, how much of the account each streak costs at different risk levels, and how position size keeps a bad run survivable.
+path: /guides/risk-of-ruin/
+kind: guide
+tool: /loss-recovery-calculator/
+h1: Losing streaks and risk of ruin
+lede: Every strategy has losing runs. The amount you risk on each trade decides whether a bad run is an annoyance or the end of the account.
+date: 22 November 2026
+iso: 2026-11-22
+order: 26
+---
+<h2>Losing streaks are normal</h2>
+<p>Even a strategy that wins half the time will string several losses together, purely by chance. Over 100 trades at a 50% win rate:</p>
+<ul>
+  <li>a run of <b>5 losses</b> in a row happens about <b>81%</b> of the time,</li>
+  <li>a run of <b>8</b> about <b>17%</b> of the time,</li>
+  <li>a run of <b>10</b> about <b>4%</b> of the time.</li>
+</ul>
+<p>Strategies that win less often, such as trend following with large targets, see much longer runs. At a 40% win rate, a run of 8 losses shows up in about half of all 100-trade stretches. Over 500 trades at 50%, a run of 8 happens more often than not. Plan for these runs before they happen, because they will.</p>
+
+<h2>What a streak costs at different risk levels</h2>
+<p>If you risk a fixed share of the account on each trade, every loss is taken from a slightly smaller balance. After a run of losses the account is down by:</p>
+<div class="formula">Drawdown = 1 − (1 − risk per trade)<sup>losses in a row</sup></div>
+<div class="table-wrap"><table class="t"><thead><tr><th>Risk per trade</th><th class="r">5 losses</th><th class="r">8 losses</th><th class="r">10 losses</th></tr></thead><tbody>
+<tr><td>1%</td><td class="r">−4.9%</td><td class="r">−7.7%</td><td class="r">−9.6%</td></tr>
+<tr><td>2%</td><td class="r">−9.6%</td><td class="r">−14.9%</td><td class="r">−18.3%</td></tr>
+<tr><td>5%</td><td class="r">−22.6%</td><td class="r">−33.7%</td><td class="r">−40.1%</td></tr>
+<tr><td>10%</td><td class="r">−41.0%</td><td class="r">−57.0%</td><td class="r">−65.1%</td></tr>
+</tbody></table></div>
+<p>At 1% per trade, ten straight losses cost under 10%, which needs about an 11% gain to recover. At 10% per trade the same run costs 65%, which needs a gain of nearly 190%. The <a href="/loss-recovery-calculator/">loss recovery calculator</a> shows the gain needed for any drawdown.</p>
+
+<h2>What risk of ruin means</h2>
+<p>Risk of ruin is the chance that losses take the account below the point where you can keep trading, or below a limit you set for yourself, such as a 50% drawdown. It rises sharply with the amount risked per trade and falls as your expectancy improves. A strategy with a small edge and large positions can have a high risk of ruin even though it makes money on average, because a bad run arrives before the edge has time to show.</p>
+
+<h2>Keeping it low</h2>
+<ul>
+  <li><strong>Risk a small, fixed share per trade.</strong> Most trading books settle on 0.5% to 2%. The <a href="/position-size-calculator/">position size calculator</a> turns that into a position size from your stop.</li>
+  <li><strong>Make sure the strategy has an edge.</strong> Without positive expectancy, small risk only slows the decline. See <a href="/guides/win-rate-and-expectancy/">win rate and expectancy</a>.</li>
+  <li><strong>Set a drawdown limit.</strong> Many traders halve their risk after a set drawdown, such as 10%, and stop to review after 20%.</li>
+  <li><strong>Watch leverage.</strong> Leverage does not change the risk you planned if you size from the stop, but a stop beyond the liquidation price means the loss is the whole margin instead.</li>
+</ul>
+
+<h2>Why the feeling matters</h2>
+<p>Long losing runs are hard to sit through. Traders often abandon a working strategy in the middle of a normal streak, or double their size to win it back, which is how most accounts are actually lost. Knowing in advance that a run of eight or ten losses is ordinary makes it easier to keep following the plan.</p>
+
+@faq
+Q: How many losses in a row should I expect?
+A: More than most people think. With a 50% win rate, a run of five losses happens in about four out of five 100-trade periods, and runs of eight or more are not rare.
+Q: How much should I risk per trade to avoid ruin?
+A: Most traders risk 0.5% to 2% of the account per trade. At 1%, ten losses in a row cost under 10% of the account.
+Q: Does a profitable strategy have zero risk of ruin?
+A: No. A strategy that makes money on average can still hit a losing run deep enough to wipe out an account if each trade risks too much.
+@end

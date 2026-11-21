@@ -1,0 +1,58 @@
+title: Win rate and expectancy: is your trading strategy profitable?
+desc: How win rate, average win and average loss combine into expectancy, the number that tells you whether a strategy makes money over many trades, with worked examples.
+path: /guides/win-rate-and-expectancy/
+kind: guide
+tool: /position-size-calculator/
+h1: Win rate and expectancy
+lede: A high win rate does not make a strategy profitable, and a low one does not make it a loser. What matters is how much you make on the winners compared with what you lose on the losers.
+date: 22 November 2026
+iso: 2026-11-22
+order: 22
+---
+<h2>Win rate on its own tells you little</h2>
+<p>Win rate is the share of trades that end in profit. A trader who wins 80% of the time sounds skilled, but if each win makes $20 and each loss costs $100, ten trades make 8 × 20 − 2 × 100 = <b>−$40</b>. The strategy loses money while almost always winning.</p>
+<p>To judge a strategy you need three numbers together: how often it wins, the average size of a win and the average size of a loss.</p>
+
+<h2>The expectancy formula</h2>
+<p>Expectancy is the average amount you can expect to make or lose per trade over a large number of trades.</p>
+<div class="formula">Expectancy = (win rate × average win) − (loss rate × average loss)<small>Loss rate = 1 − win rate. Use averages after fees.</small></div>
+<div class="example">
+  <p>You win <b>40%</b> of trades. The average win is <b>$150</b> and the average loss is <b>$50</b>.</p>
+  <p>Expectancy: 0.40 × 150 − 0.60 × 50 = 60 − 30 = <b>+$30 per trade</b>.</p>
+  <p>Over 100 trades that is about $3,000, even though six trades in ten lose.</p>
+</div>
+
+<h2>Thinking in R</h2>
+<p>Many traders measure results in R, where 1R is the amount risked on a trade. If you always risk $50, a $150 win is +3R and a full loss is −1R. Expectancy in R does not change when your account grows, so it is easier to compare over time.</p>
+<div class="example">
+  <p>Same strategy: 0.40 × 3R − 0.60 × 1R = <b>+0.6R per trade</b>.</p>
+  <p>Risking 1% of the account each time, 100 trades add roughly 60% before compounding.</p>
+</div>
+
+<h2>Break-even win rate</h2>
+<p>For a given reward-to-risk ratio there is a minimum win rate below which a strategy loses money.</p>
+<div class="formula">Break-even win rate = 1 ÷ (1 + reward ÷ risk)</div>
+<ul>
+  <li>Reward 1, risk 1: you need to win <b>50%</b> of the time.</li>
+  <li>Reward 2, risk 1: <b>33.3%</b>.</li>
+  <li>Reward 3, risk 1: <b>25%</b>.</li>
+</ul>
+<p>The <a href="/position-size-calculator/">position size calculator</a> shows this number for each trade once you enter a take-profit, and <a href="/guides/risk-reward-ratio/">the risk-reward ratio</a> covers it in more detail.</p>
+
+<h2>Fees move the line</h2>
+<p>Every trade pays fees whether it wins or not. They make wins a little smaller and losses a little larger, so the real break-even win rate is always slightly higher than the formula gives. Strategies that aim for small moves, such as scalping, feel this most. A 0.2% round trip in fees takes a large share of a 0.5% target.</p>
+
+<h2>How many trades you need</h2>
+<p>Ten trades say almost nothing. A strategy that wins 40% of the time can easily lose seven or eight in a row by chance. Most traders want at least 50 to 100 trades, kept in a simple log with entry, stop, exit and fees, before trusting the numbers. Keep the rules the same throughout, or you are measuring several strategies mixed together.</p>
+
+<h2>Expectancy is not the whole story</h2>
+<p>Two strategies with the same expectancy can feel very different. One with a low win rate brings long losing streaks, which are hard to sit through and can push you to break your own rules. Read <a href="/guides/risk-of-ruin/">losing streaks and risk of ruin</a> to see how big those streaks get.</p>
+
+@faq
+Q: What is a good win rate for trading?
+A: There is no single good number. A 35% win rate is profitable if wins are well over twice the size of losses, and an 80% win rate can lose money if losses are much bigger than wins.
+Q: How do I calculate trading expectancy?
+A: Multiply your win rate by your average win, multiply your loss rate by your average loss, and subtract the second from the first. A positive result means the strategy made money on average.
+Q: Should I include fees in my averages?
+A: Yes. Use the profit or loss each trade actually added to your balance, after fees and funding, or the result will look better than it is.
+@end

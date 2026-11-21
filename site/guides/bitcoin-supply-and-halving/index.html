@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitcoin supply and the halving explained with numbers</title>
+<meta name="description" content="How new bitcoin is created, why the reward halves every 210,000 blocks, how much is issued each day and year now, and what the 21 million cap means for price and market cap maths.">
+<link rel="canonical" href="https://coinabacus.com/guides/bitcoin-supply-and-halving/">
+<meta property="og:title" content="Bitcoin supply and the halving explained with numbers">
+<meta property="og:description" content="How new bitcoin is created, why the reward halves every 210,000 blocks, how much is issued each day and year now, and what the 21 million cap means for price and market cap maths.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/guides/bitcoin-supply-and-halving/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=21">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Bitcoin supply and the halving", "description": "How new bitcoin is created, why the reward halves every 210,000 blocks, how much is issued each day and year now, and what the 21 million cap means for price and market cap maths.", "datePublished": "2026-11-22", "dateModified": "2026-11-22", "author": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "publisher": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "mainEntityOfPage": "https://coinabacus.com/guides/bitcoin-supply-and-halving/", "image": "https://coinabacus.com/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://coinabacus.com/guides/"}, {"@type": "ListItem", "position": 2, "name": "Bitcoin supply and the halving", "item": "https://coinabacus.com/guides/bitcoin-supply-and-halving/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When is the next Bitcoin halving?", "acceptedAnswer": {"@type": "Answer", "text": "It happens at block 1,050,000, which at about ten minutes per block is expected around 2028. The exact date depends on how fast blocks are found."}}, {"@type": "Question", "name": "How many bitcoin are created per day?", "acceptedAnswer": {"@type": "Answer", "text": "Since the 2024 halving, about 450 per day: 3.125 bitcoin per block at around 144 blocks a day."}}, {"@type": "Question", "name": "What happens when all 21 million bitcoin are mined?", "acceptedAnswer": {"@type": "Answer", "text": "Miners will no longer receive new coins and will be paid only through transaction fees. That point is expected around the year 2140."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/market-cap-calculator/" class="nav-x">Market cap</a><a href="/loss-recovery-calculator/" class="nav-x">Recovery</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Bitcoin supply and the halving</h1><p class="rise" style="--d:1">There will only ever be 21 million bitcoin, and the rate at which new ones appear halves roughly every four years. The numbers behind that are simpler than they sound.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>Where new bitcoin comes from</h2>
+<p>New bitcoin is created as a reward to the miners who add each block to the chain. A block is found about every ten minutes, around 144 a day. The miner of each block receives a fixed number of new coins, called the block subsidy, plus the fees paid by the transactions inside it.</p>
+
+<h2>The halving</h2>
+<p>Every 210,000 blocks, about every four years, the subsidy is cut in half. This is written into Bitcoin's rules and happens automatically at a set block height.</p>
+<div class="table-wrap"><table class="t"><thead><tr><th>Period</th><th class="r">New BTC per block</th><th class="r">Per day (about)</th></tr></thead><tbody>
+<tr><td>2009 to 2012</td><td class="r">50</td><td class="r">7,200</td></tr>
+<tr><td>2012 to 2016</td><td class="r">25</td><td class="r">3,600</td></tr>
+<tr><td>2016 to 2020</td><td class="r">12.5</td><td class="r">1,800</td></tr>
+<tr><td>2020 to 2024</td><td class="r">6.25</td><td class="r">900</td></tr>
+<tr><td>2024 to about 2028</td><td class="r">3.125</td><td class="r">450</td></tr>
+<tr><td>After the next halving</td><td class="r">1.5625</td><td class="r">225</td></tr>
+</tbody></table></div>
+<p>Because the reward keeps halving, the total supply approaches 21 million but grows more slowly each period. The last fraction of a bitcoin is expected to be mined around the year 2140.</p>
+
+<h2>How much is issued now</h2>
+<div class="example">
+  <p>At 3.125 BTC per block and about 144 blocks a day, around <b>450 BTC</b> are created each day.</p>
+  <p>Over a year that is about 450 × 365 = <b>164,000 BTC</b>.</p>
+  <p>With roughly 19.9 million already in circulation, supply grows by about <b>0.8% a year</b>, and after the next halving by about 0.4%.</p>
+</div>
+<p>At a price of $60,000, the daily issuance is worth about $27 million. That is roughly the amount of new coins miners can sell each day to cover their costs.</p>
+
+<h2>What the cap means for market cap maths</h2>
+<p>Because Bitcoin's supply is known in advance, it is simple to work out the price a given market cap implies.</p>
+<div class="formula">Price = market cap ÷ circulating supply</div>
+<div class="example">
+  <p>A $2 trillion market cap with 19.9 million BTC in circulation is 2,000,000,000,000 ÷ 19,900,000 = about <b>$100,500</b> per coin.</p>
+  <p>On the full 21 million supply the same market cap works out to about $95,200.</p>
+</div>
+<p>The <a href="/market-cap-calculator/">market cap calculator</a> does this for Bitcoin and other coins with live supply data, and <a href="/guides/market-cap-maths/">market cap maths</a> explains circulating, total and maximum supply.</p>
+
+<h2>Lost coins</h2>
+<p>Some bitcoin will never move again because the keys to it are lost. Estimates vary widely, often between two and four million coins. Those coins still count in the circulating supply that sites report, so the number actually available to trade is lower than the headline figure.</p>
+
+<h2>Does the halving raise the price?</h2>
+<p>Past halvings were followed by large price rises within a year or two, which is why the event gets so much attention. But there have only been four, many other things changed over the same periods, and the halving is known years ahead. Each halving also cuts new supply by a smaller share of the total than the last one did. Treat claims that the halving guarantees a rise with caution.</p>
+
+<section class="faq"><h2>Common questions</h2><details><summary>When is the next Bitcoin halving?</summary><p>It happens at block 1,050,000, which at about ten minutes per block is expected around 2028. The exact date depends on how fast blocks are found.</p></details><details><summary>How many bitcoin are created per day?</summary><p>Since the 2024 halving, about 450 per day: 3.125 bitcoin per block at around 144 blocks a day.</p></details><details><summary>What happens when all 21 million bitcoin are mined?</summary><p>Miners will no longer receive new coins and will be paid only through transaction fees. That point is expected around the year 2140.</p></details></section>
+<p class="cta"><a class="btn solid" href="/market-cap-calculator/">Open the market cap calculator</a></p>
+<p class="fine">Updated 22 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/position-sizing/"><strong>Position sizing: how much to buy on each trade</strong><span>Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/market-cap-calculator/"><strong>Market cap</strong><span>The price a coin reaches at any market cap</span></a></li><li><a href="/loss-recovery-calculator/"><strong>Loss recovery</strong><span>The gain needed to get back to even after a loss</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/market-cap-calculator/">Market cap</a></li><li><a href="/loss-recovery-calculator/">Loss recovery</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=21"></script>
+</body>
+</html>

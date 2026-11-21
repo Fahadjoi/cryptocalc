@@ -1,0 +1,49 @@
+title: Realised vs unrealised profit in crypto | How to calculate each
+desc: The difference between realised and unrealised profit and loss, how partial sells split them, how average cost decides the result, and why the difference matters for tax and trading decisions.
+path: /guides/realised-vs-unrealised-pnl/
+kind: guide
+tool: /average-cost-calculator/
+h1: Realised vs unrealised profit
+lede: Unrealised profit is what you would make if you sold now. Realised profit is what you actually made on coins you have already sold. Exchanges show both, and mixing them up leads to bad decisions.
+date: 22 November 2026
+iso: 2026-11-22
+order: 28
+---
+<h2>The two numbers</h2>
+<ul>
+  <li><strong>Unrealised profit or loss</strong> is the difference between what your open position is worth now and what you paid for it. It changes with every price move and is not locked in.</li>
+  <li><strong>Realised profit or loss</strong> is the result of positions or parts of positions you have closed. Once realised, it no longer changes.</li>
+</ul>
+<div class="formula">Unrealised = coins held × (price now − average cost)<small>Realised = coins sold × (sell price − average cost), minus fees.</small></div>
+
+<h2>A worked example with a partial sell</h2>
+<div class="example">
+  <p>You buy <b>2 ETH</b> at $1,500 and <b>2 ETH</b> at $2,000. You hold 4 ETH at an average cost of <b>$1,750</b>, $7,000 in total.</p>
+  <p>The price rises to <b>$2,200</b>. Unrealised profit: 4 × (2,200 − 1,750) = <b>$1,800</b>.</p>
+  <p>You sell <b>1 ETH</b> at $2,200. Realised profit: 1 × (2,200 − 1,750) = <b>$450</b>, before fees.</p>
+  <p>You still hold 3 ETH. Their unrealised profit is 3 × 450 = <b>$1,350</b>. Realised plus unrealised is still $1,800.</p>
+  <p>If the price then falls to $1,600, the $450 stays realised, and the 3 ETH show an unrealised loss of 3 × (1,600 − 1,750) = <b>−$450</b>.</p>
+</div>
+<p>The <a href="/average-cost-calculator/">average cost calculator</a> works out the average from each buy, and <a href="/guides/average-cost-and-averaging-down/">average cost and averaging down</a> explains how extra buys move it.</p>
+
+<h2>The cost method changes the realised number</h2>
+<p>When you sell part of a holding bought at different prices, the realised profit depends on which coins you count as sold. Using the average cost, as above, is the most common approach on exchanges. Tax rules in some countries require first in, first out instead, where the earliest coins are treated as sold first. With FIFO the sale in the example would count as a coin bought at $1,500, and the realised profit would be $700 instead of $450. <a href="/guides/crypto-cost-basis-methods/">Cost basis methods</a> compares the options.</p>
+
+<h2>Why the difference matters</h2>
+<ul>
+  <li><strong>Tax.</strong> In most countries only realised gains are taxed. Selling, and in many places swapping one coin for another, turns unrealised profit into realised profit. Rules differ by country, so check the ones that apply to you.</li>
+  <li><strong>Decisions.</strong> An unrealised profit can disappear. Traders who count it as money already made tend to take on more risk than they can afford.</li>
+  <li><strong>Leverage.</strong> On futures, unrealised losses reduce your available margin right away, even though nothing has been sold, and can push a position toward liquidation.</li>
+</ul>
+
+<h2>How exchanges show it</h2>
+<p>Exchanges usually list unrealised P&amp;L next to each open position and keep realised P&amp;L in a history or report. Some include fees and funding in realised P&amp;L and some do not, so the totals can differ between exchanges and from your own records.</p>
+
+@faq
+Q: Is unrealised profit real money?
+A: Not yet. It is what you would make if you sold at the current price. Until you sell, the price can move and the profit can shrink or turn into a loss.
+Q: Do I pay tax on unrealised gains?
+A: In most countries, no. Tax is usually charged when a gain is realised, for example by selling or swapping a coin. Rules vary by country.
+Q: Does selling part of my coins change my average cost?
+A: Under the average cost method, no. The remaining coins keep the same average cost. Only new buys change it.
+@end

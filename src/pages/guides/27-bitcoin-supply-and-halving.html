@@ -1,0 +1,57 @@
+title: Bitcoin supply and the halving explained with numbers
+desc: How new bitcoin is created, why the reward halves every 210,000 blocks, how much is issued each day and year now, and what the 21 million cap means for price and market cap maths.
+path: /guides/bitcoin-supply-and-halving/
+kind: guide
+tool: /market-cap-calculator/
+h1: Bitcoin supply and the halving
+lede: There will only ever be 21 million bitcoin, and the rate at which new ones appear halves roughly every four years. The numbers behind that are simpler than they sound.
+date: 22 November 2026
+iso: 2026-11-22
+order: 27
+---
+<h2>Where new bitcoin comes from</h2>
+<p>New bitcoin is created as a reward to the miners who add each block to the chain. A block is found about every ten minutes, around 144 a day. The miner of each block receives a fixed number of new coins, called the block subsidy, plus the fees paid by the transactions inside it.</p>
+
+<h2>The halving</h2>
+<p>Every 210,000 blocks, about every four years, the subsidy is cut in half. This is written into Bitcoin's rules and happens automatically at a set block height.</p>
+<div class="table-wrap"><table class="t"><thead><tr><th>Period</th><th class="r">New BTC per block</th><th class="r">Per day (about)</th></tr></thead><tbody>
+<tr><td>2009 to 2012</td><td class="r">50</td><td class="r">7,200</td></tr>
+<tr><td>2012 to 2016</td><td class="r">25</td><td class="r">3,600</td></tr>
+<tr><td>2016 to 2020</td><td class="r">12.5</td><td class="r">1,800</td></tr>
+<tr><td>2020 to 2024</td><td class="r">6.25</td><td class="r">900</td></tr>
+<tr><td>2024 to about 2028</td><td class="r">3.125</td><td class="r">450</td></tr>
+<tr><td>After the next halving</td><td class="r">1.5625</td><td class="r">225</td></tr>
+</tbody></table></div>
+<p>Because the reward keeps halving, the total supply approaches 21 million but grows more slowly each period. The last fraction of a bitcoin is expected to be mined around the year 2140.</p>
+
+<h2>How much is issued now</h2>
+<div class="example">
+  <p>At 3.125 BTC per block and about 144 blocks a day, around <b>450 BTC</b> are created each day.</p>
+  <p>Over a year that is about 450 × 365 = <b>164,000 BTC</b>.</p>
+  <p>With roughly 19.9 million already in circulation, supply grows by about <b>0.8% a year</b>, and after the next halving by about 0.4%.</p>
+</div>
+<p>At a price of $60,000, the daily issuance is worth about $27 million. That is roughly the amount of new coins miners can sell each day to cover their costs.</p>
+
+<h2>What the cap means for market cap maths</h2>
+<p>Because Bitcoin's supply is known in advance, it is simple to work out the price a given market cap implies.</p>
+<div class="formula">Price = market cap ÷ circulating supply</div>
+<div class="example">
+  <p>A $2 trillion market cap with 19.9 million BTC in circulation is 2,000,000,000,000 ÷ 19,900,000 = about <b>$100,500</b> per coin.</p>
+  <p>On the full 21 million supply the same market cap works out to about $95,200.</p>
+</div>
+<p>The <a href="/market-cap-calculator/">market cap calculator</a> does this for Bitcoin and other coins with live supply data, and <a href="/guides/market-cap-maths/">market cap maths</a> explains circulating, total and maximum supply.</p>
+
+<h2>Lost coins</h2>
+<p>Some bitcoin will never move again because the keys to it are lost. Estimates vary widely, often between two and four million coins. Those coins still count in the circulating supply that sites report, so the number actually available to trade is lower than the headline figure.</p>
+
+<h2>Does the halving raise the price?</h2>
+<p>Past halvings were followed by large price rises within a year or two, which is why the event gets so much attention. But there have only been four, many other things changed over the same periods, and the halving is known years ahead. Each halving also cuts new supply by a smaller share of the total than the last one did. Treat claims that the halving guarantees a rise with caution.</p>
+
+@faq
+Q: When is the next Bitcoin halving?
+A: It happens at block 1,050,000, which at about ten minutes per block is expected around 2028. The exact date depends on how fast blocks are found.
+Q: How many bitcoin are created per day?
+A: Since the 2024 halving, about 450 per day: 3.125 bitcoin per block at around 144 blocks a day.
+Q: What happens when all 21 million bitcoin are mined?
+A: Miners will no longer receive new coins and will be paid only through transaction fees. That point is expected around the year 2140.
+@end

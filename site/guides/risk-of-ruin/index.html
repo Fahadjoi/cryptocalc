@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Losing streaks and risk of ruin in trading | How much to risk</title>
+<meta name="description" content="How long losing streaks get even for good strategies, how much of the account each streak costs at different risk levels, and how position size keeps a bad run survivable.">
+<link rel="canonical" href="https://coinabacus.com/guides/risk-of-ruin/">
+<meta property="og:title" content="Losing streaks and risk of ruin in trading | How much to risk">
+<meta property="og:description" content="How long losing streaks get even for good strategies, how much of the account each streak costs at different risk levels, and how position size keeps a bad run survivable.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoinAbacus">
+<meta property="og:url" content="https://coinabacus.com/guides/risk-of-ruin/">
+<meta property="og:image" content="https://coinabacus.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFE04A">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script>(function(){try{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}document.documentElement.classList.add('js');setTimeout(function(){if(!window.CC)document.documentElement.classList.remove('js')},3000)})()</script>
+<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.coingecko.com" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=21">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-500GG6QE6W"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-500GG6QE6W');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1958806552639352" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Losing streaks and risk of ruin", "description": "How long losing streaks get even for good strategies, how much of the account each streak costs at different risk levels, and how position size keeps a bad run survivable.", "datePublished": "2026-11-22", "dateModified": "2026-11-22", "author": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "publisher": {"@type": "Organization", "name": "CoinAbacus", "url": "https://coinabacus.com/"}, "mainEntityOfPage": "https://coinabacus.com/guides/risk-of-ruin/", "image": "https://coinabacus.com/og.png"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Guides", "item": "https://coinabacus.com/guides/"}, {"@type": "ListItem", "position": 2, "name": "Losing streaks and risk of ruin", "item": "https://coinabacus.com/guides/risk-of-ruin/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many losses in a row should I expect?", "acceptedAnswer": {"@type": "Answer", "text": "More than most people think. With a 50% win rate, a run of five losses happens in about four out of five 100-trade periods, and runs of eight or more are not rare."}}, {"@type": "Question", "name": "How much should I risk per trade to avoid ruin?", "acceptedAnswer": {"@type": "Answer", "text": "Most traders risk 0.5% to 2% of the account per trade. At 1%, ten losses in a row cost under 10% of the account."}}, {"@type": "Question", "name": "Does a profitable strategy have zero risk of ruin?", "acceptedAnswer": {"@type": "Answer", "text": "No. A strategy that makes money on average can still hit a losing run deep enough to wipe out an account if each trade risks too much."}}]}</script>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+<a class="logo" href="/" aria-label="CoinAbacus home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg><span>CoinAbacus</span></a>
+<nav class="nav-links" id="navLinks" aria-label="Calculators"><a href="/profit-calculator/">Profit</a><a href="/position-size-calculator/">Position</a><a href="/liquidation-calculator/">Liquidation</a><a href="/average-cost-calculator/">Average</a><a href="/fee-calculator/">Fees</a><a href="/dca-calculator/">DCA</a><a href="/staking-calculator/">Staking</a><a href="/market-cap-calculator/" class="nav-x">Market cap</a><a href="/loss-recovery-calculator/" class="nav-x">Recovery</a><a href="/converter/">Converter</a><a href="/portfolio/">Portfolio</a><a href="/guides/">Guides</a></nav>
+<select class="ccy" id="ccySel" aria-label="Currency" disabled><option>USD</option></select>
+<button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Tools</button>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div></header>
+<div class="ticker" id="ticker" aria-label="Live coin prices"></div>
+<main class="wrap">
+<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">Losing streaks and risk of ruin</h1><p class="rise" style="--d:1">Every strategy has losing runs. The amount you risk on each trade decides whether a bad run is an annoyance or the end of the account.</p></header>
+<div class="guide" style="margin-top:8px">
+<article class="prose rise" style="--d:2">
+<h2>Losing streaks are normal</h2>
+<p>Even a strategy that wins half the time will string several losses together, purely by chance. Over 100 trades at a 50% win rate:</p>
+<ul>
+  <li>a run of <b>5 losses</b> in a row happens about <b>81%</b> of the time,</li>
+  <li>a run of <b>8</b> about <b>17%</b> of the time,</li>
+  <li>a run of <b>10</b> about <b>4%</b> of the time.</li>
+</ul>
+<p>Strategies that win less often, such as trend following with large targets, see much longer runs. At a 40% win rate, a run of 8 losses shows up in about half of all 100-trade stretches. Over 500 trades at 50%, a run of 8 happens more often than not. Plan for these runs before they happen, because they will.</p>
+
+<h2>What a streak costs at different risk levels</h2>
+<p>If you risk a fixed share of the account on each trade, every loss is taken from a slightly smaller balance. After a run of losses the account is down by:</p>
+<div class="formula">Drawdown = 1 − (1 − risk per trade)<sup>losses in a row</sup></div>
+<div class="table-wrap"><table class="t"><thead><tr><th>Risk per trade</th><th class="r">5 losses</th><th class="r">8 losses</th><th class="r">10 losses</th></tr></thead><tbody>
+<tr><td>1%</td><td class="r">−4.9%</td><td class="r">−7.7%</td><td class="r">−9.6%</td></tr>
+<tr><td>2%</td><td class="r">−9.6%</td><td class="r">−14.9%</td><td class="r">−18.3%</td></tr>
+<tr><td>5%</td><td class="r">−22.6%</td><td class="r">−33.7%</td><td class="r">−40.1%</td></tr>
+<tr><td>10%</td><td class="r">−41.0%</td><td class="r">−57.0%</td><td class="r">−65.1%</td></tr>
+</tbody></table></div>
+<p>At 1% per trade, ten straight losses cost under 10%, which needs about an 11% gain to recover. At 10% per trade the same run costs 65%, which needs a gain of nearly 190%. The <a href="/loss-recovery-calculator/">loss recovery calculator</a> shows the gain needed for any drawdown.</p>
+
+<h2>What risk of ruin means</h2>
+<p>Risk of ruin is the chance that losses take the account below the point where you can keep trading, or below a limit you set for yourself, such as a 50% drawdown. It rises sharply with the amount risked per trade and falls as your expectancy improves. A strategy with a small edge and large positions can have a high risk of ruin even though it makes money on average, because a bad run arrives before the edge has time to show.</p>
+
+<h2>Keeping it low</h2>
+<ul>
+  <li><strong>Risk a small, fixed share per trade.</strong> Most trading books settle on 0.5% to 2%. The <a href="/position-size-calculator/">position size calculator</a> turns that into a position size from your stop.</li>
+  <li><strong>Make sure the strategy has an edge.</strong> Without positive expectancy, small risk only slows the decline. See <a href="/guides/win-rate-and-expectancy/">win rate and expectancy</a>.</li>
+  <li><strong>Set a drawdown limit.</strong> Many traders halve their risk after a set drawdown, such as 10%, and stop to review after 20%.</li>
+  <li><strong>Watch leverage.</strong> Leverage does not change the risk you planned if you size from the stop, but a stop beyond the liquidation price means the loss is the whole margin instead.</li>
+</ul>
+
+<h2>Why the feeling matters</h2>
+<p>Long losing runs are hard to sit through. Traders often abandon a working strategy in the middle of a normal streak, or double their size to win it back, which is how most accounts are actually lost. Knowing in advance that a run of eight or ten losses is ordinary makes it easier to keep following the plan.</p>
+
+<section class="faq"><h2>Common questions</h2><details><summary>How many losses in a row should I expect?</summary><p>More than most people think. With a 50% win rate, a run of five losses happens in about four out of five 100-trade periods, and runs of eight or more are not rare.</p></details><details><summary>How much should I risk per trade to avoid ruin?</summary><p>Most traders risk 0.5% to 2% of the account per trade. At 1%, ten losses in a row cost under 10% of the account.</p></details><details><summary>Does a profitable strategy have zero risk of ruin?</summary><p>No. A strategy that makes money on average can still hit a losing run deep enough to wipe out an account if each trade risks too much.</p></details></section>
+<p class="cta"><a class="btn solid" href="/loss-recovery-calculator/">Open the loss recovery calculator</a></p>
+<p class="fine">Updated 22 November 2026. For information only, not financial advice.</p>
+</article>
+<aside class="aside reveal"><h2>More guides</h2><ul class="linklist"><li><a href="/guides/crypto-profit-after-fees/"><strong>How to calculate crypto profit after fees</strong><span>The price moved 10% in your favour, yet the balance grew by less. Here is where the difference goes and how to work it out before you trade.</span></a></li><li><a href="/guides/break-even-price/"><strong>Break-even price: how far a coin must move to cover fees</strong><span>Selling at the price you bought at is a loss, because you paid a fee going in and pay another coming out. The break-even price is the first price at which you get all your money back.</span></a></li><li><a href="/guides/position-sizing/"><strong>Position sizing: how much to buy on each trade</strong><span>Most traders pick a size first and a stop second. Doing it the other way round is what keeps one bad trade from deciding the month.</span></a></li><li><a href="/guides/risk-reward-ratio/"><strong>Risk-reward ratio and the win rate you need</strong><span>A trader who is right 35% of the time can make money, and one who is right 70% of the time can lose it. The ratio between the average win and the average loss decides which.</span></a></li><li><a href="/guides/liquidation-price-explained/"><strong>How liquidation price works on leveraged trades</strong><span>With leverage, the exchange lends you most of the position. Liquidation is the price at which your own share is nearly gone and the exchange closes the trade to protect its loan.</span></a></li></ul><h2 style="margin-top:32px">Calculators</h2><ul class="linklist"><li><a href="/profit-calculator/"><strong>Profit / loss</strong><span>What a trade makes or loses once fees are taken out</span></a></li><li><a href="/position-size-calculator/"><strong>Position size</strong><span>How much to buy for the risk and stop-loss you set</span></a></li><li><a href="/liquidation-calculator/"><strong>Liquidation price</strong><span>Where a leveraged position gets closed by the exchange</span></a></li><li><a href="/average-cost-calculator/"><strong>Average cost</strong><span>Your average entry across several buys, and how to lower it</span></a></li><li><a href="/fee-calculator/"><strong>Exchange fees</strong><span>What the same order costs on ten exchanges</span></a></li><li><a href="/dca-calculator/"><strong>DCA backtest</strong><span>What regular buys over the past five years are worth today</span></a></li><li><a href="/staking-calculator/"><strong>Staking rewards</strong><span>What staking adds up to with compounding</span></a></li><li><a href="/market-cap-calculator/"><strong>Market cap</strong><span>The price a coin reaches at any market cap</span></a></li><li><a href="/loss-recovery-calculator/"><strong>Loss recovery</strong><span>The gain needed to get back to even after a loss</span></a></li><li><a href="/converter/"><strong>Converter</strong><span>Live rates between 20 coins and 40 currencies</span></a></li><li><a href="/portfolio/"><strong>Portfolio tracker</strong><span>Your holdings valued at live prices, saved in your browser</span></a></li></ul></aside>
+</div>
+</main>
+<footer><div class="foot">
+<div><a class="logo" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/><path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/><circle class='mk-bead' cx='46' cy='32' r='6' fill='#FFE04A'/></svg>CoinAbacus</a><p>Free calculators for crypto traders. Everything runs in your browser and nothing you type is sent anywhere. For information only, not financial advice.</p><p>Price data from <a href="https://www.coingecko.com" rel="noopener">CoinGecko</a>.</p></div>
+<div><h2>Calculators</h2><ul><li><a href="/profit-calculator/">Profit / loss</a></li><li><a href="/position-size-calculator/">Position size</a></li><li><a href="/liquidation-calculator/">Liquidation price</a></li><li><a href="/average-cost-calculator/">Average cost</a></li><li><a href="/fee-calculator/">Exchange fees</a></li><li><a href="/dca-calculator/">DCA backtest</a></li><li><a href="/staking-calculator/">Staking rewards</a></li><li><a href="/market-cap-calculator/">Market cap</a></li><li><a href="/loss-recovery-calculator/">Loss recovery</a></li><li><a href="/converter/">Converter</a></li><li><a href="/portfolio/">Portfolio tracker</a></li></ul></div>
+<div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
+</div></footer>
+<script src="/js/app.js?v=21"></script>
+</body>
+</html>
