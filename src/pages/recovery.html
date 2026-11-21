@@ -1,0 +1,144 @@
+title: Loss Recovery Calculator | Gain needed to break even after a loss
+desc: Free loss recovery calculator for crypto and stocks. Enter what you put in and what it is worth now to see the gain needed to get back to even, and how long that takes at a monthly return.
+path: /loss-recovery-calculator/
+kind: tool
+---
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Loss recovery calculator</h1>
+  <p class="rise" style="--d:1">A 50% loss needs a 100% gain to undo. See exactly how much your portfolio or trade has to rise to get back to even.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your position</h2></div>
+    <div class="card-body">
+      <div class="fields">
+        {{f start|What you put in|10000|USD}}
+        {{f now|What it is worth now|6000|USD}}
+        <div class="field full"><label for="monthly">Return you expect per month (optional)</label><div class="inp"><input id="monthly" type="number" inputmode="decimal" step="any" min="0" max="100" value="5"><span class="unit">%</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="monthly:1">1%</button><button type="button" class="chip" data-set="monthly:3">3%</button><button type="button" class="chip" data-set="monthly:5">5%</button><button type="button" class="chip" data-set="monthly:10">10%</button></div>
+          <p class="hint">Used to estimate how many months the climb back takes if the gains compound.</p>
+        </div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this result</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Gain needed to break even</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter what you put in and what it is worth now, both above zero.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="need"></div>
+        <div class="sub" id="sub"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Loss so far</dt><dd id="loss"></dd></div>
+          <div><dt>Profit needed from here</dt><dd id="profit"></dd></div>
+          <div id="mRow"><dt>Months to recover at <span id="mRate"></span> a month</dt><dd id="months"></dd></div>
+          <div><dt>Gain needed to double what you put in</dt><dd id="dbl"></dd></div>
+        </dl>
+        <h3 class="subhead">Loss and the gain that undoes it</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Loss</th><th class="r">Gain needed</th><th class="r hide-s" id="atHead">At 5% a month</th></tr></thead><tbody id="tbl"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>Why losses and gains are not the same size</h2>
+  <p>A gain is measured on what you have left, and after a loss you have less. Drop from $10,000 to $5,000 and you have lost 50%. To get back to $10,000 the $5,000 you still hold has to double, which is a 100% gain. The deeper the loss, the faster the climb back gets steeper.</p>
+  <div class="formula">Gain needed = loss ÷ (1 − loss)<small>Both as fractions. A 40% loss: 0.4 ÷ 0.6 = 0.667, so a 66.7% gain.</small></div>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>You put in <b>$10,000</b> and the position is now worth <b>$6,000</b>, a 40% loss.</p>
+    <p>To get back to $10,000 you need $4,000 of profit on $6,000, which is 4,000 ÷ 6,000 = <b>66.7%</b>.</p>
+    <p>At a steady 5% a month, compounding, that takes log(10,000 ÷ 6,000) ÷ log(1.05) = about <b>10.5 months</b>. At 2% a month it takes more than two years.</p>
+  </div>
+
+  <h2>The recovery table</h2>
+  <p>Small losses are cheap to undo: 10% needs 11.1%, and 20% needs 25%. Past about 30% the numbers bend sharply upward. A 75% loss needs 300%, and a 90% loss needs 900%. That curve is the reason most trading rules focus on stopping losses early rather than on chasing big wins.</p>
+
+  <h2>What this means for how you trade</h2>
+  <ul>
+    <li><strong>Size positions by risk.</strong> Risking 1% to 2% per trade keeps a losing streak in the zone where recovery is quick. The <a href="/position-size-calculator/">position size calculator</a> works this out.</li>
+    <li><strong>Use a stop-loss.</strong> A stop turns an open-ended loss into a planned one, before it reaches the steep part of the curve.</li>
+    <li><strong>Watch leverage.</strong> At 10× a 5% price move against you is a 50% loss of margin, which then needs 100% to recover.</li>
+    <li><strong>Count fees.</strong> Every trade on the way back costs fees, so the real gain needed is slightly higher than the table shows.</li>
+  </ul>
+
+  <h2>Averaging down is not the same as recovering</h2>
+  <p>Buying more at a lower price lowers your average entry, so the coin needs a smaller move to get you to break even. It does not undo the loss on the money already in, and it adds more money to a position that is going against you. The <a href="/average-cost-calculator/">average cost calculator</a> shows what an extra buy would do to your break-even price. Read <a href="/guides/recovering-from-a-loss/">how much you need to gain to recover from a loss</a> for the longer version.</p>
+
+@faq
+Q: How much do I need to gain to recover a 50% loss?
+A: 100%. After a 50% loss you hold half of what you started with, and half has to double to get back to the full amount.
+Q: What is the formula for the gain needed after a loss?
+A: Divide the loss by what is left. As fractions: gain = loss ÷ (1 − loss). A 25% loss needs 0.25 ÷ 0.75 = 33.3%.
+Q: How long will it take to recover?
+A: It depends on the return you make each month. With compounding, months = log(start ÷ now) ÷ log(1 + monthly return). Few traders make a steady return every month, so treat the estimate as a best case.
+Q: Does this work for stocks and other investments?
+A: Yes. The maths is the same for any asset. Enter what you put in and what it is worth now.
+@end
+</article>
+{{aside}}
+</div>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  function months(ratio, r) { return r > 0 ? Math.log(ratio) / Math.log(1 + r) : Infinity; }
+  function dur(m) {
+    if (!isFinite(m)) return 'Never at 0%';
+    if (m < 1) return 'Under a month';
+    if (m < 24) return f.num(m, 1) + ' months';
+    return f.num(m / 12, 1) + ' years';
+  }
+  CC.page({
+    ids: ['start', 'now', 'monthly'],
+    calc: function () {
+      var start = CC.n('start'), now = CC.n('now'), r = Math.min(100, Math.max(0, CC.n('monthly') || 0)) / 100;
+      var ok = start > 0 && now > 0;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var loss = 1 - now / start, gain = start / now - 1, down = now < start, notes = '';
+      if (down) {
+        $('verdict').textContent = 'Down ' + f.pct(loss * 100) + ' from ' + f.money(start);
+        $('verdict').className = 'verdict down';
+        CC.count($('need'), gain * 100, function (v) { return '+' + v.toFixed(2) + '%'; });
+        $('sub').textContent = 'to get ' + f.money(now) + ' back to ' + f.money(start);
+      } else {
+        $('verdict').textContent = now === start ? 'Exactly at break even' : 'Up ' + f.pct(-loss * 100) + ', no loss to recover';
+        $('verdict').className = 'verdict up';
+        CC.count($('need'), 0, function () { return '0.00%'; });
+        $('sub').textContent = 'You are already at or above what you put in';
+      }
+      $('loss').textContent = down ? f.money(now - start) + ' (' + f.pct(-loss * 100) + ')' : f.money(now - start, true);
+      $('loss').className = down ? 'down' : 'up';
+      $('profit').textContent = down ? f.money(start - now) : f.money(0);
+      $('mRow').hidden = !down || r <= 0;
+      $('mRate').textContent = f.pct(r * 100).replace('.00', '');
+      if (down && r > 0) $('months').textContent = dur(months(start / now, r));
+      $('dbl').textContent = f.pct((2 * start / now - 1) * 100);
+      if (down && loss >= 0.5) notes += '<div class="note bad">Past a 50% loss the climb back needs more than doubling your money. Losses this deep are why most traders cap risk at 1% to 2% per trade.</div>';
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+
+      var rt = r > 0 ? r : 0.05; $('atHead').textContent = 'At ' + f.pct(rt * 100).replace('.00', '') + ' a month';
+      var steps = [5, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90], cur = Math.round(loss * 1000) / 10, html = '', placed = false;
+      steps.forEach(function (s) {
+        if (down && !placed && cur < s && steps.indexOf(cur) < 0) { html += row(cur, true); placed = true; }
+        html += row(s, down && Math.abs(s - cur) < 0.05);
+      });
+      if (down && !placed && steps.indexOf(cur) < 0 && cur > 90) html += row(cur, true);
+      function row(l, me) {
+        var g = l / (100 - l) * 100;
+        return '<tr' + (me ? ' class="me"' : '') + '><td>' + (me ? '<b>' : '') + '−' + f.num(l, 1) + '%' + (me ? ' (yours)</b>' : '') + '</td><td class="r"><b>+' + f.num(g, 1) + '%</b></td><td class="r hide-s">' + dur(months(100 / (100 - l), rt)) + '</td></tr>';
+      }
+      if ($('tbl').dataset.h !== html) { $('tbl').innerHTML = html; $('tbl').dataset.h = html; }
+    }
+  });
+})();

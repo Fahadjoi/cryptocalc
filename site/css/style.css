@@ -87,6 +87,7 @@ img { max-width: 100%; }
 [data-theme="dark"] .logo .mk-bg { fill: #24302A; }
 .nav-links { display: flex; gap: 2px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
 .nav-links::-webkit-scrollbar { display: none; }
+.nav-links a.nav-x { display: none; }
 .nav-links a {
   font-size: 15px; font-weight: 500; color: var(--muted); text-decoration: none; white-space: nowrap;
   padding: 7px 11px; border-radius: 4px; transition: color .15s, background-color .15s;
@@ -246,6 +247,8 @@ table.t { width: 100%; border-collapse: collapse; font-size: 15px; }
 .t tbody tr { transition: background-color .15s; }
 .t tbody tr:hover { background: var(--sunken); }
 .t tbody tr.click { cursor: pointer; }
+.t tbody tr.me { background: var(--sunken); }
+.t td img { width: 20px; height: 20px; vertical-align: -5px; border-radius: 50%; margin-right: 4px; }
 .coin-cell { display: flex; align-items: center; gap: 10px; }
 .coin-cell img, .coin-ico { width: 24px; height: 24px; border-radius: 50%; flex: none; }
 .coin-ico { display: grid; place-items: center; background: var(--sunken); border: 1px solid var(--line); font-size: 10px; font-weight: 700; }
@@ -413,6 +416,7 @@ footer { margin-top: 96px; border-top: 1px solid var(--line); background: var(--
   .nav.open .menu-btn { background: var(--mark); color: var(--on-mark); border-color: var(--edge); }
   .nav-links { display: none; position: absolute; left: 0; right: 0; top: 100%; margin: 0; padding: 10px 14px 16px; background: var(--bg); border-bottom: 2px solid var(--edge); grid-template-columns: 1fr 1fr; gap: 4px; overflow: visible; }
   .nav.open .nav-links { display: grid; }
+  .nav-links a.nav-x { display: block; }
   .nav-links a { padding: 12px 10px; font-size: 16px; color: var(--ink); }
 }
 @media (max-width: 900px) {

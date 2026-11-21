@@ -1,0 +1,146 @@
+title: Crypto Market Cap Calculator | Price at any market cap
+desc: Free crypto market cap calculator with live data. See the price a coin would reach at any market cap, or at another coin's market cap, and what your holding would be worth.
+path: /market-cap-calculator/
+kind: tool
+---
+<main class="wrap">
+<header class="tool-head">
+  <h1 class="rise">Market cap calculator</h1>
+  <p class="rise" style="--d:1">Check whether a price target is realistic. Pick a coin and a market cap, and see the price it implies and what your coins would be worth.</p>
+</header>
+
+<div class="tool-grid">
+  <section class="card inputs rise" style="--d:1">
+    <div class="card-head"><h2>Your target</h2><span class="meta" data-updated></span></div>
+    <div class="card-body">
+      <div class="fields">
+        <div class="field full"><label for="coin">Coin</label><div class="inp"><select id="coin"></select></div></div>
+        {{f price|Price now|60000|USD|live auto=1}}
+        <div class="field"><label for="supply">Circulating supply</label><div class="inp"><input id="supply" type="number" inputmode="decimal" step="any" min="0" value="19900000"><span class="unit">coins</span></div></div>
+        <div class="field full"><label for="target">Target market cap</label><div class="inp"><input id="target" type="number" inputmode="decimal" step="any" min="0" value="2000000000000" data-money><span class="unit" data-cur>USD</span></div>
+          <div class="chips"><button type="button" class="chip" data-set="target:10000000000">10B</button><button type="button" class="chip" data-set="target:100000000000">100B</button><button type="button" class="chip" data-set="target:1000000000000">1T</button><button type="button" class="chip" data-set="target:2000000000000">2T</button><button type="button" class="chip" data-set="target:5000000000000">5T</button></div>
+        </div>
+        <div class="field full"><label for="hold">Coins you hold (optional)</label><div class="inp"><input id="hold" type="number" inputmode="decimal" step="any" min="0" value="0.1"><span class="unit" id="holdUnit">coins</span></div></div>
+      </div>
+      <p class="field hint" style="margin-top:14px">The supply fills in from live data when you pick a coin. Change it if you want to test a different supply, such as the maximum supply after all unlocks.</p>
+      <div class="actions"><button type="button" class="btn" id="shareBtn">Copy link to this target</button><button type="button" class="btn" id="resetBtn">Reset</button></div>
+    </div>
+  </section>
+
+  <section class="card strong result rise" style="--d:2" aria-live="polite">
+    <div class="card-head"><h2>Price at that market cap</h2></div>
+    <div class="card-body">
+      <p class="empty" id="empty" hidden>Enter a price, a circulating supply and a target market cap above zero.</p>
+      <div id="out">
+        <div class="verdict" id="verdict"></div>
+        <div class="big" id="tprice"></div>
+        <div class="sub" id="sub"></div>
+        <div id="notes"></div>
+        <dl class="rows">
+          <div><dt>Market cap now</dt><dd id="mcap"></dd></div>
+          <div><dt>Circulating supply</dt><dd id="sup"></dd></div>
+          <div><dt>Change needed</dt><dd id="chg"></dd></div>
+          <div id="holdRow"><dt>Your coins are worth now</dt><dd id="holdNow"></dd></div>
+          <div id="holdRow2"><dt>Worth at the target</dt><dd id="holdThen" class="up"></dd></div>
+        </dl>
+        <h3 class="subhead">Price if it had another coin's market cap</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Market cap of</th><th class="r hide-s">Market cap</th><th class="r">Price</th><th class="r">Multiple</th></tr></thead><tbody id="cmp"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="guide">
+<article class="prose reveal">
+  <h2>How market cap and price fit together</h2>
+  <p>A coin's market cap is its price multiplied by the number of coins in circulation. Turn that around and you get the price any market cap implies. That is the whole idea behind this calculator, and it is the fastest way to test a price prediction before you believe it.</p>
+  <div class="formula">Price = market cap ÷ circulating supply<small>Market cap = price × circulating supply. Both use the same currency.</small></div>
+
+  <h3>A worked example</h3>
+  <div class="example">
+    <p>A coin trades at <b>$0.50</b> with <b>40 billion</b> coins in circulation, so its market cap is 0.50 × 40,000,000,000 = <b>$20 billion</b>.</p>
+    <p>Someone says it will reach $10. At $10 the market cap would be 10 × 40,000,000,000 = <b>$400 billion</b>, twenty times today.</p>
+    <p>Set the target market cap to $400 billion and the calculator shows the same $10 price and the 20× multiple, so you can compare that with the coins that are worth $400 billion today.</p>
+  </div>
+
+  <h2>Why a low price does not mean a coin is cheap</h2>
+  <p>A coin at $0.01 can be more expensive than one at $60,000. What matters is how many coins exist. A token with 500 trillion coins in circulation needs a market cap of $5 trillion to reach a single cent more than $0.01 per coin. The price per coin on its own tells you nothing about room to grow. The market cap does.</p>
+
+  <h2>Comparing with other coins</h2>
+  <p>The table under the result shows the price your coin would have if it were worth as much as each of the large coins today. It is a quick reality check. If a target needs a market cap bigger than Ethereum's, the coin has to become one of the largest assets in crypto to get there.</p>
+
+  <h2>Circulating, total and maximum supply</h2>
+  <ul>
+    <li><strong>Circulating supply</strong> is what is trading now. The live market cap uses this figure.</li>
+    <li><strong>Total supply</strong> adds coins that exist but are locked, for example team and investor allocations.</li>
+    <li><strong>Maximum supply</strong> is the most that can ever exist. Bitcoin's is 21 million. Some coins have none.</li>
+  </ul>
+  <p>When locked coins are released, the supply goes up. For the price to stay the same, the market cap has to grow by the same share. Enter the maximum supply in the supply field to see the price a target implies once everything is unlocked, which market watchers call the fully diluted value.</p>
+
+  <h2>What this calculator does not tell you</h2>
+  <p>A market cap is not money that has gone into a coin, and a price target is not a forecast. The calculator only shows what a target would mean in numbers. Whether enough buyers will turn up to get there is a separate question. For a longer look at the maths, read <a href="/guides/market-cap-maths/">market cap maths</a>.</p>
+
+@faq
+Q: How do I calculate the price of a coin at a given market cap?
+A: Divide the market cap by the circulating supply. A coin with 1 billion coins in circulation would be priced at $100 if its market cap reached $100 billion.
+Q: Can a coin with a huge supply reach $1?
+A: Only if the market cap reaches the supply in dollars. A coin with 500 billion coins in circulation needs a $500 billion market cap to be worth $1, which is larger than almost every coin today.
+Q: What is fully diluted valuation?
+A: It is the price multiplied by the maximum supply, the market cap the coin would have if every coin that will ever exist were already in circulation. Enter the maximum supply in the supply field to see prices on that basis.
+Q: Where does the live supply come from?
+A: The calculator takes the live market cap and price from CoinGecko and divides one by the other. That gives the circulating supply CoinGecko uses, which can differ slightly from other sites.
+@end
+</article>
+{{aside}}
+</div>
+</main>
+@script
+(function () {
+  var $ = CC.$, f = CC.fmt;
+  var supEl = $('supply'), fromUrl = new URLSearchParams(location.search).has('supply');
+  if (fromUrl) supEl.dataset.touched = 1;
+  CC.page({
+    ids: ['coin', 'price', 'supply', 'target', 'hold'],
+    coinOpt: { stables: false },
+    onCoin: function () { delete supEl.dataset.touched; supEl.dataset.for = ''; },
+    onCur: function () {   // keep the market cap presets short (2T, not 2,000,000,000,000) in any currency
+      setTimeout(function () {
+        document.querySelectorAll('[data-set^="target:"]').forEach(function (b) { b.textContent = f.compact(Number((parseFloat(b.dataset.set.split(':')[1]) * CC.rate()).toPrecision(1))).replace(/\.00(?=[KMBT])/, ''); });
+      }, 0);
+    },
+    calc: function () {
+      var c = CC.coin($('coin').value) || { sym: '', id: '' };
+      if (!supEl.dataset.touched && c.mcap > 0 && c.price > 0 && supEl.dataset.for !== c.id) {
+        supEl.value = Math.round(c.mcap / c.price); supEl.dataset.for = c.id;
+      }
+      var price = CC.n('price'), supply = CC.n('supply'), target = CC.n('target'), hold = CC.n('hold');
+      var ok = price > 0 && supply > 0 && target > 0;
+      $('empty').hidden = ok; $('out').hidden = !ok;
+      if (!ok) return;
+      var now = price * supply, tp = target / supply, mult = tp / price, up = tp >= price;
+      $('holdUnit').textContent = c.sym || 'coins';
+      $('verdict').textContent = c.sym ? c.sym + ' at a ' + f.compact(target) + ' market cap' : 'At a ' + f.compact(target) + ' market cap';
+      $('verdict').className = 'verdict ' + (up ? 'up' : 'down');
+      CC.count($('tprice'), tp, function (v) { return f.usd(v); });
+      $('sub').textContent = (mult >= 1 ? f.num(mult, mult < 10 ? 2 : 1) + '× ' : f.num(mult, 3) + '× ') + 'today\'s price (' + f.pct((mult - 1) * 100, true) + ')';
+      $('mcap').textContent = f.compact(now);
+      $('sup').textContent = f.num(supply, 0) + (c.sym ? ' ' + c.sym : '');
+      $('chg').textContent = f.pct((mult - 1) * 100, true); $('chg').className = up ? 'up' : 'down';
+      var hasHold = hold > 0;
+      $('holdRow').hidden = $('holdRow2').hidden = !hasHold;
+      if (hasHold) { $('holdNow').textContent = f.money(hold * price); $('holdThen').textContent = f.money(hold * tp); $('holdThen').className = up ? 'up' : 'down'; }
+
+      var big = CC.coins().filter(function (x) { return !x.stable && x.mcap > 0; }).sort(function (a, b) { return b.mcap - a.mcap; }).slice(0, 10);
+      var notes = '';
+      if (big.length && target > big[0].mcap * CC.rate() * 1.0001) notes += '<div class="note">That is more than ' + CC.esc(big[0].name) + '\'s whole market cap today (' + f.compact(big[0].mcap * CC.rate()) + '), the largest coin there is.</div>';
+      if (c.mcap > 0 && supEl.dataset.touched && Math.abs(supply - c.mcap / c.price) / (c.mcap / c.price) > 0.02) notes += '<div class="note">You are using a supply of ' + f.num(supply, 0) + ' instead of the live circulating supply of ' + f.num(c.mcap / c.price, 0) + '.</div>';
+      if ($('notes').dataset.h !== notes) { $('notes').innerHTML = notes; $('notes').dataset.h = notes; }
+
+      var rows = big.filter(function (x) { return x.id !== c.id; }).map(function (x) {
+        var m = x.mcap * CC.rate(), p = m / supply, k = p / price;
+        return '<tr><td>' + CC.icon(x) + ' ' + CC.esc(x.sym) + '</td><td class="r hide-s">' + f.compact(m) + '</td><td class="r"><b>' + f.usd(p) + '</b></td><td class="r ' + (k >= 1 ? 'up' : 'down') + '">' + f.num(k, k < 10 ? 2 : 1) + '×</td></tr>';
+      }).join('') || '<tr><td colspan="4">Live market caps are still loading.</td></tr>';
+      if ($('cmp').dataset.h !== rows) { $('cmp').innerHTML = rows; $('cmp').dataset.h = rows; }
+    }
+  });
+})();

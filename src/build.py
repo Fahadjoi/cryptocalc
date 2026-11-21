@@ -18,9 +18,12 @@ TOOLS = [
     ('/fee-calculator/', 'Fees', 'Exchange fees', 'What the same order costs on ten exchanges'),
     ('/dca-calculator/', 'DCA', 'DCA backtest', 'What regular buys over the past five years are worth today'),
     ('/staking-calculator/', 'Staking', 'Staking rewards', 'What staking adds up to with compounding'),
+    ('/market-cap-calculator/', 'Market cap', 'Market cap', 'The price a coin reaches at any market cap'),
+    ('/loss-recovery-calculator/', 'Recovery', 'Loss recovery', 'The gain needed to get back to even after a loss'),
     ('/converter/', 'Converter', 'Converter', 'Live rates between 20 coins and 40 currencies'),
     ('/portfolio/', 'Portfolio', 'Portfolio tracker', 'Your holdings valued at live prices, saved in your browser'),
 ]
+NAV_SKIP = {'/market-cap-calculator/', '/loss-recovery-calculator/'}   # newer tools: linked from the footer, home page and calculator sidebars, shown in the phone menu but kept off the desktop top bar so it fits on one line
 # Logo mark: the letter C as a coin ring, closed by one yellow bead (option 6)
 MARK = ("<rect class='mk-bg' width='64' height='64' rx='15' fill='#15211C'/>"
         "<path d='M44.5 21.5a16 16 0 1 0 0 21' stroke='#F1F3EE' stroke-width='6' stroke-linecap='round' fill='none'/>"
@@ -35,6 +38,8 @@ ICONS = {
     '/fee-calculator/': _ico('<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/>'),
     '/dca-calculator/': _ico('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/>'),
     '/staking-calculator/': _ico('<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>'),
+    '/market-cap-calculator/': _ico('<path d="M4 20h16"/><path d="M6 16v-3"/><path d="M10 16V9"/><path d="M14 16v-5"/><path d="M18 16V5"/>'),
+    '/loss-recovery-calculator/': _ico('<path d="M3 6l6 6 4-4 8 8"/><path d="M21 10v6h-6"/>'),
     '/converter/': _ico('<path d="M4 8h15"/><path d="M15 4l4 4-4 4"/><path d="M20 16H5"/><path d="M9 12l-4 4 4 4"/>'),
     '/portfolio/': _ico('<path d="M11 4a8.5 8.5 0 1 0 9 9h-9z"/><path d="M15 3.6A8.5 8.5 0 0 1 20.4 9H15z"/>'),
 }
@@ -146,7 +151,7 @@ def render(raw):
     elif path == '/':
         lds.append({"@context": "https://schema.org", "@type": "WebSite", "name": BRAND, "url": SITE + '/', "description": meta['desc']})
     ld = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in lds)
-    nav = ''.join(f'<a href="{p}">{short}</a>' for p, short, _, _ in TOOLS) + '<a href="/guides/">Guides</a>'
+    nav = ''.join(f'<a href="{p}"' + (' class="nav-x"' if p in NAV_SKIP else '') + f'>{short}</a>' for p, short, _, _ in TOOLS) + '<a href="/guides/">Guides</a>'
     track = ''
     if GA_ID:
         track += (f'<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>\n'
@@ -178,7 +183,7 @@ def render(raw):
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.coingecko.com" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=20">
+<link rel="stylesheet" href="/css/style.css?v=21">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -195,7 +200,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=20"></script>
+<script src="/js/app.js?v=21"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -203,7 +208,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=20"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=21"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     rel = path.strip('/')
     if not path.endswith('/') and '.' not in rel.split('/')[-1]: rel += '.html'   # /about is served from about.html
     out = OUT / (rel + '/index.html' if path.endswith('/') else rel)
