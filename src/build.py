@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Builds the static site pages from fragments in pages/ into the repo."""
+from charts import CHARTS
 import re, json, html, sys, pathlib
 SRC = pathlib.Path(__file__).parent / 'pages'
 OUT = pathlib.Path(sys.argv[1])
@@ -126,12 +127,14 @@ def render(raw):
         tool = next((t for t in TOOLS if t[0] == meta.get('tool')), None)
         cta = f'<p class="cta"><a class="btn solid" href="{tool[0]}">Open the {tool[2].lower()} calculator</a></p>' if tool else ''
         if tool and tool[0] in ('/converter/', '/portfolio/'): cta = f'<p class="cta"><a class="btn solid" href="{tool[0]}">Open the {tool[2].lower()}</a></p>'
+        dates = f'Written by <a href="/about">Fahad Aslam</a>. Published {meta["date"]}' + (f', updated {meta["updated"]}' if meta.get('updated') else '')
+        body = re.sub(r'\{\{chart:(\w+)\}\}', lambda m: CHARTS[m.group(1)](), body)
         body = (f'<main class="wrap">\n<header class="tool-head"><p class="crumb rise"><a href="/guides/">Guides</a></p><h1 class="rise">{meta["h1"]}</h1>'
                 f'<p class="rise" style="--d:1">{meta["lede"]}</p></header>\n<div class="guide" style="margin-top:8px">\n<article class="prose rise" style="--d:2">\n'
-                f'{body.strip()}\n{cta}\n<p class="fine">Updated {meta["date"]}. For information only, not financial advice.</p>\n</article>\n{{{{aside}}}}\n</div>\n</main>')
+                f'{body.strip()}\n{cta}\n<p class="fine">{dates}. For information only, not financial advice.</p>\n</article>\n{{{{aside}}}}\n</div>\n</main>')
         iso = meta['iso']
-        lds.append({"@context": "https://schema.org", "@type": "Article", "headline": meta['h1'], "description": meta['desc'], "datePublished": iso, "dateModified": iso,
-                    "author": {"@type": "Organization", "name": BRAND, "url": SITE + '/'}, "publisher": {"@type": "Organization", "name": BRAND, "url": SITE + '/'},
+        lds.append({"@context": "https://schema.org", "@type": "Article", "headline": meta['h1'], "description": meta['desc'], "datePublished": iso, "dateModified": meta.get('updated_iso', iso),
+                    "author": {"@type": "Person", "name": "Fahad Aslam", "url": SITE + '/about'}, "publisher": {"@type": "Organization", "name": BRAND, "url": SITE + '/'},
                     "mainEntityOfPage": SITE + path, "image": SITE + '/og.png'})
         lds.append({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Guides", "item": SITE + '/guides/'}, {"@type": "ListItem", "position": 2, "name": meta['h1'], "item": SITE + path}]})
@@ -183,7 +186,7 @@ def render(raw):
 <script>(function(){{try{{var t=localStorage.getItem('cc_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}}catch(e){{}}document.documentElement.classList.add('js');setTimeout(function(){{if(!window.CC)document.documentElement.classList.remove('js')}},3000)}})()</script>
 <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://api.coingecko.com" crossorigin>
-<link rel="stylesheet" href="/css/style.css?v=21">
+<link rel="stylesheet" href="/css/style.css?v=22">
 {track}{ld}</head>
 <body>
 <header class="nav"><div class="nav-in">
@@ -200,7 +203,7 @@ def render(raw):
 <div><h2>Calculators</h2><ul>{''.join(f'<li><a href="{p}">{name}</a></li>' for p, _, name, _ in TOOLS)}</ul></div>
 <div><h2>Site</h2><ul><li><a href="/guides/">Guides</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></div>
 </div></footer>
-<script src="/js/app.js?v=21"></script>
+<script src="/js/app.js?v=22"></script>
 '''
     m = re.search(r'@script\n(.*)\Z', page, re.S)
     scripts = ''
@@ -208,7 +211,7 @@ def render(raw):
         pre, js = body.split('@script\n', 1)
         page = page.replace(body.strip(), pre.strip())
         scripts = f'<script>\n{js.strip()}\n</script>\n'
-    page += scripts + ''.join(f'<script src="{x}?v=21"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
+    page += scripts + ''.join(f'<script src="{x}?v=22"></script>\n' for x in meta.get('scripts', '').split()) + '</body>\n</html>\n'
     rel = path.strip('/')
     if not path.endswith('/') and '.' not in rel.split('/')[-1]: rel += '.html'   # /about is served from about.html
     out = OUT / (rel + '/index.html' if path.endswith('/') else rel)
