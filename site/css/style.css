@@ -639,3 +639,6 @@ footer { border-radius: 28px 28px 0 0; }
 .chart .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--muted); margin-bottom: 4px; }
 .chart .legend i { display: inline-block; width: 14px; height: 3px; margin-right: 6px; vertical-align: middle; }
 .chart .fine { margin-top: 6px; font-size: 14px; }
+.chart .legend i { height: 4px; border-radius: 2px; }
+.chart .legend i.c0 { background: var(--green) !important; } .chart .legend i.c1 { background: var(--red) !important; }
+.chart .legend i.c2 { background: var(--amber) !important; } .chart .legend i.c3 { background: var(--ink) !important; }
