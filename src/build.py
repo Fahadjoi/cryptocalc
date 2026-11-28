@@ -222,7 +222,8 @@ GUIDES.extend(sorted((parse(r)[0] for r in guide_raw), key=lambda m: int(m.get('
 paths = [render(f.read_text()) for f in sorted(SRC.glob('*.html')) if not f.name.startswith('_')]
 paths += [render(r) for r in guide_raw]
 tpl = (SRC / '_pair.html').read_text()
-for cid, sym, name in PCOINS:
+# Per-pair converter pages were removed (AdSense flagged the site as low-value content); /convert/* now 301s to /converter/.
+for cid, sym, name in []:
     for to, toname, toplural in PFIATS:
         if to == 'USD':
             how = f'For {sym} to USD that price is the answer, so the converter simply multiplies it by your amount.'
